@@ -175,7 +175,7 @@ $(document).ready(function() {
      <div class="container">
           <form class="qua-2" name="frmTelMan" action="man-aerea.php" method="POST">
                <p class="lit-4">Manutenção de Companhia Aérea &nbsp; &nbsp; &nbsp; <a href="man-aerea.php?ope=1&cod=0"
-                         title="Abre janela para criação de novo usuário no sistema"><i class="fa fa-plus-circle fa-1g"
+                         title="Abre janela para criação de nova companhia aérea no sistema"><i class="fa fa-plus-circle fa-1g"
                               aria-hidden="true"></i></a></p>
                <div class="row">
                     <div class="col-md-2">
@@ -192,7 +192,7 @@ $(document).ready(function() {
                          <label>Status</label><br />
                          <select name="sta" class="form-control">
                               <option value="0" <?php echo ($sta != 0 ? '' : 'selected="selected"'); ?>>
-                                   Normal
+                                   Ativo
                               </option>
                               <option value="1" <?php echo ($sta != 1 ? '' : 'selected="selected"'); ?>>
                                    Bloqueado
@@ -277,7 +277,7 @@ function carrega_aer() {
           $txt .= '<td class="text-center"><a href="man-aerea.php?ope=2&cod=' . $lin['idaerea'] . '" title="Efetua alteração do registro informado na linha"><i class="large material-icons">healing</i></a></td>';
           $txt .= '<td class="lit-d text-center"><a href="man-aerea.php?ope=3&cod=' . $lin['idaerea'] . '" title="Efetua exclusão do registro informado na linha"><i class="cor-1 large material-icons">delete_forever</i></a></td>';
           $txt .= '<td class="text-center">' . $lin['idaerea'] . '</td>';
-          if ($lin['aerstatus'] == 0) {$txt .= "<td>" . "Normal" . "</td>";}
+          if ($lin['aerstatus'] == 0) {$txt .= "<td>" . "Ativo" . "</td>";}
           if ($lin['aerstatus'] == 1) {$txt .= "<td>" . "Bloqueado" . "</td>";}
           if ($lin['aerstatus'] == 2) {$txt .= "<td>" . "Suspenso" . "</td>";}
           if ($lin['aerstatus'] == 3) {$txt .= "<td>" . "Cancelado" . "</td>";}

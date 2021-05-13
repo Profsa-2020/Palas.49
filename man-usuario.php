@@ -249,7 +249,7 @@ $(document).ready(function() {
                          <label>Status</label>
                          <select name="sta" class="form-control">
                               <option value="0" <?php echo ($sta != 0 ? '' : 'selected="selected"'); ?>>
-                                   Normal</option>
+                                   Ativo</option>
                               <option value="1" <?php echo ($sta != 1 ? '' : 'selected="selected"'); ?>>
                                    Bloqueado</option>
                               <option value="2" <?php echo ($sta != 2 ? '' : 'selected="selected"'); ?>>
@@ -421,6 +421,7 @@ $(document).ready(function() {
                </div>
           </form>
      </div>
+     <br />
      <div id="box10">
           <img class="subir" src="img/subir.png" title="Volta a página para o seu topo." />
      </div>

@@ -15,7 +15,7 @@
      }   
 ?>
 
-<nav class="navbar navbar-expand-lg navbar-light bg-primary text-white fixed-top"> 
+<nav class="navbar navbar-expand-lg navbar-light text-white fixed-top"> 
      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
           aria-controls="navbarNav" aria-expanded="false" aria-label="Alterna navegação do menu principal">
           <span class="navbar-toggler-icon"></span>

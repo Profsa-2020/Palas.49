@@ -170,7 +170,7 @@ function carrega_usu() {
          $txt .= '<td class="lit-d text-center"><a href="man-usuario.php?ope=3&cod=' . $lin['idsenha'] . '" title="Efetua exclusão do registro informado na linha"><i class="cor-1 large material-icons">delete_forever</i></a></td>';
          $txt .= '<td class="text-center">' . $lin['idsenha'] . '</td>';
          $txt .= "<td>" . $lin['usunome'] . "</td>";
-         if ($lin['usustatus'] == 0) {$txt .= "<td>" . "Normal" . "</td>";}
+         if ($lin['usustatus'] == 0) {$txt .= "<td>" . "Ativo" . "</td>";}
          if ($lin['usustatus'] == 1) {$txt .= "<td>" . "Bloqueado" . "</td>";}
          if ($lin['usustatus'] == 2) {$txt .= "<td>" . "Suspenso" . "</td>";}
          if ($lin['usustatus'] == 3) {$txt .= "<td>" . "Cancelado" . "</td>";}

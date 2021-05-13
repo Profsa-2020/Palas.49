@@ -8,9 +8,9 @@
     height: 35px;
     color: #ffffff;
     font-size: 16px;
-    border: 0.5px solid #000000;
-    background-color: #0964f7;
-    border-radius: 0px 20px 0px 20px;
+    border-radius: 5px;
+    border: 0.5px solid #3d7e92;
+    background-color: #3d7e92;
 }
 
 .bot-2 {
@@ -73,11 +73,21 @@
  }
 
  @media only screen and (max-width: 800px) {  
-     .qua-1 {
-          width: 90%;
-          margin: 75px auto;
-     }
+    .qua-1 {
+        width: 90%;
+        margin: 75px auto;
+    }
  }
+
+ .qua-3 input[type=radio] {
+    width: 20px;
+    height: 20px;
+ }
+
+ .qua-3 span {
+    font-size: 24px;
+    font-weight: 400;
+}
 
  .tab-1 {
     font-size: 12px;
@@ -85,27 +95,31 @@
 }
 
  .tit-1 {
-     font-size: 12px;
-     font-weight: bold;
-     text-decoration: none;
-     background-color: #ffffff;
+    font-size: 12px;
+    font-weight: bold;
+    text-decoration: none;
+    background-color: #ffffff;
  }
  
  .tit-2 {
-     font-size: 14px;
-     text-decoration: none;
+    font-size: 14px;
+    text-decoration: none;
  }
 
  .subir {
     position: fixed;
     cursor: pointer;
-    bottom: 4.0%;
+    bottom: 2.0%;
     right: 0.5%;
     display: none;
 }
 
 .ui-autocomplete {
     z-index: 1050 !important;
+}
+
+nav {
+    background-color: #3d7e92 !important;
 }
 
 nav ul li:hover, nav ul li a:hover {
@@ -127,7 +141,7 @@ nav ul li a,  nav ul li a i {
 }
 
 nav ul li a:hover,  nav ul li a i:hover {
-    color: #f70606 !important;
+    color: #c0c0c2 !important;
 }
 
 li { flex-grow: 1;  }
@@ -136,5 +150,5 @@ li { flex-grow: 1;  }
     width: 100%;
     height: 100vh;
     color: #ecebeb;
-    background: #007BFF;
+    background: #3d7e92;
 }
