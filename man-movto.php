@@ -50,13 +50,24 @@
 
 <script>
 $(function() {
+     $("#dat").mask("00/00/0000");
+     $("#dat_v").mask("00/00/0000");
+     $("#rec_v").mask("00/00/0000");
      $("#qtd").mask("000.000.000", {
           reverse: true
      });
      $("#val").mask("000.000.000,00", {
           reverse: true
      });
+     $("#qtd_v").mask("000.000.000", {
+          reverse: true
+     });
+     $("#val_v").mask("000.000.000,00", {
+          reverse: true
+     });
      $("#dat").datepicker($.datepicker.regional["pt-BR"]);
+     $("#dat_v").datepicker($.datepicker.regional["pt-BR"]);
+     $("#rec_v").datepicker($.datepicker.regional["pt-BR"]);
 });
 
 $(function() {
@@ -74,9 +85,29 @@ $(function() {
                }
           }
      });
+
+     $('#nom_v').autocomplete({
+          source: "ajax/mostrar-cta.php",
+          minLength: 3,
+          select: function(event, ui) {
+               $('#cta_v').val(ui.item.id);
+               $('#usu_v').val(ui.item.usuario);
+               $('#pro_v').val(ui.item.programa);
+               if (ui.item.tipo == 0) {
+                    $('#tit_v').text("Quantidade de Milhas");
+               } else {
+                    $('#tit_v').text("Quantidade de Pontos");
+               }
+          }
+     });
+
 });
 
 $(document).ready(function() {
+
+     $("#mov_c").show();
+     $("#mov_v").hide();
+
      var alt = $(window).height();
      var lar = $(window).width();
      if (lar < 800) {
@@ -114,8 +145,23 @@ $(document).ready(function() {
      });
 
      $('.opc').click(function() {
+          $('#nom').val('');
+          $('#cta').val(0);
+          $('#qtd').val('');
+          $('#val').val('');
+          $('#nom_v').val('');
+          $('#cta_v').val(0);
+          $('#qtd_v').val('');
+          $('#val_v').val('');
           let opc = $(this).attr("value");
-          
+          if (opc == 1) {
+               $("#mov_c").show();
+               $("#mov_v").hide();
+          }
+          if (opc == 3) {
+               $("#mov_v").show();
+               $("#mov_c").hide();
+          }
      });
 
 
@@ -192,8 +238,18 @@ $(document).ready(function() {
      $val = (isset($_REQUEST['val']) == false ? '' : $_REQUEST['val']);
      $dat = (isset($_REQUEST['dat']) == false ? date('d/m/Y') : $_REQUEST['dat']);
      $obs = (isset($_REQUEST['obs']) == false ? '' : str_replace("'", "´", $_REQUEST['obs']));
+
+     $nom_v = (isset($_REQUEST['nom_v']) == false ? '' : $_REQUEST['nom_v']);
+     $qtd_v = (isset($_REQUEST['qtd_v']) == false ? '' : $_REQUEST['qtd_v']);
+     $val_v = (isset($_REQUEST['val_v']) == false ? '' : $_REQUEST['val_v']);
+     $int_v = (isset($_REQUEST['int_v']) == false ? 0 : $_REQUEST['int_v']);
+     $rec_v = (isset($_REQUEST['rec_v']) == false ? '' : $_REQUEST['rec_v']);
+     $dat_v = (isset($_REQUEST['dat_v']) == false ? date('d/m/Y') : $_REQUEST['dat_v']);
+     $obs_v = (isset($_REQUEST['obs_v']) == false ? '' : str_replace("'", "´", $_REQUEST['obs_v']));
+
      if (isset($_REQUEST['salvar']) == true) {
           $nom = ""; $qtd = ""; $val = ""; $dat = date('d/m/Y'); $obs = ""; 
+          $nom_v = ""; $qtd_v = ""; $val_v = ""; $dat_v = date('d/m/Y'); $obs_v = ""; $rec_v = ""; $int_v = 0; 
      }
 ?>
 
@@ -220,7 +276,6 @@ $(document).ready(function() {
                     </div>
                </div>
                <br />
-
                <!------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
                <div id="mov_c">
                     <div class="row">
@@ -292,8 +347,98 @@ $(document).ready(function() {
                          <div class="col-md-2"></div>
                     </div>
                </div>
-               <!----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
-
+               <!------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
+               <div id="mov_v">
+                    <div class="row">
+                         <div class="col-md-2"></div>
+                         <div class="col-md-8">
+                              <label>Usuário / Programa para a Operação</label>
+                              <input type="text" class="form-control" maxlength="50" id="nom_v" name="nom_v"
+                                   value="<?php echo $nom_v; ?>" required />
+                         </div>
+                         <div class="col-md-2"></div>
+                    </div>
+                    <div class="row">
+                         <div class="col-md-3"></div>
+                         <div class="col-md-6">
+                              <label>Nome do Usuário</label>
+                              <input type="text" class="form-control text-center" maxlength="50" id="usu_v" name="usu_v"
+                                   value="" disabled />
+                         </div>
+                         <div class="col-md-3"></div>
+                    </div>
+                    <div class="row">
+                         <div class="col-md-3"></div>
+                         <div class="col-md-6">
+                              <label>Nome do Programa</label>
+                              <input type="text" class="form-control text-center" maxlength="50" id="pro_v" name="pro_v"
+                                   value="" disabled />
+                         </div>
+                         <div class="col-md-3"></div>
+                    </div>
+                    <div class="row">
+                         <div class="col-md-3"></div>
+                         <div class="col-md-6">
+                              <label>Vendido para</label>
+                              <select id="int_v" name="int_v" class="form-control">
+                                   <?php $ret = carrega_int($int_v); ?>
+                              </select>
+                         </div>
+                         <div class="col-md-3"></div>
+                    </div>
+                    <div class="row">
+                         <div class="col-md-4"></div>
+                         <div class="col-md-4">
+                              <label id=_v">Quantidade</label>
+                              <input type="text" class="form-control text-right" maxlength="12" id="qtd_v" name="qtd_v"
+                                   value="<?php echo $qtd_v; ?>" required />
+                         </div>
+                         <div class="col-md-4"></div>
+                    </div>
+                    <div class="row">
+                         <div class="col-md-4"></div>
+                         <div class="col-md-4">
+                              <label>Valor Total R$</label>
+                              <input type="text" class="form-control text-right" maxlength="12" id="val_v" name="val_v"
+                                   value="<?php echo $val_v; ?>" required />
+                         </div>
+                         <div class="col-md-1"></div>
+                         <div class="col-md-2 text-center">
+                              <label>Preço Unitário</label>
+                              <input type="text" class="form-control text-center" maxlength="12" id="pre_v" name="pre_v"
+                                   value="" disabled />
+                         </div>
+                         <div class="col-md-1"></div>
+                    </div>
+                    <div class="row">
+                         <div class="col-md-4"></div>
+                         <div class="col-md-4">
+                              <label>Data da Venda</label>
+                              <input type="text" class="form-control text-center" maxlength="10" id="dat_v" name="dat_v"
+                                   value="<?php echo $dat_v; ?>" required />
+                         </div>
+                         <div class="col-md-4"></div>
+                    </div>
+                    <div class="row">
+                         <div class="col-md-4"></div>
+                         <div class="col-md-4">
+                              <label>Recebimento em</label>
+                              <input type="text" class="form-control text-center" maxlength="10" id="rec_v" name="rec_v"
+                                   value="<?php echo $rec_v; ?>" required />
+                         </div>
+                         <div class="col-md-4"></div>
+                    </div>
+                    <div class="row">
+                         <div class="col-md-2"></div>
+                         <div class="col-md-8">
+                              <label>Observação</label>
+                              <textarea class="form-control" rows="3" id="obs_v"
+                                   name="obs_v"><?php echo $obs_v; ?></textarea>
+                         </div>
+                         <div class="col-md-2"></div>
+                    </div>
+               </div>
+               <!------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
                <br />
                <div class="row">
                     <div class="col-12 text-center">
@@ -302,13 +447,33 @@ $(document).ready(function() {
                </div>
                <br />
                <input type="hidden" id="cta" name="cta" value="0" />
+               <input type="hidden" id="cta_v" name="cta_v" value="0" />
           </form>
      </div>
      <br />
+     <div id="box10">
+          <img class="subir" src="img/subir.png" title="Volta a página para o seu topo." />
+     </div>
 </body>
 
 <?php
-
+function carrega_int($int_v) {
+     $sta = 0;
+     include_once "dados.php";    
+     if ($int_v == 0) {
+          echo '<option value="0" selected="selected">Selecione o intermediário ...</option>';
+     }
+     $com = "Select idintermediario, intdescricao from tb_intermediario where intstatus = 0 and intempresa = " . $_SESSION['wrkcodemp'] . " order by intdescricao, idintermediario";
+     $nro = leitura_reg($com, $reg);
+     foreach ($reg as $lin) {
+          if ($lin['idintermediario'] != $int_v) {
+               echo  '<option value ="' . $lin['idintermediario'] . '">' . $lin['intdescricao'] . '</option>'; 
+          } else {
+               echo  '<option value ="' . $lin['idintermediario'] . '" selected="selected">' . $lin['intdescricao'] . '</option>';
+          }
+     }
+     return $sta;
+}
 ?>
 
 </html>
