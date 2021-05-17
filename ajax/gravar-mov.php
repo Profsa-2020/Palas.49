@@ -58,7 +58,7 @@
                $sql .= "keyinc, ";
                $sql .= "datinc ";
                $sql .= ") value ( ";
-               $sql .= "'" . '0' . "',";
+               $sql .= "'" . '0' . "',";     // Compra - Entrada
                $sql .= "'" . $_SESSION['wrkcodemp'] . "',";
                $sql .= "'" . $_REQUEST['opc'] . "',";
                $sql .= "'" . $_REQUEST['cta'] . "',";
@@ -95,7 +95,7 @@
                $sql .= "keyinc, ";
                $sql .= "datinc ";
                $sql .= ") value ( ";
-               $sql .= "'" . '2' . "',";
+               $sql .= "'" . '1' . "',";     // Transferência
                $sql .= "'" . $_SESSION['wrkcodemp'] . "',";
                $sql .= "'" . $_REQUEST['opc'] . "',";
                $sql .= "'" . $_REQUEST['cta_t'] . "',";
@@ -141,7 +141,7 @@
                $sql .= "keyinc, ";
                $sql .= "datinc ";
                $sql .= ") value ( ";
-               $sql .= "'" . '3' . "',";
+               $sql .= "'" . '2' . "',";     // Venda - Saída
                $sql .= "'" . $_SESSION['wrkcodemp'] . "',";
                $sql .= "'" . $_REQUEST['opc'] . "',";
                $sql .= "'" . $_REQUEST['cta_v'] . "',";
@@ -176,7 +176,7 @@
                $sql .= "keyinc, ";
                $sql .= "datinc ";
                $sql .= ") value ( ";
-               $sql .= "'" . '4' . "',";
+               $sql .= "'" . '3' . "',";     // Registro de venda de Passagem por Intermediário
                $sql .= "'" . $_SESSION['wrkcodemp'] . "',";
                $sql .= "'" . $_REQUEST['opc'] . "',";
                $sql .= "'" . $_REQUEST['cta_p'] . "',";

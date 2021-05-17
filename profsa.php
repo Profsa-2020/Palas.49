@@ -339,4 +339,30 @@ function calcula_idade($nas) {
      return $ida;
 }
 
+function saldos_cta($cta, &$ent, &$sai, &$vai, &$vol) {
+     $sal = 0; $ent = 0; $sai = 0; $vai = 0; $vol = 0;
+     $com  = "Select M.*, U.usunome, P.prodescricao from (((tb_movto M left join tb_conta C on M.movconta = C.idconta) ";
+     $com .= "left join tb_usuario U on M.movusuario = U.idsenha) ";
+     $com .= "left join tb_programa P on M.movprograma = P.idprograma) ";
+     $com .= "where movempresa = " . $_SESSION['wrkcodemp'] . " and movconta =  " . $cta;
+     $nro = leitura_reg($com, $reg);
+     foreach ($reg as $lin) {
+          if ($lin['movstatus'] == 0) {
+               $ent = $ent + $lin['movquantidade'];
+               $sal = $sal + $lin['movquantidade'];
+          }
+          if ($lin['movstatus'] == 1) {
+               $vai = $vai + ($lin['movquantidade'] * $lin['movpercvai'] / 100);
+               $vol = $vol + ($lin['movquantidade'] * $lin['movpercvolta'] / 100);
+          }
+          if ($lin['movstatus'] == 2) {
+               $sai = $sai + $lin['movquantidade'];
+               $sal = $sal - $lin['movquantidade'];
+          }
+     }
+     $vai = round($vai, 0); $vol = round($vol, 0);
+
+     return $sal;
+}
+
 ?>
