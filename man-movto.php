@@ -50,9 +50,13 @@
 
 <script>
 $(function() {
+     $("#cpf_p").mask("000");
      $("#dat").mask("00/00/0000");
      $("#dat_v").mask("00/00/0000");
+     $("#dat_p").mask("00/00/0000");
+     $("#dat_t").mask("00/00/0000");
      $("#rec_v").mask("00/00/0000");
+     $("#dtb_t").mask("00/00/0000");
      $("#qtd").mask("000.000.000", {
           reverse: true
      });
@@ -62,12 +66,27 @@ $(function() {
      $("#qtd_v").mask("000.000.000", {
           reverse: true
      });
+     $("#qtd_t").mask("000.000.000", {
+          reverse: true
+     });
      $("#val_v").mask("000.000.000,00", {
+          reverse: true
+     });
+     $("#vai_t").mask("00,00", {
+          reverse: true
+     });
+     $("#vol_t").mask("00,00", {
+          reverse: true
+     });
+     $("#val_t").mask("000.000.000,00", {
           reverse: true
      });
      $("#dat").datepicker($.datepicker.regional["pt-BR"]);
      $("#dat_v").datepicker($.datepicker.regional["pt-BR"]);
+     $("#dat_p").datepicker($.datepicker.regional["pt-BR"]);
      $("#rec_v").datepicker($.datepicker.regional["pt-BR"]);
+     $("#dat_t").datepicker($.datepicker.regional["pt-BR"]);
+     $("#dtb_t").datepicker($.datepicker.regional["pt-BR"]);
 });
 
 $(function() {
@@ -101,12 +120,56 @@ $(function() {
           }
      });
 
+     $('#nom_p').autocomplete({
+          source: "ajax/mostrar-cta.php",
+          minLength: 3,
+          select: function(event, ui) {
+               $('#cta_p').val(ui.item.id);
+               $('#usu_p').val(ui.item.usuario);
+               $('#pro_p').val(ui.item.programa);
+               if (ui.item.tipo == 0) {
+                    $('#tit_p').text("Quantidade de Milhas");
+               } else {
+                    $('#tit_p').text("Quantidade de Pontos");
+               }
+          }
+     });
+
+     $('#nom_t').autocomplete({
+          source: "ajax/mostrar-cta.php",
+          minLength: 3,
+          select: function(event, ui) {
+               $('#cta_t').val(ui.item.id);
+               $('#des_t').val(ui.item.usuario);
+               if (ui.item.tipo == 0) {
+                    $('#tit_t').text("Milhas a Transferir");
+               } else {
+                    $('#tit_t').text("Pontos a Transferir");
+               }
+          }
+     });
+
+     $('#des_t').autocomplete({
+          source: "ajax/mostrar-cta.php",
+          minLength: 3,
+          select: function(event, ui) {
+               $('#cta_d').val(ui.item.id);
+               if (ui.item.tipo == 0) {
+                    $('#tit_d').text("Milhas Transferidas");
+               } else {
+                    $('#tit_d').text("Pontos Transferidos");
+               }
+          }
+     });
+
 });
 
 $(document).ready(function() {
 
-     $("#mov_c").show();
-     $("#mov_v").hide();
+     $("#mov_c").show(); // $("#mov_c").fadeOut();          $("#mov_c").fadeOut("fast");
+     $("#mov_v").hide(); //  $("#mov_v").fadeIn();           $("#mov_v").fadeIn("slow");
+     $("#mov_p").hide();
+     $("#mov_t").hide();
 
      var alt = $(window).height();
      var lar = $(window).width();
@@ -115,13 +178,122 @@ $(document).ready(function() {
      }
 
      $('#frmTelMan').submit(function() {
-          erro = 0;
-          var dad = $('#frmTelMan').serialize();
-          let cta = $('#cta').val();
+          let erro = 0;
+          let rec = "";
+          let int = "";
+          let nom = "";
+          let cta = "";
+          let qtd = "";
+          let val = "";
+          let dat = "";
+          let car = "";
+          let cpf = "";
+          let loc = "";
+          let dst = "";
+          let pro = 0;
+          let des = "";
+          let bon = "";
+          let vai = "";
+          let vol = "";
+
+          let dad = $('#frmTelMan').serialize();
+          let opc1 = $("#opc_1").prop("checked");
+          let opc2 = $("#opc_2").prop("checked");
+          let opc3 = $("#opc_3").prop("checked");
+          let opc4 = $("#opc_4").prop("checked");
+          if (opc1 == true) {
+               nom = $('#nom').val();
+               cta = $('#cta').val();
+               qtd = $('#qtd').val();
+               val = $('#val').val();
+               car = $('#car').val();
+               dat = $('#dat').val();
+          }
+          if (opc2 == true) {
+               nom = $('#nom_t').val();
+               dst = $('#des_t').val();
+               pro = $('#pro_t').val();
+               cta = $('#cta_t').val();
+               des = $('#cta_d').val();
+               qtd = $('#qtd_t').val();
+               val = $('#val_t').val();
+               dat = $('#dat_t').val();
+               bon = $('#dtb_t').val();
+               vai = $('#vai_t').val();
+               vol = $('#vol_t').val();
+          }
+          if (opc3 == true) {
+               nom = $('#nom_v').val();
+               cta = $('#cta_v').val();
+               qtd = $('#qtd_v').val();
+               val = $('#val_v').val();
+               dat = $('#dat_v').val();
+               rec = $('#rec_v').val();
+               int = $('#int_v').val();
+          }
+          if (opc4 == true) {
+               nom = $('#nom_p').val();
+               cta = $('#cta_p').val();
+               qtd = $('#qtd_p').val();
+               dat = $('#dat_p').val();
+               int = $('#int_p').val();
+               cpf = $('#cpf_p').val();
+               loc = $('#loc_p').val();
+          }
+          if (nom == '0' || nom == '') {
+               alert("Informação de usuário/programa para movimento está em branco !");
+               erro = 1;
+          }
+          if (qtd == '0' || qtd == '') {
+               alert("Quantidade informada para ser movimento está em branco !");
+               erro = 1;
+          }
+          if (opc4 == false && (val == '0' || val == '')) {
+               alert("Valor Total informado para ser movimento está em branco !");
+               erro = 1;
+          }
+          if (dat == '0' || dat == '') {
+               alert("Data de movimento da conta não pode ficar em branco !");
+               erro = 1;
+          }
           if (cta == '0' || cta == '') {
                $('#nom').val("");
                alert("Informação de usuário/programa para movimento não é válida !");
                erro = 1;
+          }
+          if (opc2 == true) {
+               if (dst == '') {
+                    alert("Conta de Destino da operação não pode ficar em branco !");
+                    erro = 1;
+               }
+               if (bon == '') {
+                    alert("Data para o Bônus da operação não pode ficar em branco !");
+                    erro = 1;
+               }
+               if (cta == des) {
+                    alert("Contas de Operação de origem e de destino não podem ser iguais !");
+                    erro = 1;
+               }
+               if (des == '0' || des == '') {
+                    alert("Conta para Operação de destino não pode ficar em branco !");
+                    erro = 1;
+               }
+          }
+          if (opc3 == true) {
+               if (rec == '') {
+                    alert("Informação de data de recebimento não pode ficar em branco !");
+                    erro = 1;
+               }
+               if (int == '0' || int == '') {
+                    alert("Informação do intermediário para venda não pode ficar em branco !");
+                    erro = 1;
+               }
+          }
+          if (opc4 == true) {
+               if (cpf == '') {
+                    alert("Informação de número de Cpf´s não pode ficar em branco ou zero !");
+                    erro = 1;
+               }
           }
           if (erro == 1) {
                return false;
@@ -129,9 +301,11 @@ $(document).ready(function() {
                $.post("ajax/gravar-mov.php", dad, function(data) {
                     if (data.men != "") {
                          alert(data.men);
+                         return false;
                     } else {
                          $('#nom').val('');
                          $('#cta').val(0);
+                         $('#car').val(0);
                          $('#usu').val('');
                          $('#pro').val('');
                          $('#qtd').val('');
@@ -139,6 +313,7 @@ $(document).ready(function() {
                          $('#pre').val('');
                          $('#dat').val('');
                          $('#obs').val('');
+                         $('#car').val('');
                     }
                }, "json");
           }
@@ -149,21 +324,112 @@ $(document).ready(function() {
           $('#cta').val(0);
           $('#qtd').val('');
           $('#val').val('');
+          $('#usu').val('');
+          $('#pro').val('');
+          $('#pre').val('');
+          $('#car').val('');
           $('#nom_v').val('');
           $('#cta_v').val(0);
           $('#qtd_v').val('');
           $('#val_v').val('');
+          $('#usu_v').val('');
+          $('#pro_v').val('');
+          $('#pre_v').val('');
+          $('#nom_p').val('');
+          $('#cta_p').val(0);
+          $('#qtd_p').val('');
+          $('#usu_p').val('');
+          $('#pro_p').val('');
+          $('#nom_t').val('');
+          $('#des_t').val('');
+          $('#cta_t').val(0);
+          $('#cta_d').val(0);
           let opc = $(this).attr("value");
           if (opc == 1) {
-               $("#mov_c").show();
-               $("#mov_v").hide();
+               $("#mov_v").fadeOut();
+               $("#mov_p").fadeOut();
+               $("#mov_t").fadeOut();
+               $("#mov_c").fadeIn();
+          }
+          if (opc == 2) {
+               $("#mov_c").fadeOut();
+               $("#mov_p").fadeOut();
+               $("#mov_v").fadeOut();
+               $("#mov_t").fadeIn();
           }
           if (opc == 3) {
-               $("#mov_v").show();
-               $("#mov_c").hide();
+               $("#mov_c").fadeOut();
+               $("#mov_p").fadeOut();
+               $("#mov_t").fadeOut();
+               $("#mov_v").fadeIn();
+          }
+          if (opc == 4) {
+               $("#mov_c").fadeOut();
+               $("#mov_v").fadeOut();
+               $("#mov_t").fadeOut();
+               $("#mov_p").fadeIn();
           }
      });
 
+     $('#dat').blur(function() {
+          if ($('#dat').val() == "") {
+               var dat = new Date;
+               var ddd = ('0' + dat.getDate()).slice(-2);
+               var mmm = ('0' + (dat.getMonth() + 1)).slice(-2);
+               var aaa = dat.getFullYear();
+               $('#dat').val(ddd + "/" + mmm + "/" + aaa);
+          }
+     });
+
+     $('#dat_v').blur(function() {
+          if ($('#dat_v').val() == "") {
+               var dat = new Date;
+               var ddd = ('0' + dat.getDate()).slice(-2);
+               var mmm = ('0' + (dat.getMonth() + 1)).slice(-2);
+               var aaa = dat.getFullYear();
+               $('#dat_v').val(ddd + "/" + mmm + "/" + aaa);
+          }
+     });
+
+     $('#rec_v').blur(function() {
+          if ($('#rec_v').val() == "") {
+               var dat = new Date;
+               var ddd = ('0' + dat.getDate()).slice(-2);
+               var mmm = ('0' + (dat.getMonth() + 1)).slice(-2);
+               var aaa = dat.getFullYear();
+               $('#rec_v').val(ddd + "/" + mmm + "/" + aaa);
+          }
+     });
+
+     $('#dat_p').blur(function() {
+          if ($('#dat_p').val() == "") {
+               var dat = new Date;
+               var ddd = ('0' + dat.getDate()).slice(-2);
+               var mmm = ('0' + (dat.getMonth() + 1)).slice(-2);
+               var aaa = dat.getFullYear();
+               $('#dat_p').val(ddd + "/" + mmm + "/" + aaa);
+          }
+     });
+
+     $('#dat_t').blur(function() {
+          if ($('#dat_t').val() == "") {
+               var dat = new Date;
+               var ddd = ('0' + dat.getDate()).slice(-2);
+               var mmm = ('0' + (dat.getMonth() + 1)).slice(-2);
+               var aaa = dat.getFullYear();
+               $('#dat_t').val(ddd + "/" + mmm + "/" + aaa);
+          }
+     });
+
+     $('#dtb_t').blur(function() {
+          if ($('#dtb_t').val() == "") {
+               var dat = new Date;
+               var ddd = ('0' + dat.getDate()).slice(-2);
+               var mmm = ('0' + (dat.getMonth() + 1)).slice(-2);
+               var aaa = dat.getFullYear();
+               $('#dtb_t').val(ddd + "/" + mmm + "/" + aaa);
+          }
+     });
 
      $('#qtd').blur(function() {
           let pre = 0;
@@ -198,6 +464,136 @@ $(document).ready(function() {
                     currency: "BRL"
                });
                $('#pre').val(pre);
+          }
+     });
+
+     $('#qtd_v').blur(function() {
+          let pre = 0;
+          let qtd = $('#qtd_v').val();
+          let val = $('#val_v').val();
+          if (qtd != "" && val != "") {
+               qtd = qtd.replace('.', '');
+               qtd = qtd.replace(',', '.');
+               val = val.replace('.', '');
+               val = val.replace(',', '.');
+               pre = val / qtd;
+               pre = pre.toLocaleString("pt-BR", {
+                    style: "currency",
+                    currency: "BRL"
+               });
+               $('#pre_v').val(pre);
+          }
+     });
+
+     $('#val_v').blur(function() {
+          let pre = 0;
+          let qtd = $('#qtd_v').val();
+          let val = $('#val_v').val();
+          if (qtd != "" && val != "") {
+               qtd = qtd.replace('.', '');
+               qtd = qtd.replace(',', '.');
+               val = val.replace('.', '');
+               val = val.replace(',', '.');
+               pre = val / qtd;
+               pre = pre.toLocaleString("pt-BR", {
+                    style: "currency",
+                    currency: "BRL"
+               });
+               $('#pre_v').val(pre);
+          }
+     });
+
+     $('#pro_t').change(function() {
+          let pro = $('#pro_t').val();
+          if (pro == 1) {
+               $('#vai_t').val('');
+               $('#vol_t').val('');
+               $('#vai_t').attr('disabled', 'disabled');
+               $('#vol_t').attr('disabled', 'disabled');
+          }
+          if (pro == 2) {
+               $('#vai_t').removeAttr('disabled');
+               $('#vol_t').removeAttr('disabled');
+          }
+     });
+
+     $('#qtd_t').change(function() {
+          let val = $('#val_t').val();
+          let qtd = $('#qtd_t').val();
+          $('#qtd_d').val(qtd);
+          if (qtd != "" && val != "") {
+               qtd = qtd.replace('.', '');
+               qtd = qtd.replace(',', '.');
+               val = val.replace('.', '');
+               val = val.replace(',', '.');
+               pre = val / qtd;
+               pre = pre.toLocaleString("pt-BR", {
+                    style: "currency",
+                    currency: "BRL"
+               });
+               $('#cus_t').val(pre);
+          }
+     });
+
+     $('#val_t').change(function() {
+          let val = $('#val_t').val();
+          let qtd = $('#qtd_t').val();
+          $('#qtd_d').val(qtd);
+          if (qtd != "" && val != "") {
+               qtd = qtd.replace('.', '');
+               qtd = qtd.replace(',', '.');
+               val = val.replace('.', '');
+               val = val.replace(',', '.');
+               pre = val / qtd;
+               pre = pre.toLocaleString("pt-BR", {
+                    style: "currency",
+                    currency: "BRL"
+               });
+               $('#cus_t').val(pre);
+          }
+     });
+
+     $('#vai_t').change(function() {
+          let val = 0;
+          let qtd = $('#qtd_t').val();
+          let per = $('#vai_t').val();
+          if (per == "" || qtd == "") {
+               $('#boi_t').val('');
+          } else {
+               per = per.replace('.', '');
+               per = per.replace(',', '.');
+               qtd = qtd.replace('.', '');
+               qtd = qtd.replace(',', '.');
+               val = qtd * per / 100;
+               val = val.toLocaleString("pt-BR", {
+                    style: "currency",
+                    currency: "BRL"
+               });
+               val = val.replace('R$', '');
+               val = val.replace(',00', '');
+               $('#boi_t').val(val);
+          }
+     });
+
+     $('#vol_t').change(function() {
+          let val = 0;
+          let qtd = $('#qtd_t').val();
+          let per = $('#vol_t').val();
+          if (per == "" || qtd == "") {
+               $('#bov_t').val('');
+          } else {
+               per = per.replace('.', '');
+               per = per.replace(',', '.');
+               qtd = qtd.replace('.', '');
+               qtd = qtd.replace(',', '.');
+               val = qtd * per / 100;
+               val = val.toLocaleString("pt-BR", {
+                    style: "currency",
+                    currency: "BRL"
+               });
+               val = val.replace('R$', '');
+               val = val.replace(',00', '');
+               $('#bov_t').val(val);
           }
      });
 
@@ -236,6 +632,7 @@ $(document).ready(function() {
      $nom = (isset($_REQUEST['nom']) == false ? '' : $_REQUEST['nom']);
      $qtd = (isset($_REQUEST['qtd']) == false ? '' : $_REQUEST['qtd']);
      $val = (isset($_REQUEST['val']) == false ? '' : $_REQUEST['val']);
+     $car = (isset($_REQUEST['car']) == false ? 0 : $_REQUEST['car']);
      $dat = (isset($_REQUEST['dat']) == false ? date('d/m/Y') : $_REQUEST['dat']);
      $obs = (isset($_REQUEST['obs']) == false ? '' : str_replace("'", "´", $_REQUEST['obs']));
 
@@ -243,13 +640,35 @@ $(document).ready(function() {
      $qtd_v = (isset($_REQUEST['qtd_v']) == false ? '' : $_REQUEST['qtd_v']);
      $val_v = (isset($_REQUEST['val_v']) == false ? '' : $_REQUEST['val_v']);
      $int_v = (isset($_REQUEST['int_v']) == false ? 0 : $_REQUEST['int_v']);
-     $rec_v = (isset($_REQUEST['rec_v']) == false ? '' : $_REQUEST['rec_v']);
+     $rec_v = (isset($_REQUEST['rec_v']) == false ? date('d/m/Y', strtotime('+18 days')) : $_REQUEST['rec_v']);
      $dat_v = (isset($_REQUEST['dat_v']) == false ? date('d/m/Y') : $_REQUEST['dat_v']);
      $obs_v = (isset($_REQUEST['obs_v']) == false ? '' : str_replace("'", "´", $_REQUEST['obs_v']));
 
+     $nom_p = (isset($_REQUEST['nom_p']) == false ? '' : $_REQUEST['nom_p']);
+     $qtd_p = (isset($_REQUEST['qtd_p']) == false ? '' : $_REQUEST['qtd_p']);
+     $loc_p = (isset($_REQUEST['loc_p']) == false ? '' : $_REQUEST['loc_p']);
+     $int_p = (isset($_REQUEST['int_p']) == false ? 0 : $_REQUEST['int_p']);
+     $cpf_p = (isset($_REQUEST['cpf_p']) == false ? 0 : $_REQUEST['cpf_p']);
+     $dat_p = (isset($_REQUEST['dat_p']) == false ? date('d/m/Y') : $_REQUEST['dat_p']);
+     $obs_p = (isset($_REQUEST['obs_p']) == false ? '' : str_replace("'", "´", $_REQUEST['obs_p']));
+
+     $nom_t = (isset($_REQUEST['nom_t']) == false ? '' : $_REQUEST['nom_t']);
+     $des_t = (isset($_REQUEST['des_t']) == false ? '' : $_REQUEST['des_t']);
+     $qtd_t = (isset($_REQUEST['qtd_t']) == false ? '' : $_REQUEST['qtd_t']);
+     $pro_t = (isset($_REQUEST['pro_t']) == false ? 1 : $_REQUEST['pro_t']);
+     $val_t = (isset($_REQUEST['val_t']) == false ? '' : $_REQUEST['val_t']);
+     $vai_t = (isset($_REQUEST['vai_t']) == false ? '' : $_REQUEST['vai_t']);
+     $vol_t = (isset($_REQUEST['vol_t']) == false ? '' : $_REQUEST['vol_t']);
+     $bon_t = (isset($_REQUEST['bon_t']) == false ? '' : $_REQUEST['bon_t']);
+     $dtb_t = (isset($_REQUEST['dtb_t']) == false ? '' : $_REQUEST['dtb_t']);
+     $dat_t = (isset($_REQUEST['dat_t']) == false ? date('d/m/Y') : $_REQUEST['dat_t']);
+     $obs_t = (isset($_REQUEST['obs_t']) == false ? '' : str_replace("'", "´", $_REQUEST['obs_t']));
+
      if (isset($_REQUEST['salvar']) == true) {
           $nom = ""; $qtd = ""; $val = ""; $dat = date('d/m/Y'); $obs = ""; 
-          $nom_v = ""; $qtd_v = ""; $val_v = ""; $dat_v = date('d/m/Y'); $obs_v = ""; $rec_v = ""; $int_v = 0; 
+          $nom_v = ""; $qtd_v = ""; $val_v = ""; $dat_v = date('d/m/Y'); $obs_v = ""; $rec_v = date('d/m/Y', strtotime('+18 days')); $int_v = 0; 
+          $nom_p = ""; $qtd_p = ""; $dat_p = date('d/m/Y'); $obs_p = ""; $loc_p = ""; $int_p = 0; $cpf_p = 0; 
+          $nom_t = ""; $qtd_t = ""; $dat_t = date('d/m/Y'); $obs_t = ""; $des_t = ""; $pro_t = 1; $val_t = ''; $vai_t = ''; $vol_t = ''; $bon_t = '';
      }
 ?>
 
@@ -265,14 +684,18 @@ $(document).ready(function() {
                <p class="lit-4">Movimentação de Contas &nbsp; &nbsp; &nbsp; </p>
                <br />
                <div class="row text-center">
-                    <div class="col-md-4">
-                         <input type="radio" class="opc" name="opc" value="1" checked="checked" /><span> Compra </span>
+                    <div class="col-md-3">
+                         <input type="radio" id="opc_1" class="opc" name="opc" value="1" checked="checked" /><span>
+                              Compra </span>
                     </div>
-                    <div class="col-md-4">
-                         <input type="radio" class="opc" name="opc" value="2" /><span> Transferência </span>
+                    <div class="col-md-3">
+                         <input type="radio" id="opc_2" class="opc" name="opc" value="2" /><span> Transferência </span>
                     </div>
-                    <div class="col-md-4">
-                         <input type="radio" class="opc" name="opc" value="3" /><span> Venda </span>
+                    <div class="col-md-3">
+                         <input type="radio" id="opc_3" class="opc" name="opc" value="3" /><span> Venda </span>
+                    </div>
+                    <div class="col-md-3">
+                         <input type="radio" id="opc_4" class="opc" name="opc" value="4" /><span> Passagens </span>
                     </div>
                </div>
                <br />
@@ -283,7 +706,7 @@ $(document).ready(function() {
                          <div class="col-md-8">
                               <label>Usuário / Programa para a Operação</label>
                               <input type="text" class="form-control" maxlength="50" id="nom" name="nom"
-                                   value="<?php echo $nom; ?>" required />
+                                   value="<?php echo $nom; ?>" />
                          </div>
                          <div class="col-md-2"></div>
                     </div>
@@ -306,11 +729,21 @@ $(document).ready(function() {
                          <div class="col-md-3"></div>
                     </div>
                     <div class="row">
+                         <div class="col-md-3"></div>
+                         <div class="col-md-6">
+                              <label>Cartão de Crédito</label>
+                              <select id="car" name="car" class="form-control">
+                                   <?php $ret = carrega_car($car); ?>
+                              </select>
+                         </div>
+                         <div class="col-md-3"></div>
+                    </div>
+                    <div class="row">
                          <div class="col-md-4"></div>
                          <div class="col-md-4">
                               <label id="tit">Quantidade</label>
                               <input type="text" class="form-control text-right" maxlength="12" id="qtd" name="qtd"
-                                   value="<?php echo $qtd; ?>" required />
+                                   value="<?php echo $qtd; ?>" />
                          </div>
                          <div class="col-md-4"></div>
                     </div>
@@ -319,7 +752,7 @@ $(document).ready(function() {
                          <div class="col-md-4">
                               <label>Custo Total R$</label>
                               <input type="text" class="form-control text-right" maxlength="12" id="val" name="val"
-                                   value="<?php echo $val; ?>" required />
+                                   value="<?php echo $val; ?>" />
                          </div>
                          <div class="col-md-1"></div>
                          <div class="col-md-2 text-center">
@@ -334,7 +767,7 @@ $(document).ready(function() {
                          <div class="col-md-4">
                               <label>Data da Compra</label>
                               <input type="text" class="form-control text-center" maxlength="10" id="dat" name="dat"
-                                   value="<?php echo $dat; ?>" required />
+                                   value="<?php echo $dat; ?>" />
                          </div>
                          <div class="col-md-4"></div>
                     </div>
@@ -348,13 +781,127 @@ $(document).ready(function() {
                     </div>
                </div>
                <!------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
+               <div id="mov_t">
+                    <table class="table tab-3">
+                         <tbody>
+                              <tr>
+                                   <td>
+                                        <div class="form-row">
+                                             <div class="col-md-12">
+                                                  <label>Conta de Origem</label>
+                                                  <input type="text" class="form-control" maxlength="50" id="nom_t"
+                                                       name="nom_t" value="<?php echo $nom_t; ?>" />
+                                             </div>
+                                             <br />
+                                             <div class="col-md-3"></div>
+                                             <div class="col-md-6">
+                                                  <label>Promoção</label>
+                                                  <select id="pro_t" name="pro_t" class="form-control">
+                                                       <option value="1"
+                                                            <?php echo ($pro_t != 1 ? '' : 'selected="selected"'); ?>>
+                                                            Transferência
+                                                       </option>
+                                                       <option value="2"
+                                                            <?php echo ($pro_t != 2 ? '' : 'selected="selected"'); ?>>
+                                                            Bumerangue
+                                                       </option>
+                                                  </select>
+                                             </div>
+                                             <div class="col-md-3"></div>
+                                             <br />
+                                             <div class="col-md-3"></div>
+                                             <div class="col-md-6">
+                                                  <label id="tit_t">Quantidade a Transferir</label>
+                                                  <input type="text" class="form-control text-right" maxlength="10"
+                                                       id="qtd_t" name="qtd_t" value="<?php echo $qtd_t; ?>" />
+                                             </div>
+                                             <div class="col-md-3"></div>
+                                             <br />
+                                             <div class="col-md-5">
+                                                  <label>Percentual que Vai</label>
+                                                  <input type="text" class="form-control text-center" maxlength="5"
+                                                       id="vai_t" name="vai_t" value="<?php echo $vai_t; ?>" disabled />
+                                             </div>
+                                             <div class="col-md-2"></div>
+                                             <div class="col-md-5">
+                                                  <label>Percentual que Volta</label>
+                                                  <input type="text" class="form-control text-center" maxlength="5"
+                                                       id="vol_t" name="vol_t" value="<?php echo $vol_t; ?>" disabled />
+                                             </div>
+                                             <br />
+                                             <div class="col-md-6">
+                                                  <label>Custo Total</label>
+                                                  <input type="text" class="form-control text-right" maxlength="12"
+                                                       id="val_t" name="val_t" value="<?php echo $val_t; ?>" />
+                                             </div>
+                                             <div class="col-md-6">
+                                                  <label>Data da Operação</label>
+                                                  <input type="text" class="form-control text-center" maxlength="10"
+                                                       id="dat_t" name="dat_t" value="<?php echo $dat_t; ?>" />
+                                             </div>
+                                             <br />
+                                             <div class="col-md-12">
+                                                  <label>Observação</label>
+                                                  <textarea class="form-control" rows="3" id="obs_t"
+                                                       name="obs_t"><?php echo $obs; ?></textarea>
+                                             </div>
+                                        </div>
+                                   </td>
+
+                                   <td>
+                                        <div class="form-row">
+                                             <div class="col-md-12">
+                                                  <label>Conta de Destino</label>
+                                                  <input type="text" class="form-control" maxlength="50" id="des_t"
+                                                       name="des_t" value="<?php echo $des_t; ?>" />
+                                             </div>
+                                             <br />
+                                             <div class="lin-3"></div>
+                                             <br />
+                                             <div class="col-md-6">
+                                                  <label id="tit_d">Quantidade Transferida</label>
+                                                  <input type="text" class="form-control text-center" maxlength="12"
+                                                       id="qtd_d" name="qtd_d" value="" disabled />
+                                             </div>
+                                             <div class="col-md-6">
+                                                  <label>Custo por Milheiro</label>
+                                                  <input type="text" class="form-control text-center" maxlength="12"
+                                                       id="cus_t" name="cus_t" value="" disabled />
+                                             </div>
+                                             <br />
+                                             <div class="col-md-6">
+                                                  <label>Bônus de Transferência</label>
+                                                  <input type="text" class="form-control text-center" maxlength="12"
+                                                       id="boi_t" name="boi_t" value="" disabled />
+                                             </div>
+                                             <div class="col-md-6">
+                                                  <label>Bonus de Volta</label>
+                                                  <input type="text" class="form-control text-center" maxlength="12"
+                                                       id="bov_t" name="bov_t" value="" disabled />
+                                             </div>
+                                             <br />
+                                             <div class="col-md-3"></div>
+                                             <div class="col-md-6">
+                                                  <label>Data para o Bônus</label>
+                                                  <input type="text" class="form-control text-center" maxlength="10"
+                                                       id="dtb_t" name="dtb_t" value="<?php echo $dtb_t; ?>" />
+                                             </div>
+                                             <div class="col-md-3"></div>
+                                        </div>
+                                   </td>
+
+                              </tr>
+                         </tbody>
+                    </table>
+               </div>
+               <!------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
                <div id="mov_v">
                     <div class="row">
                          <div class="col-md-2"></div>
                          <div class="col-md-8">
                               <label>Usuário / Programa para a Operação</label>
                               <input type="text" class="form-control" maxlength="50" id="nom_v" name="nom_v"
-                                   value="<?php echo $nom_v; ?>" required />
+                                   value="<?php echo $nom_v; ?>" />
                          </div>
                          <div class="col-md-2"></div>
                     </div>
@@ -389,9 +936,9 @@ $(document).ready(function() {
                     <div class="row">
                          <div class="col-md-4"></div>
                          <div class="col-md-4">
-                              <label id=_v">Quantidade</label>
+                              <label id="tit_v">Quantidade</label>
                               <input type="text" class="form-control text-right" maxlength="12" id="qtd_v" name="qtd_v"
-                                   value="<?php echo $qtd_v; ?>" required />
+                                   value="<?php echo $qtd_v; ?>" />
                          </div>
                          <div class="col-md-4"></div>
                     </div>
@@ -400,7 +947,7 @@ $(document).ready(function() {
                          <div class="col-md-4">
                               <label>Valor Total R$</label>
                               <input type="text" class="form-control text-right" maxlength="12" id="val_v" name="val_v"
-                                   value="<?php echo $val_v; ?>" required />
+                                   value="<?php echo $val_v; ?>" />
                          </div>
                          <div class="col-md-1"></div>
                          <div class="col-md-2 text-center">
@@ -415,7 +962,7 @@ $(document).ready(function() {
                          <div class="col-md-4">
                               <label>Data da Venda</label>
                               <input type="text" class="form-control text-center" maxlength="10" id="dat_v" name="dat_v"
-                                   value="<?php echo $dat_v; ?>" required />
+                                   value="<?php echo $dat_v; ?>" />
                          </div>
                          <div class="col-md-4"></div>
                     </div>
@@ -424,7 +971,7 @@ $(document).ready(function() {
                          <div class="col-md-4">
                               <label>Recebimento em</label>
                               <input type="text" class="form-control text-center" maxlength="10" id="rec_v" name="rec_v"
-                                   value="<?php echo $rec_v; ?>" required />
+                                   value="<?php echo $rec_v; ?>" />
                          </div>
                          <div class="col-md-4"></div>
                     </div>
@@ -439,6 +986,91 @@ $(document).ready(function() {
                     </div>
                </div>
                <!------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
+               <div id="mov_p">
+                    <div class="row">
+                         <div class="col-md-2"></div>
+                         <div class="col-md-8">
+                              <label>Usuário / Programa para a Operação</label>
+                              <input type="text" class="form-control" maxlength="50" id="nom_p" name="nom_p"
+                                   value="<?php echo $nom_p; ?>" />
+                         </div>
+                         <div class="col-md-2"></div>
+                    </div>
+                    <div class="row">
+                         <div class="col-md-3"></div>
+                         <div class="col-md-6">
+                              <label>Nome do Usuário</label>
+                              <input type="text" class="form-control text-center" maxlength="50" id="usu_p" name="usu_p"
+                                   value="" disabled />
+                         </div>
+                         <div class="col-md-3"></div>
+                    </div>
+                    <div class="row">
+                         <div class="col-md-3"></div>
+                         <div class="col-md-6">
+                              <label>Nome do Programa</label>
+                              <input type="text" class="form-control text-center" maxlength="50" id="pro_p" name="pro_p"
+                                   value="" disabled />
+                         </div>
+                         <div class="col-md-3"></div>
+                    </div>
+                    <div class="row">
+                         <div class="col-md-3"></div>
+                         <div class="col-md-6">
+                              <label>Nome do Intermediário</label>
+                              <select id="int_p" name="int_p" class="form-control">
+                                   <?php $ret = carrega_int($int_p); ?>
+                              </select>
+                         </div>
+                         <div class="col-md-3"></div>
+                    </div>
+                    <div class="row">
+                         <div class="col-md-4"></div>
+                         <div class="col-md-4">
+                              <label id="tit_p">Quantidade</label>
+                              <input type="text" class="form-control text-right" maxlength="12" id="qtd_p" name="qtd_p"
+                                   value="<?php echo $qtd_p; ?>" />
+                         </div>
+                         <div class="col-md-4"></div>
+                    </div>
+                    <div class="row">
+                         <div class="col-md-4"></div>
+                         <div class="col-md-4">
+                              <label id="tit">Localizador</label>
+                              <input type="text" class="form-control" maxlength="15" id="loc_p" name="loc_p"
+                                   value="<?php echo $loc_p; ?>" />
+                         </div>
+                         <div class="col-md-4"></div>
+                    </div>
+                    <div class="row">
+                         <div class="col-md-4"></div>
+                         <div class="col-md-4">
+                              <label id="tit">Número de CPF´s</label>
+                              <input type="text" class="form-control text-center" maxlength="3" id="cpf_p" name="cpf_p"
+                                   value="<?php echo $cpf_p; ?>" />
+                         </div>
+                         <div class="col-md-4"></div>
+                    </div>
+                    <div class="row">
+                         <div class="col-md-4"></div>
+                         <div class="col-md-4">
+                              <label>Data da Operação</label>
+                              <input type="text" class="form-control text-center" maxlength="10" id="dat_p" name="dat_p"
+                                   value="<?php echo $dat_p; ?>" />
+                         </div>
+                         <div class="col-md-4"></div>
+                    </div>
+                    <div class="row">
+                         <div class="col-md-2"></div>
+                         <div class="col-md-8">
+                              <label>Observação</label>
+                              <textarea class="form-control" rows="3" id="obs_p"
+                                   name="obs_p"><?php echo $obs_p; ?></textarea>
+                         </div>
+                         <div class="col-md-2"></div>
+                    </div>
+               </div>
+               <!------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
                <br />
                <div class="row">
                     <div class="col-12 text-center">
@@ -447,7 +1079,10 @@ $(document).ready(function() {
                </div>
                <br />
                <input type="hidden" id="cta" name="cta" value="0" />
+               <input type="hidden" id="cta_t" name="cta_t" value="0" />
+               <input type="hidden" id="cta_d" name="cta_d" value="0" />
                <input type="hidden" id="cta_v" name="cta_v" value="0" />
+               <input type="hidden" id="cta_p" name="cta_p" value="0" />
           </form>
      </div>
      <br />
@@ -474,6 +1109,25 @@ function carrega_int($int_v) {
      }
      return $sta;
 }
+
+function carrega_car($car) {
+     $sta = 0;
+     include_once "dados.php";    
+     if ($car == 0) {
+          echo '<option value="0" selected="selected">Selecione o cartão de crédito ...</option>';
+     }
+     $com = "Select idcartao, cardescricao, carnumero from tb_cartao where carstatus = 0 and carempresa = " . $_SESSION['wrkcodemp'] . " order by cardescricao, idcartao";
+     $nro = leitura_reg($com, $reg);
+     foreach ($reg as $lin) {
+          if ($lin['idcartao'] != $car) {
+               echo  '<option value ="' . $lin['idcartao'] . '">' . $lin['cardescricao'] . " - " . $lin['carnumero']. '</option>'; 
+          } else {
+               echo  '<option value ="' . $lin['idcartao'] . '" selected="selected">' . $lin['cardescricao'] . " - " . $lin['carnumero'] . '</option>';
+          }
+     }
+     return $sta;
+}
+
 ?>
 
 </html>

@@ -95,11 +95,11 @@ function gravar_log($ope = 0, $obs = "", $cod = "") {
      $ret = curl_exec($end);
      $dad = json_decode($ret);
      curl_close($end);    
-     $_SESSION['wrkcidusu'] = 'sao paulo';
-     $_SESSION['wrkestusu'] = 'sp';
+     $_SESSION['wrkcidusu'] = 'rio de janeiro';
+     $_SESSION['wrkestusu'] = 'rj';
      if (isset($dad->bogon) == true) {
-          $_SESSION['wrkcidusu'] = 'Sao Paulo';
-          $_SESSION['wrkestusu'] = 'Sp';
+          $_SESSION['wrkcidusu'] = 'Rio de Janeiro';
+          $_SESSION['wrkestusu'] = 'Rj';
      } else if (isset($dad->city) == true) {
           $_SESSION['wrkcidusu'] = $dad->city;
           $_SESSION['wrkestusu'] = $dad->region;
@@ -111,6 +111,7 @@ function gravar_log($ope = 0, $obs = "", $cod = "") {
           if ($_SESSION['wrkestusu'] == "Rio de Janeiro") { $_SESSION['wrkestusu'] = "RJ"; }
           if ($_SESSION['wrkestusu'] == "Espirito Santo") { $_SESSION['wrkestusu'] = "ES"; }
           if ($_SESSION['wrkestusu'] == "Espírito Santo") { $_SESSION['wrkestusu'] = "ES"; }
+          if ($_SESSION['wrkestusu'] == "Rio de Janeiro") { $_SESSION['wrkestusu'] = "RJ"; }
      }
      return $dad;
 }

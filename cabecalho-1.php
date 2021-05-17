@@ -74,17 +74,20 @@
                     <a class="nav-link" href="con-movto.php"><i class="fa fa-search fa-2x"
                               aria-hidden="true"></i><br /> Consultas </a>
                </li>
+               <li class="nav-item">
+                    <a class="nav-link" href="saida.php"><i class="fa fa-sign-out fa-2x"
+                              aria-hidden="true"></i><br /> Saída </a>
+               </li>
           </ul>
           <span class="navbar-text text-center">
                <?php 
                     echo '<div>';
                     echo '<a class="nav-link" href="log-acesso.php" title="Abre página com consulta de Log de usuários, somente o administrador"><strong class="lit-1 text-white">' . $_SESSION['wrkapeusu'] . '</strong></a>';
-                    echo '<a class="nav-link" href="log-acesso.php" title="Abre página com consulta de Log de usuários, somente o administrador"><span class="lit-1 text-white">' . date('d/m/Y') . '</span></a>';
-                    echo '<a class="nav-link text-white" href="saida.php"><i class="fa fa-sign-out fa-1g" aria-hidden="true"></i><br /></a>';
+                    echo '<a class="nav-link" href="log-acesso.php" title="Abre página com consulta de Log de usuários, somente o administrador"><span class="lit-2 text-white">' . date('d/m/Y') . '</span></a>';
                     echo '</div>';
                ?>
           </span>
      </div>
 </nav>
-<br /><br /><br /><br /><br /><br /><br />     
+<br /><br /><br /><br /><br /><br /> 
 
