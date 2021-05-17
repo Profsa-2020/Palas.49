@@ -327,7 +327,9 @@ $(document).ready(function() {
           $('#usu').val('');
           $('#pro').val('');
           $('#pre').val('');
-          $('#car').val('');
+          $('#sal').val('');
+          $('#lib').val('');
+          $('#car').val(0);
           $('#nom_v').val('');
           $('#cta_v').val(0);
           $('#qtd_v').val('');
@@ -368,6 +370,48 @@ $(document).ready(function() {
                $("#mov_v").fadeOut();
                $("#mov_t").fadeOut();
                $("#mov_p").fadeIn();
+          }
+     });
+
+     $('#nom').blur(function() {
+          debugger;
+          let cta = $('#cta').val();
+          if (cta != 0) {
+               $.getJSON("ajax/carrega-sdo.php", { cta: cta })
+               .done(function(data) {
+               if (data.men != "") {
+                    alert(data.men);
+               } else {
+                    $('#sal').text(data.sal);
+                    $('#lib').text(data.lib);
+                    $('#qtd_s').val(data.sal);
+                    $('#qtd_m').val(data.qtd);
+               }
+               }).fail(function(data){
+                    console.log('Erro: ' + JSON.stringify(data)); 
+                    alert("Erro ocorrido no processamento do saldo da conta para compra");
+               });
+          }
+     });
+
+     $('#nom_v').blur(function() {
+          // debugger;   // Para o programa - pausa - brek point
+          let cta = $('#cta_v').val();
+          if (cta != 0) {
+               $.getJSON("ajax/carrega-sdo.php", { cta: cta })
+               .done(function(data) {
+               if (data.men != "") {
+                    alert(data.men);
+               } else {
+                    $('#sal_v').text(data.sal);
+                    $('#lib_v').text(data.lib);
+                    $('#qtd_s').val(data.sal);
+                    $('#qtd_m').val(data.qtd);
+               }
+               }).fail(function(data){
+                    console.log('Erro: ' + JSON.stringify(data)); 
+                    alert("Erro ocorrido no processamento do saldo da conta para venda");
+               });
           }
      });
 
@@ -469,8 +513,13 @@ $(document).ready(function() {
 
      $('#qtd_v').blur(function() {
           let pre = 0;
+          let sal = $('#qtd_s').val();
           let qtd = $('#qtd_v').val();
           let val = $('#val_v').val();
+          if (qtd == "") { 
+               qtd = sal; 
+               $('#qtd_v').val(sal);
+          }
           if (qtd != "" && val != "") {
                qtd = qtd.replace('.', '');
                qtd = qtd.replace(',', '.');
@@ -665,7 +714,7 @@ $(document).ready(function() {
      $obs_t = (isset($_REQUEST['obs_t']) == false ? '' : str_replace("'", "´", $_REQUEST['obs_t']));
 
      if (isset($_REQUEST['salvar']) == true) {
-          $nom = ""; $qtd = ""; $val = ""; $dat = date('d/m/Y'); $obs = ""; 
+          $nom = ""; $qtd = ""; $val = ""; $dat = date('d/m/Y'); $obs = ""; $car = 0;
           $nom_v = ""; $qtd_v = ""; $val_v = ""; $dat_v = date('d/m/Y'); $obs_v = ""; $rec_v = date('d/m/Y', strtotime('+18 days')); $int_v = 0; 
           $nom_p = ""; $qtd_p = ""; $dat_p = date('d/m/Y'); $obs_p = ""; $loc_p = ""; $int_p = 0; $cpf_p = 0; 
           $nom_t = ""; $qtd_t = ""; $dat_t = date('d/m/Y'); $obs_t = ""; $des_t = ""; $pro_t = 1; $val_t = ''; $vai_t = ''; $vol_t = ''; $bon_t = '';
@@ -745,7 +794,14 @@ $(document).ready(function() {
                               <input type="text" class="form-control text-right" maxlength="12" id="qtd" name="qtd"
                                    value="<?php echo $qtd; ?>" />
                          </div>
-                         <div class="col-md-4"></div>
+                         <div class="lit-1 col-md-2 text-center">
+                              <label>Saldo Atual</label><br />
+                              <p id="sal"></p>
+                         </div>
+                         <div class="lit-1 col-md-2 text-center">
+                              <label>Saldo Liberar</label><br />
+                              <p id="lib"></p>
+                         </div>
                     </div>
                     <div class="row">
                          <div class="col-md-4"></div>
@@ -940,7 +996,14 @@ $(document).ready(function() {
                               <input type="text" class="form-control text-right" maxlength="12" id="qtd_v" name="qtd_v"
                                    value="<?php echo $qtd_v; ?>" />
                          </div>
-                         <div class="col-md-4"></div>
+                         <div class="lit-1 col-md-2 text-center">
+                              <label>Saldo Atual</label><br />
+                              <p id="sal_v"></p>
+                         </div>
+                         <div class="lit-1 col-md-2 text-center">
+                              <label>Saldo Liberar</label><br />
+                              <p id="lib_v"></p>
+                         </div>
                     </div>
                     <div class="row">
                          <div class="col-md-4"></div>
@@ -1083,6 +1146,8 @@ $(document).ready(function() {
                <input type="hidden" id="cta_d" name="cta_d" value="0" />
                <input type="hidden" id="cta_v" name="cta_v" value="0" />
                <input type="hidden" id="cta_p" name="cta_p" value="0" />
+               <input type="hidden" id="qtd_s" name="qtd_s" value="0" />
+               <input type="hidden" id="qtd_m" name="qtd_m" value="0" />
           </form>
      </div>
      <br />

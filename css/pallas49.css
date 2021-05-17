@@ -25,6 +25,13 @@
     animation-duration: 5s;
 }
 
+.lit-1 p {
+    font-size: 16px;
+    font-weight: bold;
+    padding-top: 8px;
+    color: rgb(5, 5, 141);
+}
+
 .lit-2 {
     font-size: 12px;
     font-weight: 300;
