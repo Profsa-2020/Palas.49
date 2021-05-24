@@ -179,12 +179,12 @@ $(document).ready(function() {
                               aria-hidden="true"></i></a></p>
                <div class="row">
                     <div class="col-md-2">
-                         <label>Número</label>
+                         <label>Código</label>
                          <input type="text" class="form-control text-center" maxlength="6" id="cod" name="cod"
                               value="<?php echo $cod; ?>" disabled />
                     </div>
                     <div class="col-md-6">
-                         <label>Nome do Programa</label>
+                         <label>Nome do Programa de Fidelidade</label>
                          <input type="text" class="form-control" maxlength="50" id="des" name="des"
                               value="<?php echo $des; ?>" required />
                     </div>
@@ -237,8 +237,8 @@ $(document).ready(function() {
                               <th width="5%">Excluir</th>
                               <th width="5%">Número</th>
                               <th>Status</th>
-                              <th>Nome do Programa</th>
-                              <th>Tipo de Programa</th>
+                              <th>Nome do Programa de Fidelidade</th>
+                              <th>Tipo de Programa de Fidelidade</th>
                               <th>Inclusão</th>
                               <th>Alteração</th>
                          </tr>

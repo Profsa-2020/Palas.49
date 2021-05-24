@@ -186,13 +186,13 @@ $(document).ready(function() {
                               value="<?php echo $cod; ?>" disabled />
                     </div>
                     <div class="col-md-3">
-                         <label>Usuário</label>
+                         <label>Titular da conta</label>
                          <select id="usu" name="usu" class="form-control">
                               <?php $ret = carrega_usu($usu); ?>
                          </select>
                     </div>
                     <div class="col-md-3">
-                         <label>Programa</label>
+                         <label>Programa de fidalidade</label>
                          <select id="pro" name="pro" class="form-control">
                               <?php $ret = carrega_pro($pro); ?>
                          </select>
@@ -240,8 +240,8 @@ $(document).ready(function() {
                               <th width="5%">Excluir</th>
                               <th width="5%">Código</th>
                               <th>Status</th>
-                              <th>Nome do Usuário</th>
-                              <th>Descrição do Programa</th>
+                              <th>Titular da conta</th>
+                              <th>Programa de fidelidade</th>
                               <th>Tipo</th>
                               <th>Número</th>
                               <th>Inclusão</th>
@@ -399,7 +399,7 @@ function carrega_usu($usu) {
      $sta = 0;
      include_once "dados.php";    
      if ($usu == 0) {
-          echo '<option value="0" selected="selected">Selecione o usuário ...</option>';
+          echo '<option value="0" selected="selected">Selecione titular da conta ...</option>';
      }
      $com = "Select idsenha, usunome from tb_usuario where usustatus = 0 and usuempresa = " . $_SESSION['wrkcodemp'] . " order by usunome, idsenha";
      $nro = leitura_reg($com, $reg);
@@ -417,7 +417,7 @@ function carrega_pro($pro) {
      $sta = 0;
      include_once "dados.php";    
      if ($pro == 0) {
-          echo '<option value="0" selected="selected">Selecione o programa ...</option>';
+          echo '<option value="0" selected="selected">Selecione o programa de fidalidade ...</option>';
      }
      $com = "Select idprograma, prodescricao from tb_programa where prostatus = 0 and proempresa = " . $_SESSION['wrkcodemp'] . " order by prodescricao, idprograma";
      $nro = leitura_reg($com, $reg);

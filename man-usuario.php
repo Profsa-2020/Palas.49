@@ -62,9 +62,6 @@ $(function() {
      $("#num").mask("000.000", {
           reverse: true
      });
-     $("#cmp").mask("00,00", {
-          reverse: true
-     });
      $("#cmv").mask("000.000,00", {
           reverse: true
      });
@@ -156,8 +153,8 @@ $(document).ready(function() {
      $cel = (isset($_REQUEST['cel']) == false ? '' : $_REQUEST['cel']);
      $val = (isset($_REQUEST['val']) == false ? '' : $_REQUEST['val']);
      $ace = (isset($_REQUEST['ace']) == false ? 0 : $_REQUEST['ace']);
-     $cmp = (isset($_REQUEST['cmp']) == false ? 0 : $_REQUEST['cmp']);
      $cmv = (isset($_REQUEST['cmv']) == false ? 0 : $_REQUEST['cmv']);
+     $cmt = (isset($_REQUEST['cmt']) == false ? 0 : $_REQUEST['cmt']);
      $cep = (isset($_REQUEST['cep']) == false ? "" : $_REQUEST['cep']);
      $num = (isset($_REQUEST['num']) == false ? "" : $_REQUEST['num']);
      $com = (isset($_REQUEST['com']) == false ? "" : $_REQUEST['com']);
@@ -186,7 +183,7 @@ $(document).ready(function() {
      if ($_SESSION['wrkopereg'] >= 2) {
           if (isset($_REQUEST['salvar']) == false) { 
                $cha = $_SESSION['wrkcodreg']; $_SESSION['wrknumvol'] = 1;
-               $ret = ler_usuario($cha, $nom, $ape, $sta, $tip, $sen, $ema, $val, $ace, $tel, $cel, $cep, $end, $num, $com, $bai, $cid, $est, $cmv, $cmp, $cpf, $doc, $bco, $age, $cta, $fav, $obs); 
+               $ret = ler_usuario($cha, $nom, $ape, $sta, $tip, $sen, $ema, $val, $ace, $tel, $cel, $cep, $end, $num, $com, $bai, $cid, $est, $cmv, $cmt, $cpf, $doc, $bco, $age, $cta, $fav, $obs); 
           }
      }
      if (isset($_REQUEST['salvar']) == true) {
@@ -196,7 +193,7 @@ $(document).ready(function() {
                if ($ret == 0) {
                     $ret = incluir_usu();
                     $ret = gravar_log(11,"Inclusão de novo usuário: " . $nom);
-                    $sen = ''; $nom = ''; $ape = ''; $ema = ''; $sta = ''; $tip = 0; $val = ''; $ace = ''; $tel = '';  $cel = ''; $cmp = ''; $cmv = ''; $cep = ''; $end = ''; $num = ''; $com = ''; $bai = ''; $cid = ''; $est = '';$cpf = ''; $doc = ''; $bco = ''; $age = ''; $cta = ''; $fav = ''; $obs = ''; 
+                    $sen = ''; $nom = ''; $ape = ''; $ema = ''; $sta = ''; $tip = 0; $val = ''; $ace = ''; $tel = '';  $cel = ''; $cmv = ''; $cmt = 0; $cep = ''; $end = ''; $num = ''; $com = ''; $bai = ''; $cid = ''; $est = '';$cpf = ''; $doc = ''; $bco = ''; $age = ''; $cta = ''; $fav = ''; $obs = ''; 
                     $cod = ultimo_cod();$_SESSION['wrknumvol'] = 1;
                }
           }
@@ -205,14 +202,14 @@ $(document).ready(function() {
                if ($ret == 0) {
                     $ret = alterar_usu();
                     $ret = gravar_log(12,"Alteração de usuário existente: " . $nom); $_SESSION['wrkmostel'] = 0;
-                    $sen = ''; $nom = ''; $ape = ''; $ema = ''; $sta = ''; $tip = 0; $val = ''; $ace = ''; $tel = '';  $cel = ''; $cmp = ''; $cmv = ''; $cep = ''; $end = ''; $num = ''; $com = ''; $bai = ''; $cid = ''; $est = '';$cpf = ''; $doc = ''; $bco = ''; $age = ''; $cta = ''; $fav = ''; $obs = ''; 
+                    $sen = ''; $nom = ''; $ape = ''; $ema = ''; $sta = ''; $tip = 0; $val = ''; $ace = ''; $tel = '';  $cel = ''; $cmv = ''; $cmt = 0; $cep = ''; $end = ''; $num = ''; $com = ''; $bai = ''; $cid = ''; $est = '';$cpf = ''; $doc = ''; $bco = ''; $age = ''; $cta = ''; $fav = ''; $obs = ''; 
                     echo '<script>history.go(-' . $_SESSION['wrknumvol'] . ');</script>'; $_SESSION['wrknumvol'] = 1;
                }
           }
           if ($_SESSION['wrkopereg'] == 3) {
                $ret = excluir_usu();
                $ret = gravar_log(13,"Exclusão de usuário existente: " . $nom); $_SESSION['wrkmostel'] = 0;
-               $sen = ''; $nom = ''; $ape = ''; $ema = ''; $sta = ''; $tip = 0; $val = ''; $ace = ''; $tel = '';  $cel = ''; $cmp = ''; $cmv = ''; $cep = ''; $end = ''; $num = ''; $com = ''; $bai = ''; $cid = ''; $est = '';$cpf = ''; $doc = ''; $bco = ''; $age = ''; $cta = ''; $fav = ''; $obs = ''; 
+               $sen = ''; $nom = ''; $ape = ''; $ema = ''; $sta = ''; $tip = 0; $val = ''; $ace = ''; $tel = '';  $cel = ''; $cmv = ''; $cmt = 0; $cep = ''; $end = ''; $num = ''; $com = ''; $bai = ''; $cid = ''; $est = '';$cpf = ''; $doc = ''; $bco = ''; $age = ''; $cta = ''; $fav = ''; $obs = ''; 
                echo '<script>history.go(-' . $_SESSION['wrknumvol'] . ');</script>'; $_SESSION['wrknumvol'] = 1;
           }
      }
@@ -238,13 +235,40 @@ $(document).ready(function() {
                          <input type="text" class="form-control text-center" maxlength="6" id="cod" name="cod"
                               value="<?php echo $cod; ?>" disabled />
                     </div>
-                    <div class="col-md-2"></div>
+                    <div class="col-md-6">
+                         <label>Nome do Usuário</label>
+                         <input type="text" class="form-control" maxlength="50" id="nom" name="nom"
+                              value="<?php echo $nom; ?>" required />
+                    </div>
                     <div class="col-md-4">
-                         <label>Número do C.p.f.</label>
+                         <label>Nome Curto</label>
+                         <input type="text" class="form-control" maxlength="25" id="ape" name="ape"
+                              value="<?php echo $ape; ?>" />
+                    </div>
+               </div>
+               <div class="row">
+                    <div class="col-md-4">
+                         <label>Número do CPF</label>
                          <input type="text" class="form-control text-center" maxlength="15" id="cpf" name="cpf"
                               value="<?php echo $cpf; ?>" />
                     </div>
-                    <div class="col-md-2"></div>
+                    <div class="col-md-2">
+                         <label>Tipo</label>
+                         <select id="tip" name="tip" class="form-control" required>
+                              <option value="0" <?php echo ($tip != 0 ? '' : 'selected="selected"'); ?>>
+                                   Visitante</option>
+                              <option value="1" <?php echo ($tip != 1 ? '' : 'selected="selected"'); ?>>
+                                   Vendedor</option>
+                              <option value="2" <?php echo ($tip != 2 ? '' : 'selected="selected"'); ?>>
+                                   Titular</option>
+                              <option value="3" <?php echo ($tip != 3 ? '' : 'selected="selected"'); ?>>
+                                   Gerente</option>
+                              <option value="4" <?php echo ($tip != 4 ? '' : 'selected="selected"'); ?>>
+                                   Administrador</option>
+                              <option value="5" <?php echo ($tip != 5 ? '' : 'selected="selected"'); ?>>
+                                   Usuário Master</option>
+                         </select>
+                    </div>
                     <div class="col-md-2">
                          <label>Status</label>
                          <select name="sta" class="form-control">
@@ -258,26 +282,6 @@ $(document).ready(function() {
                                    Cancelado</option>
                          </select>
                     </div>
-               </div>
-               <div class="row">
-                    <div class="col-md-8">
-                         <label>Nome do Usuário</label>
-                         <input type="text" class="form-control" maxlength="50" id="nom" name="nom"
-                              value="<?php echo $nom; ?>" required />
-                    </div>
-                    <div class="col-md-4">
-                         <label>Nome Curto</label>
-                         <input type="text" class="form-control" maxlength="25" id="ape" name="ape"
-                              value="<?php echo $ape; ?>" required />
-                    </div>
-               </div>
-               <div class="row">
-                    <div class="col-md-2">
-                         <label>C.e.p.</label>
-                         <input type="text" class="form-control" maxlength="9" id="cep" name="cep"
-                              value="<?php echo $cep; ?>" required />
-                    </div>
-                    <div class="col-md-4"></div>
                     <div class="col-md-2">
                          <label>Acessos</label>
                          <input type="text" class="form-control text-center" maxlength="6" id="ace" name="ace"
@@ -288,24 +292,28 @@ $(document).ready(function() {
                          <input type="text" class="form-control text-center" maxlength="10" id="val" name="val"
                               value="<?php echo $val; ?>" />
                     </div>
-                    <div class="col-2">
-                         <label>Tipo</label>
-                         <select id="tip" name="tip" class="form-control" required>
-                              <option value="0" <?php echo ($tip != 0 ? '' : 'selected="selected"'); ?>>
-                                   Visitante</option>
-                              <option value="1" <?php echo ($tip != 1 ? '' : 'selected="selected"'); ?>>
-                                   Vendedor</option>
-                              <option value="2" <?php echo ($tip != 2 ? '' : 'selected="selected"'); ?>>
-                                   Gerente</option>
-                              <option value="3" <?php echo ($tip != 3 ? '' : 'selected="selected"'); ?>>
-                                   Administrador</option>
-                              <option value="4" <?php echo ($tip != 4 ? '' : 'selected="selected"'); ?>>
-                                   Usuário Master</option>
-                         </select>
-                    </div>
                </div>
                <div class="row">
-                    <div class="col-md-10">
+                    <div class="col-md-3"></div>
+                    <div class="col-md-3">
+                         <label>E-Mail</label>
+                         <input type="email" class="form-control" maxlength="50" id="ema" name="ema"
+                              value="<?php echo $ema; ?>" required />
+                    </div>
+                    <div class="col-md-3">
+                         <label>Senha</label>
+                         <input type="password" class="form-control text-center" maxlength="15" id="sen" name="sen"
+                              value="<?php echo $sen; ?>" required />
+                    </div>
+                    <div class="col-md-3"></div>
+               </div>
+               <div class="row">
+                    <div class="col-md-2">
+                         <label>CEP</label>
+                         <input type="text" class="form-control" maxlength="9" id="cep" name="cep"
+                              value="<?php echo $cep; ?>" required />
+                    </div>
+                    <div class="col-md-8">
                          <label>Endereço</label>
                          <input type="text" class="form-control" maxlength="50" id="end" name="end"
                               value="<?php echo $end; ?>" />
@@ -342,26 +350,18 @@ $(document).ready(function() {
                     </div>
                </div>
                <div class="row">
+                    <div class="col-md-3"></div>
                     <div class="col-md-3">
                          <label>Telefone</label>
                          <input type="text" class="form-control" maxlength="15" id="tel" name="tel"
-                              value="<?php echo $tel; ?>"  />
+                              value="<?php echo $tel; ?>" />
                     </div>
                     <div class="col-md-3">
                          <label>Celular</label>
                          <input type="text" class="form-control" maxlength="15" id="cel" name="cel"
                               value="<?php echo $cel; ?>" required />
                     </div>
-                    <div class="col-md-3">
-                         <label>E-Mail</label>
-                         <input type="email" class="form-control" maxlength="50" id="ema" name="ema"
-                              value="<?php echo $ema; ?>" required />
-                    </div>
-                    <div class="col-md-3">
-                         <label>Senha</label>
-                         <input type="password" class="form-control text-center" maxlength="15" id="sen" name="sen"
-                              value="<?php echo $sen; ?>" required />
-                    </div>
+                    <div class="col-md-3"></div>
                </div>
                <div class="row">
                     <div class="col-md-2">
@@ -380,21 +380,21 @@ $(document).ready(function() {
                               value="<?php echo $cta; ?>" />
                     </div>
                     <div class="col-md-4">
-                         <label>C.p.f.</label>
+                         <label>CPF</label>
                          <input type="text" class="form-control" maxlength="15" id="doc" name="doc"
                               value="<?php echo $doc; ?>" />
                     </div>
                </div>
                <div class="row">
-                    <div class="col-md-3">
-                         <label>Comissão - Percentual</label>
-                         <input type="text" class="form-control text-center" maxlength="5" id="cmp" name="cmp"
-                              value="<?php echo $cmp; ?>" required />
+                    <div class="col-md-9 text-center"><br />
+                         <input type="radio" id="val" name="cmt" value="0"
+                              <?php echo ($cmt == 0 ? 'checked' : ''); ?> /> Comissão por Valor &nbsp; &nbsp; &nbsp; 
+                         <input type="radio" id="per" name="cmt" value="1"
+                              <?php echo ($cmt == 1 ? 'checked' : ''); ?> /> Comissão por Percentual
                     </div>
-                    <div class="col-md-6"></div>
                     <div class="col-md-3">
-                         <label>Comissão - Valor</label>
-                         <input type="text" class="form-control text-center" maxlength="12" id="cmv" name="cmv"
+                         <label>Comissão</label>
+                         <input type="text" class="form-control text-center" maxlength="5" id="cmv" name="cmv"
                               value="<?php echo $cmv; ?>" required />
                     </div>
                </div>
@@ -438,7 +438,7 @@ function ultimo_cod() {
      return $cod;
  }
 
- function ler_usuario($cha, &$nom, &$ape, &$sta, &$tip, &$sen, &$ema, &$val, &$ace, &$tel, &$cel, &$cep, &$end, &$num, &$com, &$bai, &$cid, &$est, &$cmv, &$cmp, &$cpf, &$doc, &$bco, &$age, &$cta, &$fav, &$obs) {
+ function ler_usuario($cha, &$nom, &$ape, &$sta, &$tip, &$sen, &$ema, &$val, &$ace, &$tel, &$cel, &$cep, &$end, &$num, &$com, &$bai, &$cid, &$est, &$cmv, &$cmt, &$cpf, &$doc, &$bco, &$age, &$cta, &$fav, &$obs) {
      include_once "dados.php";
      $nro = acessa_reg("Select * from tb_usuario where idsenha = " . $cha, $reg);            
      if ($nro == 0 || $reg == false) {
@@ -462,8 +462,11 @@ function ultimo_cod() {
           $bai = $reg['usubairro'];
           $cid = $reg['usucidade'];
           $est = $reg['usuestado'];
-          $cmv = $reg['usucomissaov'];
-          $cmp = $reg['usucomissaop'];
+          if ($reg['usucomissaop'] == 0) {
+               $cmv = $reg['usucomissaov']; $cmt = 0;
+          } else {
+               $cmv = $reg['usucomissaop']; $cmt = 1;
+          }
           $cpf = $reg['usucpf'];
           $doc = $reg['usudocto'];
           $bco = $reg['usubanco'];
@@ -494,11 +497,6 @@ function ultimo_cod() {
      if (trim($_REQUEST['ema']) == "") {
           echo '<script>alert("E-mail do Usuário não pode estar em branco");</script>';
           return 3;
-     }
-     if ($_REQUEST['cmv'] != "0" && $_REQUEST['cmv'] != "0,00") {
-          if ($_REQUEST['cmp'] != "0" && $_REQUEST['cmp'] != "0,00") {
-               echo '<script>alert("Não pode haver comissão em valor e percentual informados");</script>'; return 3;
-          }
      }
      if (trim($_REQUEST['est']) != "") {
           if (valida_est(strtoupper($_REQUEST['est'])) == 0) {
@@ -544,6 +542,7 @@ function ultimo_cod() {
  function incluir_usu() {
      $ret = 0;
      include_once "dados.php";
+     if ($_REQUEST['ape'] == "") { $_REQUEST['ape'] = primeiro_nom($_REQUEST['nom']); }
      $ace = str_replace(".", "", $_REQUEST['ace']); $ace = str_replace(",", ".", $ace);
      $val = substr($_REQUEST['val'],6,4) . "-" . substr($_REQUEST['val'],3,2) . "-" . substr($_REQUEST['val'],0,2);     
      $sql  = "insert into tb_usuario (";
@@ -564,8 +563,8 @@ function ultimo_cod() {
      $sql .= "usubairro, ";
      $sql .= "usucidade, ";
      $sql .= "usuestado, ";
-     $sql .= "usucomissaop, ";
      $sql .= "usucomissaov, ";
+     $sql .= "usucomissaop, ";
      $sql .= "usucpf, ";
      $sql .= "usudocto, ";
      $sql .= "usubanco, ";
@@ -592,8 +591,13 @@ function ultimo_cod() {
      $sql .= "'" . $_REQUEST['bai'] . "',";
      $sql .= "'" . $_REQUEST['cid'] . "',";
      $sql .= "'" . $_REQUEST['est'] . "',";
-     $sql .= "'" . ($_REQUEST['cmp'] == "" ? '0' : limpa_val($_REQUEST['cmp'])) . "',";
-     $sql .= "'" . ($_REQUEST['cmv'] == "" ? '0' : limpa_val($_REQUEST['cmv'])) . "',";
+     if ($_REQUEST['cmt'] == '0') {
+          $sql .= "'" . ($_REQUEST['cmv'] == "" ? '0' : limpa_val($_REQUEST['cmv'])) . "',";
+          $sql .= "'" . "0" . "',";
+     } else {
+          $sql .= "'" . "0" . "',";
+          $sql .= "'" . ($_REQUEST['cmv'] == "" ? '0' : limpa_val($_REQUEST['cmv'])) . "',";
+     }
      $sql .= "'" . limpa_nro($_REQUEST['cpf']) . "',";
      $sql .= "'" . limpa_nro($_REQUEST['doc']) . "',";
      $sql .= "'" . $_REQUEST['bco'] . "',";
@@ -640,8 +644,11 @@ function alterar_usu() {
      $sql .= "usuagencia = '". $_REQUEST['age'] . "', ";
      $sql .= "usuconta = '". $_REQUEST['cta'] . "', ";
      $sql .= "usudocto = '". limpa_nro($_REQUEST['doc']) . "', ";
-     $sql .= "usucomissaov = '". ($_REQUEST['cmv'] == "" ? '0' : limpa_val($_REQUEST['cmv'])) . "', ";
-     $sql .= "usucomissaop = '". ($_REQUEST['cmp'] == "" ? '0' : limpa_val($_REQUEST['cmp'])) . "', ";
+     if ($_REQUEST['cmt'] == '0') {
+          $sql .= "usucomissaov = '". ($_REQUEST['cmv'] == "" ? '0' : limpa_val($_REQUEST['cmv'])) . "', ";
+     } else {
+          $sql .= "usucomissaop = '". ($_REQUEST['cmv'] == "" ? '0' : limpa_val($_REQUEST['cmv'])) . "', ";
+     }
      $sql .= "usuobservacao = '". $_REQUEST['obs'] . "', ";
      $sql .= "keyalt = '" . $_SESSION['wrkideusu'] . "', ";
      $sql .= "datalt = '" . date("Y/m/d H:i:s") . "' ";

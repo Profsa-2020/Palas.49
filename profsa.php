@@ -253,8 +253,8 @@ function limpa_pro($nom)  {
  }
 
  function valida_cpf ($cpf) {
-     $sta = 0;
-     $som = 0;
+     $sta = 0; $som = 0;
+     if ($cpf == "0") { return $sta; }
      $cpf = preg_replace('/[^0-9]/','',$cpf);  // Troca não numeros por branco.
      for ($ind=0, $nro=10; $ind <= 8 ; $ind++, $nro--) {
          $som = $som + $cpf[$ind] * $nro;
@@ -339,8 +339,8 @@ function calcula_idade($nas) {
      return $ida;
 }
 
-function saldos_cta($cta, &$ent, &$sai, &$vai, &$vol) {
-     $sal = 0; $ent = 0; $sai = 0; $vai = 0; $vol = 0;
+function saldos_cta($cta, &$ent, &$sai, &$vai, &$vol, &$val) {
+     $sal = 0; $ent = 0; $sai = 0; $vai = 0; $vol = 0; $val =  0;
      $com  = "Select M.*, U.usunome, P.prodescricao from (((tb_movto M left join tb_conta C on M.movconta = C.idconta) ";
      $com .= "left join tb_usuario U on M.movusuario = U.idsenha) ";
      $com .= "left join tb_programa P on M.movprograma = P.idprograma) ";
@@ -350,6 +350,7 @@ function saldos_cta($cta, &$ent, &$sai, &$vai, &$vol) {
           if ($lin['movstatus'] == 0) {
                $ent = $ent + $lin['movquantidade'];
                $sal = $sal + $lin['movquantidade'];
+               $val = $val + $lin['movvalor'];
           }
           if ($lin['movstatus'] == 1) {
                $vai = $vai + ($lin['movquantidade'] * $lin['movpercvai'] / 100);
@@ -358,6 +359,7 @@ function saldos_cta($cta, &$ent, &$sai, &$vai, &$vol) {
           if ($lin['movstatus'] == 2) {
                $sai = $sai + $lin['movquantidade'];
                $sal = $sal - $lin['movquantidade'];
+               $val = $val - $lin['movvalor'];
           }
      }
      $vai = round($vai, 0); $vol = round($vol, 0);

@@ -50,7 +50,8 @@
 
 <script>
 $(function() {
-     $("#ven").mask("00/0000");
+     $("#ven").mask("00");
+     $("#num").mask("0000");
 });
 
 $(document).ready(function() {
@@ -183,24 +184,24 @@ $(document).ready(function() {
                          title="Abre janela para criação de novo cartão de crédito no sistema"><i class="fa fa-plus-circle fa-1g"
                               aria-hidden="true"></i></a></p>
                <div class="row">
-                    <div class="col-md-2">
-                         <label>Número</label>
+                    <div class="col-md-1">
+                         <label>Código</label>
                          <input type="text" class="form-control text-center" maxlength="6" id="cod" name="cod"
                               value="<?php echo $cod; ?>" disabled />
                     </div>
                     <div class="col-md-4">
-                         <label>Bandeira do Cartão</label>
+                         <label>Identificação do cartão</label>
                          <input type="text" class="form-control" maxlength="50" id="des" name="des"
                               value="<?php echo $des; ?>" required />
                     </div>
-                    <div class="col-md-2">
-                         <label>Número</label><br />
-                         <input type="text" class="form-control" maxlength="16" id="num" name="num"
+                    <div class="col-md-3">
+                         <label>4 últimos dígitos do cartão</label><br />
+                         <input type="text" class="form-control" maxlength="4" id="num" name="num"
                               value="<?php echo $num; ?>" required />
                     </div>
                     <div class="col-md-2">
                          <label>Vencimento</label><br />
-                         <input type="text" class="form-control" maxlength="7" id="ven" name="ven"
+                         <input type="text" class="form-control" maxlength="2" id="ven" name="ven"
                               value="<?php echo $ven; ?>" />
                     </div>
                     <div class="col-md-2">
@@ -239,10 +240,10 @@ $(document).ready(function() {
                          <tr>
                               <th width="5%">Alterar</th>
                               <th width="5%">Excluir</th>
-                              <th width="5%">Número</th>
+                              <th width="5%">Código</th>
                               <th>Status</th>
-                              <th>Bandeira do Cartão</th>
-                              <th>Número</th>
+                              <th>Identificaçãoa do cartão</th>
+                              <th>Últimos dígitos</th>
                               <th>Vencimento</th>
                               <th>Inclusão</th>
                               <th>Alteração</th>

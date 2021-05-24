@@ -176,10 +176,11 @@ function carrega_usu() {
          if ($lin['usustatus'] == 3) {$txt .= "<td>" . "Cancelado" . "</td>";}
          $txt .= "<td>" . $lin['usuemail'] . "</td>";
          if ($lin['usutipo'] == 0) {$txt .= "<td>" . "Visitante" . "</td>";}
-         if ($lin['usutipo'] == 1) {$txt .= "<td>" . "Operador" . "</td>";}
-         if ($lin['usutipo'] == 2) {$txt .= "<td>" . "Gerente" . "</td>";}
-         if ($lin['usutipo'] == 3) {$txt .= "<td>" . "Administrador" . "</td>";}
-         if ($lin['usutipo'] == 4) {$txt .= "<td>" . "Usuário Master" . "</td>";}
+         if ($lin['usutipo'] == 1) {$txt .= "<td>" . "Vendedor" . "</td>";}
+         if ($lin['usutipo'] == 2) {$txt .= "<td>" . "Titular" . "</td>";}
+         if ($lin['usutipo'] == 3) {$txt .= "<td>" . "Gerente" . "</td>";}
+         if ($lin['usutipo'] == 4) {$txt .= "<td>" . "Administrador" . "</td>";}
+         if ($lin['usutipo'] == 5) {$txt .= "<td>" . "Usuário Master" . "</td>";}
          if ($lin['usuvalidade'] == null) {
                $txt .= "<td>" . '' . "</td>";
           }else{

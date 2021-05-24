@@ -72,10 +72,10 @@ $(function() {
      $("#val_v").mask("000.000.000,00", {
           reverse: true
      });
-     $("#vai_t").mask("00,00", {
+     $("#vai_t").mask("000,00", {
           reverse: true
      });
-     $("#vol_t").mask("00,00", {
+     $("#vol_t").mask("000,00", {
           reverse: true
      });
      $("#val_t").mask("000.000.000,00", {
@@ -91,7 +91,7 @@ $(function() {
 
 $(function() {
      $('#nom').autocomplete({
-          source: "ajax/mostrar-cta.php",
+          source: "ajax/mostrar-con.php",
           minLength: 3,
           select: function(event, ui) {
                $('#cta').val(ui.item.id);
@@ -106,7 +106,7 @@ $(function() {
      });
 
      $('#nom_v').autocomplete({
-          source: "ajax/mostrar-cta.php",
+          source: "ajax/mostrar-con.php",
           minLength: 3,
           select: function(event, ui) {
                $('#cta_v').val(ui.item.id);
@@ -121,7 +121,7 @@ $(function() {
      });
 
      $('#nom_p').autocomplete({
-          source: "ajax/mostrar-cta.php",
+          source: "ajax/mostrar-con.php",
           minLength: 3,
           select: function(event, ui) {
                $('#cta_p').val(ui.item.id);
@@ -136,11 +136,12 @@ $(function() {
      });
 
      $('#nom_t').autocomplete({
-          source: "ajax/mostrar-cta.php",
+          source: "ajax/mostrar-pon.php",
           minLength: 3,
           select: function(event, ui) {
+               let tam = ui.item.usuario.trim().length - 1;
                $('#cta_t').val(ui.item.id);
-               $('#des_t').val(ui.item.usuario);
+               $('#des_t').val(ui.item.usuario.substring(0, tam));
                if (ui.item.tipo == 0) {
                     $('#tit_t').text("Milhas a Transferir");
                } else {
@@ -150,7 +151,7 @@ $(function() {
      });
 
      $('#des_t').autocomplete({
-          source: "ajax/mostrar-cta.php",
+          source: "ajax/mostrar-mil.php",
           minLength: 3,
           select: function(event, ui) {
                $('#cta_d').val(ui.item.id);
@@ -314,6 +315,13 @@ $(document).ready(function() {
                          $('#dat').val('');
                          $('#obs').val('');
                          $('#car').val('');
+                         $('#cus_c').val(0);
+                         $('#med_t').val(0);
+                         $('#qtd_m').val(0);
+                         $('#qtd_s').val(0);
+                         $('#cta_t').val(0);
+                         $('#cta_d').val(0);
+                         $('#cta_v').val(0);
                     }
                }, "json");
           }
@@ -346,6 +354,10 @@ $(document).ready(function() {
           $('#des_t').val('');
           $('#cta_t').val(0);
           $('#cta_d').val(0);
+          $('#cus_c').val(0);
+          $('#med_t').val(0);
+          $('#qtd_m').val(0);
+          $('#qtd_s').val(0);
           let opc = $(this).attr("value");
           if (opc == 1) {
                $("#mov_v").fadeOut();
@@ -374,23 +386,50 @@ $(document).ready(function() {
      });
 
      $('#nom').blur(function() {
-          debugger;
+          // debugger; Dá pausa no programa para debugar (debug) em código javascript
           let cta = $('#cta').val();
           if (cta != 0) {
-               $.getJSON("ajax/carrega-sdo.php", { cta: cta })
-               .done(function(data) {
-               if (data.men != "") {
-                    alert(data.men);
-               } else {
-                    $('#sal').text(data.sal);
-                    $('#lib').text(data.lib);
-                    $('#qtd_s').val(data.sal);
-                    $('#qtd_m').val(data.qtd);
-               }
-               }).fail(function(data){
-                    console.log('Erro: ' + JSON.stringify(data)); 
-                    alert("Erro ocorrido no processamento do saldo da conta para compra");
-               });
+               $.getJSON("ajax/carrega-sdo.php", {
+                         cta: cta
+                    })
+                    .done(function(data) {
+                         if (data.men != "") {
+                              alert(data.men);
+                         } else {
+                              $('#sal').text(data.sal);
+                              $('#lib').text(data.lib);
+                              $('#qtd_s').val(data.sal);
+                              $('#qtd_m').val(data.qtd);
+                         }
+                    }).fail(function(data) {
+                         console.log('Erro: ' + JSON.stringify(data));
+                         alert("Erro ocorrido no processamento do saldo da conta para compra");
+                    });
+          }
+     });
+
+     $('#nom_t').blur(function() {
+          // debugger; Dá pausa no programa para debugar (debug) em código javascript
+          let cta = $('#cta_t').val();
+          if (cta != 0) {
+               $.getJSON("ajax/carrega-sdo.php", {
+                         cta: cta
+                    })
+                    .done(function(data) {
+                         if (data.men != "") {
+                              alert(data.men);
+                         } else {
+                              $('#sal_t').text(data.sal);
+                              $('#cto_t').text(data.cus);
+                              $('#med_t').val(data.med);
+                              $('#lib_t').text(data.lib);
+                              $('#qtd_s').val(data.sal);
+                              $('#qtd_m').val(data.qtd);
+                         }
+                    }).fail(function(data) {
+                         console.log('Erro: ' + JSON.stringify(data));
+                         alert("Erro ocorrido no processamento do saldo da conta para compra");
+                    });
           }
      });
 
@@ -398,20 +437,22 @@ $(document).ready(function() {
           // debugger;   // Para o programa - pausa - brek point
           let cta = $('#cta_v').val();
           if (cta != 0) {
-               $.getJSON("ajax/carrega-sdo.php", { cta: cta })
-               .done(function(data) {
-               if (data.men != "") {
-                    alert(data.men);
-               } else {
-                    $('#sal_v').text(data.sal);
-                    $('#lib_v').text(data.lib);
-                    $('#qtd_s').val(data.sal);
-                    $('#qtd_m').val(data.qtd);
-               }
-               }).fail(function(data){
-                    console.log('Erro: ' + JSON.stringify(data)); 
-                    alert("Erro ocorrido no processamento do saldo da conta para venda");
-               });
+               $.getJSON("ajax/carrega-sdo.php", {
+                         cta: cta
+                    })
+                    .done(function(data) {
+                         if (data.men != "") {
+                              alert(data.men);
+                         } else {
+                              $('#sal_v').text(data.sal);
+                              $('#lib_v').text(data.lib);
+                              $('#qtd_s').val(data.sal);
+                              $('#qtd_m').val(data.qtd);
+                         }
+                    }).fail(function(data) {
+                         console.log('Erro: ' + JSON.stringify(data));
+                         alert("Erro ocorrido no processamento do saldo da conta para venda");
+                    });
           }
      });
 
@@ -475,7 +516,7 @@ $(document).ready(function() {
           }
      });
 
-     $('#qtd').blur(function() {
+     $('#qtd').blur(function() { // Calculla preço unitário pela qtd
           let pre = 0;
           let qtd = $('#qtd').val();
           let val = $('#val').val();
@@ -484,7 +525,7 @@ $(document).ready(function() {
                qtd = qtd.replace(',', '.');
                val = val.replace('.', '');
                val = val.replace(',', '.');
-               pre = val / qtd;
+               pre = val / qtd * 1000;
                pre = pre.toLocaleString("pt-BR", {
                     style: "currency",
                     currency: "BRL"
@@ -493,7 +534,7 @@ $(document).ready(function() {
           }
      });
 
-     $('#val').blur(function() {
+     $('#val').blur(function() { // Calculla preço unitário pelo valor
           let pre = 0;
           let qtd = $('#qtd').val();
           let val = $('#val').val();
@@ -502,7 +543,7 @@ $(document).ready(function() {
                qtd = qtd.replace(',', '.');
                val = val.replace('.', '');
                val = val.replace(',', '.');
-               pre = val / qtd;
+               pre = val / qtd * 1000;
                pre = pre.toLocaleString("pt-BR", {
                     style: "currency",
                     currency: "BRL"
@@ -516,8 +557,8 @@ $(document).ready(function() {
           let sal = $('#qtd_s').val();
           let qtd = $('#qtd_v').val();
           let val = $('#val_v').val();
-          if (qtd == "") { 
-               qtd = sal; 
+          if (qtd == "") {
+               qtd = sal;
                $('#qtd_v').val(sal);
           }
           if (qtd != "" && val != "") {
@@ -525,7 +566,7 @@ $(document).ready(function() {
                qtd = qtd.replace(',', '.');
                val = val.replace('.', '');
                val = val.replace(',', '.');
-               pre = val / qtd;
+               pre = val / qtd * 1000;
                pre = pre.toLocaleString("pt-BR", {
                     style: "currency",
                     currency: "BRL"
@@ -543,7 +584,7 @@ $(document).ready(function() {
                qtd = qtd.replace(',', '.');
                val = val.replace('.', '');
                val = val.replace(',', '.');
-               pre = val / qtd;
+               pre = val / qtd * 1000;
                pre = pre.toLocaleString("pt-BR", {
                     style: "currency",
                     currency: "BRL"
@@ -554,28 +595,51 @@ $(document).ready(function() {
 
      $('#pro_t').change(function() {
           let pro = $('#pro_t').val();
+          $('#boi_t').val('');
+          $('#bov_t').val('');
           if (pro == 1) {
                $('#vai_t').val('');
                $('#vol_t').val('');
-               $('#vai_t').attr('disabled', 'disabled');
+               $('#lit_p').text('Percentual de Bônus');
+               $('#lit_b').text('Bônus de Transferência');
                $('#vol_t').attr('disabled', 'disabled');
           }
           if (pro == 2) {
-               $('#vai_t').removeAttr('disabled');
                $('#vol_t').removeAttr('disabled');
+               $('#lit_p').text('Percentual que Vai');
+               $('#lit_b').text('Bônus que Vai');
           }
      });
 
      $('#qtd_t').change(function() {
-          let val = $('#val_t').val();
-          let qtd = $('#qtd_t').val();
+          var val = $('#val_t').val();
+          var qtd = $('#qtd_t').val();
+          var med = $('#med_t').val();
           $('#qtd_d').val(qtd);
+          if (qtd != "") {
+               qtd = qtd.replace('.', '');
+               qtd = qtd.replace(',', '.');
+               var cus = qtd * med;
+               cus = cus.toLocaleString("pt-BR", {
+                    style: "currency",
+                    currency: "BRL"
+               });
+               cus = cus.replace('R$', '');
+               $('#val_t').val(cus.trim());
+
+               val = (qtd * med).toLocaleString("pt-BR", {
+                    style: "currency",
+                    currency: "BRL"
+               });
+               val = val.replace('R$', '');
+          }
           if (qtd != "" && val != "") {
                qtd = qtd.replace('.', '');
                qtd = qtd.replace(',', '.');
                val = val.replace('.', '');
                val = val.replace(',', '.');
-               pre = val / qtd;
+               pre = val / qtd * 1000;
+               $('#cus_c').val(pre);
                pre = pre.toLocaleString("pt-BR", {
                     style: "currency",
                     currency: "BRL"
@@ -593,7 +657,8 @@ $(document).ready(function() {
                qtd = qtd.replace(',', '.');
                val = val.replace('.', '');
                val = val.replace(',', '.');
-               pre = val / qtd;
+               pre = val / qtd * 1000;
+               $('#cus_c').val(pre);
                pre = pre.toLocaleString("pt-BR", {
                     style: "currency",
                     currency: "BRL"
@@ -602,27 +667,45 @@ $(document).ready(function() {
           }
      });
 
-     $('#vai_t').change(function() {
-          let val = 0;
-          let qtd = $('#qtd_t').val();
-          let per = $('#vai_t').val();
-          if (per == "" || qtd == "") {
-               $('#boi_t').val('');
-          } else {
-               per = per.replace('.', '');
-               per = per.replace(',', '.');
-               qtd = qtd.replace('.', '');
-               qtd = qtd.replace(',', '.');
-               val = qtd * per / 100;
-               val = val.toLocaleString("pt-BR", {
-                    style: "currency",
-                    currency: "BRL"
-               });
-               val = val.replace('R$', '');
-               val = val.replace(',00', '');
-               $('#boi_t').val(val);
-          }
-     });
+     $('#vai_t').change(
+          function() { // Qtd que vai - Calculo de transferência e Boomerangue com preço de custo
+               let pro = $('#pro_t').val();
+               let qtd = $('#qtd_t').val();
+               let per = $('#vai_t').val();
+               if (per == "" || qtd == "") {
+                    $('#boi_t').val('');
+               } else {
+                    per = per.replace('.', '');
+                    per = per.replace(',', '.');
+                    qtd = qtd.replace('.', '');
+                    qtd = qtd.replace(',', '.');
+                    val = qtd * per / 100;
+                    val = val.toLocaleString("pt-BR", {
+                         style: "currency",
+                         currency: "BRL"
+                    });
+                    val = val.replace('R$', '');
+                    val = val.replace(',00', '');
+                    $('#boi_t').val(val);
+               }
+               if (per != "" && qtd != "") {
+                    let val = $('#val_t').val();
+                    val = val.replace('.', '');
+                    val = val.replace(',', '.');
+                    if (pro == 1) {
+                         let res = parseFloat(qtd, 10) * (1 + parseFloat(per, 10) / 100);
+                         res = val / res * 1000;
+                         $('#cus_c').val(res);
+                         res = res.toLocaleString("pt-BR", {
+                              style: "currency",
+                              currency: "BRL"
+                         });
+                         $('#cus_t').val(res);
+                    } else {
+
+                    }
+               }
+          });
 
      $('#vol_t').change(function() {
           let val = 0;
@@ -689,7 +772,7 @@ $(document).ready(function() {
      $qtd_v = (isset($_REQUEST['qtd_v']) == false ? '' : $_REQUEST['qtd_v']);
      $val_v = (isset($_REQUEST['val_v']) == false ? '' : $_REQUEST['val_v']);
      $int_v = (isset($_REQUEST['int_v']) == false ? 0 : $_REQUEST['int_v']);
-     $rec_v = (isset($_REQUEST['rec_v']) == false ? date('d/m/Y', strtotime('+18 days')) : $_REQUEST['rec_v']);
+     $rec_v = (isset($_REQUEST['rec_v']) == false ? date('d/m/Y', strtotime('+45 days')) : $_REQUEST['rec_v']);
      $dat_v = (isset($_REQUEST['dat_v']) == false ? date('d/m/Y') : $_REQUEST['dat_v']);
      $obs_v = (isset($_REQUEST['obs_v']) == false ? '' : str_replace("'", "´", $_REQUEST['obs_v']));
 
@@ -874,9 +957,9 @@ $(document).ready(function() {
                                              <div class="col-md-3"></div>
                                              <br />
                                              <div class="col-md-5">
-                                                  <label>Percentual que Vai</label>
+                                                  <label id="lit_p">Percentual de Bônus</label>
                                                   <input type="text" class="form-control text-center" maxlength="5"
-                                                       id="vai_t" name="vai_t" value="<?php echo $vai_t; ?>" disabled />
+                                                       id="vai_t" name="vai_t" value="<?php echo $vai_t; ?>" />
                                              </div>
                                              <div class="col-md-2"></div>
                                              <div class="col-md-5">
@@ -926,12 +1009,12 @@ $(document).ready(function() {
                                              </div>
                                              <br />
                                              <div class="col-md-6">
-                                                  <label>Bônus de Transferência</label>
+                                                  <label id="lit_b">Bônus de Transferência</label>
                                                   <input type="text" class="form-control text-center" maxlength="12"
                                                        id="boi_t" name="boi_t" value="" disabled />
                                              </div>
                                              <div class="col-md-6">
-                                                  <label>Bonus de Volta</label>
+                                                  <label>Bônus de Volta (Pontos)</label>
                                                   <input type="text" class="form-control text-center" maxlength="12"
                                                        id="bov_t" name="bov_t" value="" disabled />
                                              </div>
@@ -943,6 +1026,19 @@ $(document).ready(function() {
                                                        id="dtb_t" name="dtb_t" value="<?php echo $dtb_t; ?>" />
                                              </div>
                                              <div class="col-md-3"></div>
+                                             <br />
+                                             <div class="lit-1 col-md-4 text-center">
+                                                  <label>Saldo Atual</label><br />
+                                                  <p id="sal_t"></p>
+                                             </div>
+                                             <div class="lit-1 col-md-4 text-center">
+                                                  <label>Saldo Liberar</label><br />
+                                                  <p id="lib_t"></p>
+                                             </div>
+                                             <div class="lit-1 col-md-4 text-center">
+                                                  <label>Custo Médio</label><br />
+                                                  <p id="cto_t"></p>
+                                             </div>
                                         </div>
                                    </td>
 
@@ -1148,6 +1244,8 @@ $(document).ready(function() {
                <input type="hidden" id="cta_p" name="cta_p" value="0" />
                <input type="hidden" id="qtd_s" name="qtd_s" value="0" />
                <input type="hidden" id="qtd_m" name="qtd_m" value="0" />
+               <input type="hidden" id="med_t" name="med_t" value="0" />
+               <input type="hidden" id="cus_c" name="cus_c" value="0" />
           </form>
      </div>
      <br />

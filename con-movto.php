@@ -61,6 +61,14 @@ $(document).ready(function() {
           $('#tab-0 tbody').empty();
      });
 
+     $('#usu').change(function() {
+          $('#tab-0 tbody').empty();
+     });
+
+     $('#pro').change(function() {
+          $('#tab-0 tbody').empty();
+     });
+
      $('#dti').change(function() {
           $('#tab-0 tbody').empty();
      });
@@ -118,6 +126,8 @@ $(document).ready(function() {
      date_default_timezone_set("America/Sao_Paulo");
      $dti = date('d/m/Y', strtotime('-29 days'));
      $dtf = date('d/m/Y');
+     $usu = (isset($_REQUEST['usu']) == false ? 0 : $_REQUEST['usu']);
+     $pro = (isset($_REQUEST['pro']) == false ? 0 : $_REQUEST['pro']);
      $dti = (isset($_REQUEST['dti']) == false ? $dti : $_REQUEST['dti']);
      $dtf = (isset($_REQUEST['dtf']) == false ? $dtf : $_REQUEST['dtf']);
      if (isset($_SERVER['HTTP_REFERER']) == true) {
@@ -140,7 +150,6 @@ $(document).ready(function() {
                          <form class="qua-2" name="frmTelCon" action="" method="POST">
                               <p class="lit-4">Consulta de Movimentos</p><br />
                               <div class="row">
-                                   <div class="col-md-2"></div>
                                    <div class="col-md-2">
                                         <label>Operação</label><br />
                                         <select id="ope" name="ope" class="form-control">
@@ -161,6 +170,18 @@ $(document).ready(function() {
                                              </option>
                                         </select>
                                    </div>
+                                   <div class="col-md-3">
+                                        <label>Usuário</label>
+                                        <select id="usu" name="usu" class="form-control">
+                                             <?php $ret = carrega_usu($usu); ?>
+                                        </select>
+                                   </div>
+                                   <div class="col-md-2">
+                                        <label>Programa</label>
+                                        <select id="pro" name="pro" class="form-control">
+                                             <?php $ret = carrega_pro($pro); ?>
+                                        </select>
+                                   </div>
                                    <div class="col-md-2">
                                         <label>Data Inicial</label>
                                         <input type="text" class="form-control text-center" maxlength="10" id="dti"
@@ -171,7 +192,6 @@ $(document).ready(function() {
                                         <input type="text" class="form-control text-center" maxlength="10" id="dtf"
                                              name="dtf" value="<?php echo $dtf; ?>" required />
                                    </div>
-                                   <div class="col-md-3"></div>
                                    <div class="col-md-1 text-center">
                                         <br />
                                         <button type="submit" id="con" name="consulta" class="bot-2"
@@ -201,13 +221,13 @@ $(document).ready(function() {
                                                   <th>Localizador</th>
                                                   <th class="text-center">CPF´s</th>
                                                   <th>Promoção</th>
-                                                  <th>% Vai</th>
+                                                  <th>% de Bônus</th>
                                                   <th>% Volta</th>
                                                   <th>Observação para a Operação</th>
                                              </tr>
                                         </thead>
                                         <tbody>
-                                             <?php $ret = carrega_mov($ope, $dti, $dtf);  ?>
+                                             <?php $ret = carrega_mov($ope, $usu, $pro, $dti, $dtf);  ?>
                                         </tbody>
                                    </table>
                               </div>
@@ -222,7 +242,39 @@ $(document).ready(function() {
 </body>
 
 <?php 
-function carrega_mov($ope, $dti, $dtf) {
+function carrega_usu($usu) {
+     $sta = 0;
+     include_once "dados.php";    
+     echo '<option value="0" selected="selected">Selecione o usuário ...</option>';
+     $com = "Select idsenha, usunome from tb_usuario where usustatus = 0 and usuempresa = " . $_SESSION['wrkcodemp'] . " order by usunome, idsenha";
+     $nro = leitura_reg($com, $reg);
+     foreach ($reg as $lin) {
+          if ($lin['idsenha'] != $usu) {
+               echo  '<option value ="' . $lin['idsenha'] . '">' . $lin['usunome'] . '</option>'; 
+          } else {
+               echo  '<option value ="' . $lin['idsenha'] . '" selected="selected">' . $lin['usunome'] . '</option>';
+          }
+     }
+     return $sta;
+}
+
+function carrega_pro($pro) {
+     $sta = 0;
+     include_once "dados.php";    
+     echo '<option value="0" selected="selected">Programa ...</option>';
+     $com = "Select idprograma, prodescricao from tb_programa where prostatus = 0 and proempresa = " . $_SESSION['wrkcodemp'] . " order by prodescricao, idprograma";
+     $nro = leitura_reg($com, $reg);
+     foreach ($reg as $lin) {
+          if ($lin['idprograma'] != $pro) {
+               echo  '<option value ="' . $lin['idprograma'] . '">' . $lin['prodescricao'] . '</option>'; 
+          } else {
+               echo  '<option value ="' . $lin['idprograma'] . '" selected="selected">' . $lin['prodescricao'] . '</option>';
+          }
+     }
+     return $sta;
+}
+
+function carrega_mov($ope, $usu, $pro, $dti, $dtf) {
      $nro = 0; $com = "";
      include_once "dados.php";
      $dti = substr($dti,6,4) . "-" . substr($dti,3,2) . "-" . substr($dti,0,2);
@@ -234,6 +286,8 @@ function carrega_mov($ope, $dti, $dtf) {
      $com .= "left join tb_cartao X on M.movcartao = X.idcartao) ";
      $com .= "where movempresa = " . $_SESSION['wrkcodemp'] . " and movdata between '" . $dti . "' and '" . $dtf . "' ";
      if ($ope != 0) { $com .="and movtipo = " . $ope; }
+     if ($usu != 0) { $com .="and movusuario = " . $usu; }
+     if ($pro != 0) { $com .="and movprograma = " . $pro; }
      $com .= " order by idmovto desc";          
      $nro = leitura_reg($com, $lin);
      foreach ($lin as $reg) {               
@@ -246,7 +300,7 @@ function carrega_mov($ope, $dti, $dtf) {
           $txt .= '<td>' . $reg['prodescricao'] . '</td>';
           $txt .= '<td>' . date('d/m/Y',strtotime($reg['movdata'])) . '</td>';
           $txt .= '<td class="text-right">' . number_format($reg['movquantidade'], 0, ",", ".") . '</td>';
-          $txt .= '<td class="text-right">' . number_format($reg['movvalor'] / $reg['movquantidade'], 4, ",", ".") . '</td>';
+          $txt .= '<td class="text-right">' . number_format($reg['movvalor'] / $reg['movquantidade'] * 1000, 4, ",", ".") . '</td>';
           $txt .= '<td class="text-right">' . number_format($reg['movvalor'], 2, ",", ".") . '</td>';
           $txt .= '<td>' . $reg['intdescricao'] . '</td>';
           if ($reg['movvecto'] == null) {
