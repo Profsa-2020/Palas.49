@@ -300,7 +300,11 @@ function carrega_mov($ope, $usu, $pro, $dti, $dtf) {
           $txt .= '<td>' . $reg['prodescricao'] . '</td>';
           $txt .= '<td>' . date('d/m/Y',strtotime($reg['movdata'])) . '</td>';
           $txt .= '<td class="text-right">' . number_format($reg['movquantidade'], 0, ",", ".") . '</td>';
-          $txt .= '<td class="text-right">' . number_format($reg['movvalor'] / $reg['movquantidade'] * 1000, 4, ",", ".") . '</td>';
+          if ($reg['movtipo'] == 2) {
+               $txt .= '<td class="text-right">' . number_format($reg['movcusto'] * 1000, 4, ",", ".") . '</td>';
+          } else {
+               $txt .= '<td class="text-right">' . number_format($reg['movvalor'] / $reg['movquantidade'] * 1000, 4, ",", ".") . '</td>';
+          }
           $txt .= '<td class="text-right">' . number_format($reg['movvalor'], 2, ",", ".") . '</td>';
           $txt .= '<td>' . $reg['intdescricao'] . '</td>';
           if ($reg['movvecto'] == null) {

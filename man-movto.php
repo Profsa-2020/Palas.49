@@ -316,9 +316,11 @@ $(document).ready(function() {
                          $('#obs').val('');
                          $('#car').val('');
                          $('#cus_c').val(0);
+                         $('#tot_s').val(0);
                          $('#med_t').val(0);
                          $('#qtd_m').val(0);
                          $('#qtd_s').val(0);
+                         $('#val_s').val(0);
                          $('#cta_t').val(0);
                          $('#cta_d').val(0);
                          $('#cta_v').val(0);
@@ -355,9 +357,11 @@ $(document).ready(function() {
           $('#cta_t').val(0);
           $('#cta_d').val(0);
           $('#cus_c').val(0);
+          $('#tot_s').val(0);
           $('#med_t').val(0);
           $('#qtd_m').val(0);
           $('#qtd_s').val(0);
+          $('#val_s').val(0);
           let opc = $(this).attr("value");
           if (opc == 1) {
                $("#mov_v").fadeOut();
@@ -399,6 +403,8 @@ $(document).ready(function() {
                               $('#sal').text(data.sal);
                               $('#lib').text(data.lib);
                               $('#qtd_s').val(data.sal);
+                              $('#tot_s').val(data.tot);
+                              $('#val_s').val(data.val);
                               $('#qtd_m').val(data.qtd);
                          }
                     }).fail(function(data) {
@@ -424,6 +430,8 @@ $(document).ready(function() {
                               $('#med_t').val(data.med);
                               $('#lib_t').text(data.lib);
                               $('#qtd_s').val(data.sal);
+                              $('#tot_s').val(data.tot);
+                              $('#val_s').val(data.val);
                               $('#qtd_m').val(data.qtd);
                          }
                     }).fail(function(data) {
@@ -447,6 +455,8 @@ $(document).ready(function() {
                               $('#sal_v').text(data.sal);
                               $('#lib_v').text(data.lib);
                               $('#qtd_s').val(data.sal);
+                              $('#tot_s').val(data.tot);
+                              $('#val_s').val(data.val);
                               $('#qtd_m').val(data.qtd);
                          }
                     }).fail(function(data) {
@@ -555,6 +565,7 @@ $(document).ready(function() {
      $('#qtd_v').blur(function() {
           let pre = 0;
           let sal = $('#qtd_s').val();
+          let tot = $('#tot_s').val();
           let qtd = $('#qtd_v').val();
           let val = $('#val_v').val();
           if (qtd == "") {
@@ -611,12 +622,28 @@ $(document).ready(function() {
           }
      });
 
+
+     $('#qtd_t').blur(function() {
+          var qtd = $('#qtd_t').val();
+          var qua = $('#qtd_m').val();
+          var pre = $('#med_t').val();
+          if (qtd == "") {
+               $('#qtd_t').val($('#qtd_s').val());
+               $('#val_t').val($('#tot_s').val());
+               var cus = (pre * 1000).toLocaleString("pt-BR", {
+                    style: "currency",
+                    currency: "BRL"
+               });
+               $('#cus_t').val(cus);
+          }
+     });
+
      $('#qtd_t').change(function() {
           var val = $('#val_t').val();
           var qtd = $('#qtd_t').val();
           var med = $('#med_t').val();
           $('#qtd_d').val(qtd);
-          if (qtd != "") {
+          if (qtd != "" && qtd != "0") {
                qtd = qtd.replace('.', '');
                qtd = qtd.replace(',', '.');
                var cus = qtd * med;
@@ -649,10 +676,13 @@ $(document).ready(function() {
      });
 
      $('#val_t').change(function() {
+          let pro = $('#pro_t').val();
           let val = $('#val_t').val();
           let qtd = $('#qtd_t').val();
+          let vai = $('#vai_t').val();
+          let vol = $('#vol_t').val();
           $('#qtd_d').val(qtd);
-          if (qtd != "" && val != "") {
+          if (qtd != "" && val != "" && vai == "" && vol == "") {
                qtd = qtd.replace('.', '');
                qtd = qtd.replace(',', '.');
                val = val.replace('.', '');
@@ -667,50 +697,70 @@ $(document).ready(function() {
           }
      });
 
-     $('#vai_t').change(
-          function() { // Qtd que vai - Calculo de transferência e Boomerangue com preço de custo
-               let pro = $('#pro_t').val();
-               let qtd = $('#qtd_t').val();
-               let per = $('#vai_t').val();
-               if (per == "" || qtd == "") {
-                    $('#boi_t').val('');
-               } else {
-                    per = per.replace('.', '');
-                    per = per.replace(',', '.');
-                    qtd = qtd.replace('.', '');
-                    qtd = qtd.replace(',', '.');
-                    val = qtd * per / 100;
-                    val = val.toLocaleString("pt-BR", {
+     $('#vai_t').change(function() {    // Qtd que vai - Calculo de transferência e Boomerangue com preço de custo
+          let pro = $('#pro_t').val();
+          let qtd = $('#qtd_t').val();
+          let per = $('#vai_t').val();
+          let vai = $('#vai_t').val();
+          let vol = $('#vol_t').val();
+          if (per == "" || qtd == "") {
+               $('#boi_t').val('');
+          } else {
+               per = per.replace('.', '');
+               per = per.replace(',', '.');
+               qtd = qtd.replace('.', '');
+               qtd = qtd.replace(',', '.');
+               let vai = $('#vai_t').val();
+               let vol = $('#vol_t').val();
+               val = qtd * per / 100;
+               val = val.toLocaleString("pt-BR", {
+                    style: "currency",
+                    currency: "BRL"
+               });
+               val = val.replace('R$', '');
+               val = val.replace(',00', '');
+               $('#boi_t').val(val);
+          }
+          if (per != "" && qtd != "" && vai != "" && vol != "") {
+               let val = $('#val_t').val();
+               val = val.replace('.', '');
+               val = val.replace(',', '.');
+               if (pro == 1) {
+                    let res = parseFloat(qtd, 10) * (1 + parseFloat(per, 10) / 100);
+                    res = val / res * 1000;
+                    $('#cus_c').val(res);
+                    res = res.toLocaleString("pt-BR", {
                          style: "currency",
                          currency: "BRL"
                     });
-                    val = val.replace('R$', '');
-                    val = val.replace(',00', '');
-                    $('#boi_t').val(val);
+                    $('#cus_t').val(res);
+               } else {
+                    let tot = 0; // Calculo de promoção Bumerange, preço de custo por milhero
+                    let med = $('#med_t').val();
+                    vai = vai.replace('.', '');
+                    vai = vai.replace(',', '.');
+                    vol = vol.replace('.', '');
+                    vol = vol.replace(',', '.');
+                    let res = parseFloat(qtd, 10) * (1 - parseFloat(vol, 10) / 100);
+                    res = res * med;
+                    res = res / (qtd * (1 + parseFloat(vai, 10) / 100)) * 1000;
+                    $('#cus_c').val(res);
+                    res = res.toLocaleString("pt-BR", {
+                         style: "currency",
+                         currency: "BRL"
+                    });
+                    $('#cus_t').val(res);
                }
-               if (per != "" && qtd != "") {
-                    let val = $('#val_t').val();
-                    val = val.replace('.', '');
-                    val = val.replace(',', '.');
-                    if (pro == 1) {
-                         let res = parseFloat(qtd, 10) * (1 + parseFloat(per, 10) / 100);
-                         res = val / res * 1000;
-                         $('#cus_c').val(res);
-                         res = res.toLocaleString("pt-BR", {
-                              style: "currency",
-                              currency: "BRL"
-                         });
-                         $('#cus_t').val(res);
-                    } else {
-
-                    }
-               }
-          });
+          }
+     });
 
      $('#vol_t').change(function() {
           let val = 0;
+          let pro = $('#pro_t').val();
           let qtd = $('#qtd_t').val();
           let per = $('#vol_t').val();
+          let vai = $('#vai_t').val();
+          let vol = $('#vol_t').val();
           if (per == "" || qtd == "") {
                $('#bov_t').val('');
           } else {
@@ -726,6 +776,37 @@ $(document).ready(function() {
                val = val.replace('R$', '');
                val = val.replace(',00', '');
                $('#bov_t').val(val);
+          }
+          if (per != "" && qtd != "" && vai != "" && vol != "") {
+               let val = $('#val_t').val();
+               val = val.replace('.', '');
+               val = val.replace(',', '.');
+               if (pro == 1) {
+                    let res = parseFloat(qtd, 10) * (1 + parseFloat(per, 10) / 100);
+                    res = val / res * 1000;
+                    $('#cus_c').val(res / 1000);
+                    res = res.toLocaleString("pt-BR", {
+                         style: "currency",
+                         currency: "BRL"
+                    });
+                    $('#cus_t').val(res);
+               } else {
+                    let tot = 0; // Calculo de promoção Bumerange, preço de custo por milhero
+                    let med = $('#med_t').val();
+                    vai = vai.replace('.', '');
+                    vai = vai.replace(',', '.');
+                    vol = vol.replace('.', '');
+                    vol = vol.replace(',', '.');
+                    let res = parseFloat(qtd, 10) * (1 - parseFloat(vol, 10) / 100);
+                    res = res * med;
+                    res = res / (qtd * (1 + parseFloat(vai, 10) / 100)) * 1000;
+                    $('#cus_c').val(res / 1000);
+                    res = res.toLocaleString("pt-BR", {
+                         style: "currency",
+                         currency: "BRL"
+                    });
+                    $('#cus_t').val(res);
+               }
           }
      });
 
@@ -879,11 +960,11 @@ $(document).ready(function() {
                          </div>
                          <div class="lit-1 col-md-2 text-center">
                               <label>Saldo Atual</label><br />
-                              <p id="sal"></p>
+                              <p id="sal">0</p>
                          </div>
                          <div class="lit-1 col-md-2 text-center">
                               <label>Saldo Liberar</label><br />
-                              <p id="lib"></p>
+                              <p id="lib">0</p>
                          </div>
                     </div>
                     <div class="row">
@@ -1029,15 +1110,15 @@ $(document).ready(function() {
                                              <br />
                                              <div class="lit-1 col-md-4 text-center">
                                                   <label>Saldo Atual</label><br />
-                                                  <p id="sal_t"></p>
+                                                  <p id="sal_t">0</p>
                                              </div>
                                              <div class="lit-1 col-md-4 text-center">
                                                   <label>Saldo Liberar</label><br />
-                                                  <p id="lib_t"></p>
+                                                  <p id="lib_t">0</p>
                                              </div>
                                              <div class="lit-1 col-md-4 text-center">
                                                   <label>Custo Médio</label><br />
-                                                  <p id="cto_t"></p>
+                                                  <p id="cto_t">0,00</p>
                                              </div>
                                         </div>
                                    </td>
@@ -1094,11 +1175,11 @@ $(document).ready(function() {
                          </div>
                          <div class="lit-1 col-md-2 text-center">
                               <label>Saldo Atual</label><br />
-                              <p id="sal_v"></p>
+                              <p id="sal_v">0</p>
                          </div>
                          <div class="lit-1 col-md-2 text-center">
                               <label>Saldo Liberar</label><br />
-                              <p id="lib_v"></p>
+                              <p id="lib_v">0</p>
                          </div>
                     </div>
                     <div class="row">
@@ -1243,9 +1324,11 @@ $(document).ready(function() {
                <input type="hidden" id="cta_v" name="cta_v" value="0" />
                <input type="hidden" id="cta_p" name="cta_p" value="0" />
                <input type="hidden" id="qtd_s" name="qtd_s" value="0" />
+               <input type="hidden" id="val_s" name="val_s" value="0" />
                <input type="hidden" id="qtd_m" name="qtd_m" value="0" />
                <input type="hidden" id="med_t" name="med_t" value="0" />
                <input type="hidden" id="cus_c" name="cus_c" value="0" />
+               <input type="hidden" id="tot_s" name="tot_s" value="0" />
           </form>
      </div>
      <br />

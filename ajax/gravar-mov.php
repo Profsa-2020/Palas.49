@@ -90,6 +90,7 @@
                $sql .= "movpromocao, ";
                $sql .= "movpercvai, ";
                $sql .= "movpercvolta, ";
+               $sql .= "movcusto, ";
                $sql .= "movbonus, ";
                $sql .= "movobservacao, ";
                $sql .= "keyinc, ";
@@ -116,6 +117,7 @@
                } else {
                     $sql .= "'" . str_replace(",", ".", str_replace(".", "", $_REQUEST['vol_t'])) . "',";
                }
+               $sql .= "'" . $_REQUEST['cus_c'] . "',";
                $sql .= "'" . inverte_dat(1, $_REQUEST['dtb_t']) . "',";
                $sql .= "'" . $_REQUEST['obs_t'] . "',";
                $sql .= "'" . $_SESSION['wrkideusu'] . "',";

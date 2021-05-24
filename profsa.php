@@ -339,7 +339,7 @@ function calcula_idade($nas) {
      return $ida;
 }
 
-function saldos_cta($cta, &$ent, &$sai, &$vai, &$vol, &$val) {
+function saldos_cta($cta, &$ent, &$sai, &$vai, &$vol, &$val, &$tot) {
      $sal = 0; $ent = 0; $sai = 0; $vai = 0; $vol = 0; $val =  0;
      $com  = "Select M.*, U.usunome, P.prodescricao from (((tb_movto M left join tb_conta C on M.movconta = C.idconta) ";
      $com .= "left join tb_usuario U on M.movusuario = U.idsenha) ";
@@ -353,6 +353,8 @@ function saldos_cta($cta, &$ent, &$sai, &$vai, &$vol, &$val) {
                $val = $val + $lin['movvalor'];
           }
           if ($lin['movstatus'] == 1) {
+               $sai = $sai + $lin['movquantidade'];
+               $sal = $sal - $lin['movquantidade'];
                $vai = $vai + ($lin['movquantidade'] * $lin['movpercvai'] / 100);
                $vol = $vol + ($lin['movquantidade'] * $lin['movpercvolta'] / 100);
           }
@@ -362,7 +364,7 @@ function saldos_cta($cta, &$ent, &$sai, &$vai, &$vol, &$val) {
                $val = $val - $lin['movvalor'];
           }
      }
-     $vai = round($vai, 0); $vol = round($vol, 0);
+     $vai = round($vai, 0); $vol = round($vol, 0); $tot = $val;
 
      return $sal;
 }

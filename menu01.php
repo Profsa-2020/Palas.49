@@ -66,7 +66,7 @@ $(document).ready(function() {
 </script>
 
 <?php
-     $ret = 0; $ima = ''; 
+     $ret = 0;
      include_once "profsa.php";
      $_SESSION['wrknumvol'] = 0;
      $_SESSION['wrknompro'] = __FILE__; 
@@ -86,6 +86,8 @@ $(document).ready(function() {
      
      $_SESSION['wrkopereg'] = 0; $_SESSION['wrkcodreg'] = 0; $_SESSION['wrklogemp'] = ''; 
      if (isset($_SESSION['wrkendser']) == false) { $_SESSION['wrkendser'] = getenv("REMOTE_ADDR"); }
+
+     $ret = carrega_das($dad);
 
 ?>
 
@@ -110,5 +112,17 @@ $(document).ready(function() {
           <img class="subir" src="img/subir.png" title="Volta a página para o seu topo." />
      </div>
 </body>
+
+<?php
+function carrega_das(&$dad) {
+     $ret = 0;
+     $dad = array();
+
+     
+
+     return $ret;
+}
+
+?>
 
 </html>
