@@ -131,9 +131,9 @@ $(document).ready(function() {
                          <table id="tab-0" class="table table-sm table-striped">
                               <thead>
                                    <tr>
-                                        <th width="5%">Alterar</th>
-                                        <th width="5%">Excluir</th>
-                                        <th width="5%">Código</th>
+                                        <th width="3%">Alterar</th>
+                                        <th width="3%">Excluir</th>
+                                        <th width="3%">Código</th>
                                         <th>Nome</th>
                                         <th>Status</th>
                                         <th>E-Mail</th>

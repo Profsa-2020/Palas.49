@@ -80,9 +80,9 @@ $(document).ready(function() {
      $('#tab-0').DataTable({
           "pageLength": 25,
           "aaSorting": [
-               [1, 'asc'],
                [2, 'asc'],
-               [0, 'asc']
+               [3, 'asc'],
+               [1, 'asc']
           ],
           "language": {
                "lengthMenu": "Demonstrar _MENU_ linhas por páginas",
@@ -209,6 +209,7 @@ $(document).ready(function() {
                                    <table id="tab-0" class="table table-sm table-striped">
                                         <thead>
                                              <tr>
+                                                  <th>Baixar</th>
                                                   <th>Operação</th>
                                                   <th>Usuário</th>
                                                   <th>Programa</th>
@@ -221,6 +222,7 @@ $(document).ready(function() {
                                                   <th>Localizador</th>
                                                   <th class="text-center">CPF´s</th>
                                                   <th>Promoção</th>
+                                                  <th>Destino</th>
                                                   <th>% de Bônus</th>
                                                   <th>% Volta</th>
                                                   <th>Observação para a Operação</th>
@@ -292,6 +294,7 @@ function carrega_mov($ope, $usu, $pro, $dti, $dtf) {
      $nro = leitura_reg($com, $lin);
      foreach ($lin as $reg) {               
           $txt =  '<tr>';
+          $txt .= '<td class="text-center"><a class="cur-x" href="#" ope=2 cod=' . $reg['idmovto'] . ' title="Efetua baixa de qauntidade ou valor recebido do movimento informado na linha"><i class="fa fa-check-square-o fa-2x" aria-hidden="true"></i></a></td>';
           if ($reg['movtipo'] == 1) {$txt .= "<td>" . "Compra (+)" . "</td>";}
           if ($reg['movtipo'] == 2) {$txt .= "<td>" . "Transferência (*)" . "</td>";}
           if ($reg['movtipo'] == 3) {$txt .= "<td>" . "Venda (-)" . "</td>";} 
@@ -308,7 +311,11 @@ function carrega_mov($ope, $usu, $pro, $dti, $dtf) {
           $txt .= '<td class="text-right">' . number_format($reg['movvalor'], 2, ",", ".") . '</td>';
           $txt .= '<td>' . $reg['intdescricao'] . '</td>';
           if ($reg['movvecto'] == null) {
-               $txt .= '<td>' . '' . '</td>';
+               if ($reg['movbonus'] == null) {
+                    $txt .= '<td>' . '' . '</td>';
+               } else {
+                    $txt .= '<td>' . date('d/m/Y',strtotime($reg['movbonus'])) . '</td>';
+               }
           } else {
                $txt .= '<td>' . date('d/m/Y',strtotime($reg['movvecto'])) . '</td>';
           }
@@ -317,6 +324,9 @@ function carrega_mov($ope, $usu, $pro, $dti, $dtf) {
           if ($reg['movpromocao'] == 0) {$txt .= '<td>' . "" . '</td>';}
           if ($reg['movpromocao'] == 1) {$txt .= '<td class="text-center">' . "Comum" . '</td>';}
           if ($reg['movpromocao'] == 2) {$txt .= '<td class="text-center">' . "Bumerangue" . '</td>';}
+          $des = retorna_dad('conprograma', 'tb_conta', 'idconta', $reg['movdestino']); 
+          $des = retorna_dad('prodescricao', 'tb_programa', 'idprograma', $des); 
+          $txt .= '<td>' . $des . '</td>';
           if ($reg['movpercvai'] == '0') {
                $txt .= '<td>' . '' . '</td>';
           } else {

@@ -69,6 +69,9 @@ $(function() {
      $("#qtd_t").mask("000.000.000", {
           reverse: true
      });
+     $("#qtd_p").mask("000.000.000", {
+          reverse: true
+     });
      $("#val_v").mask("000.000.000,00", {
           reverse: true
      });
@@ -636,6 +639,22 @@ $(document).ready(function() {
                });
                $('#cus_t').val(cus);
           }
+          if (qtd > $('#qtd_s').val()) {
+               alert("Quantidade informada não pode ser maior que quantidade em saldo !");
+               $('#qtd_t').val($('#qtd_s').val());
+               $('#qtd_d').val($('#qtd_s').val());
+          }
+     });
+
+     $('#qtd_v').blur(function() {
+          var qtd = $('#qtd_v').val();
+          if (qtd == "") {
+               $('#qtd_v').val($('#qtd_s').val());
+          }
+          if (qtd > $('#qtd_s').val()) {
+               alert("Quantidade a vender não pode ser maior que quantidade em saldo !");
+               $('#qtd_v').val($('#qtd_s').val());
+          }
      });
 
      $('#qtd_t').change(function() {
@@ -879,7 +898,7 @@ $(document).ready(function() {
 
      if (isset($_REQUEST['salvar']) == true) {
           $nom = ""; $qtd = ""; $val = ""; $dat = date('d/m/Y'); $obs = ""; $car = 0;
-          $nom_v = ""; $qtd_v = ""; $val_v = ""; $dat_v = date('d/m/Y'); $obs_v = ""; $rec_v = date('d/m/Y', strtotime('+18 days')); $int_v = 0; 
+          $nom_v = ""; $qtd_v = ""; $val_v = ""; $dat_v = date('d/m/Y'); $obs_v = ""; $rec_v = date('d/m/Y', strtotime('+45 days')); $int_v = 0; 
           $nom_p = ""; $qtd_p = ""; $dat_p = date('d/m/Y'); $obs_p = ""; $loc_p = ""; $int_p = 0; $cpf_p = 0; 
           $nom_t = ""; $qtd_t = ""; $dat_t = date('d/m/Y'); $obs_t = ""; $des_t = ""; $pro_t = 1; $val_t = ''; $vai_t = ''; $vol_t = ''; $bon_t = '';
      }

@@ -21,6 +21,10 @@
 
  .cor-3 { background-color: red; }
 
+ .cur-1 { cursor: pointer; }
+
+ .cur-x { cursor: not-allowed;}
+
 .ima-2 {
     animation-duration: 5s;
 }

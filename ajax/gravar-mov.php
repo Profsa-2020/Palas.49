@@ -184,7 +184,7 @@
                $sql .= "'" . $_REQUEST['cta_p'] . "',";
                $sql .= "'" . $usu . "',";
                $sql .= "'" . $pro . "',";
-               $sql .= "'" . $_REQUEST['int_v'] . "',";
+               $sql .= "'" . $_REQUEST['int_p'] . "',";
                $sql .= "'" . inverte_dat(1, $_REQUEST['dat_p']) . "',";
                $sql .= "'" . $_REQUEST['loc_p'] . "',";
                $sql .= "'" . $_REQUEST['cpf_p'] . "',";

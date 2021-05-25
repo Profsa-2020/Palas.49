@@ -34,7 +34,7 @@
           <ul class="navbar-nav mr-auto text-center">
                <li class="nav-item">
                     <a class="nav-link" href="menu01.php"><i class="fa fa-home fa-2x"
-                              aria-hidden="true"></i><br /> DashBoard </a>
+                              aria-hidden="true"></i><br /> Início </a>
                </li>
                <li class="nav-item">
                     <a class="nav-link" href="con-usuario.php"><i class="fa fa-users fa-2x"
