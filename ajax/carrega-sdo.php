@@ -3,9 +3,9 @@
      $tab = array();
      session_start();
      $tab['men'] = '';
-     $tab['sal'] = '';
-     $tab['lib'] = '';
-     $tab['med'] = 0;
+     $tab['sal'] = '0';
+     $tab['lib'] = '0';
+     $tab['med'] = '0';
      $tab['cus'] = '0,00';
      $tab['tot'] = '0,00';
      include_once "../dados.php";
@@ -24,7 +24,6 @@
      $tab['sai'] = $sai;
      if ($sal != 0) {
           $tab['med'] = $val / $sal;
-          $tab['cus'] = $val / $sal;
      }
      $tab['lib'] = number_format($vol, 0, ",", ".");
      $tab['tot'] = number_format($tot, 2, ",", ".");

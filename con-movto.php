@@ -77,6 +77,29 @@ $(document).ready(function() {
           $('#tab-0 tbody').empty();
      });
 
+     $('.baixa').click(function() {
+          let cod = $(this).attr("cod");
+          let ope = $(this).attr("ope");
+          if (ope == 1) {
+               $('#tel-mov').text("Baixa de bônus recebido (Transferência)");
+          } else {
+               $('#tel-mov').text("Baixa de valor recebido (Venda)");
+          }
+          $.getJSON("ajax/carrega-mov.php", {
+                    ope: ope, cod: cod })
+               .done(function(data) {
+                    if (data.men != "") {
+                         alert(data.men);
+                    } else {
+                         $('#dad_mov').html(data.txt);
+                    }
+               }).fail(function(data) {
+                    console.log('Erro: ' + JSON.stringify(data));
+                    alert("Erro ocorrido no processamento do movimento solicitado");
+               });
+          $('#bai-mov').modal('show');
+     });
+
      $('#tab-0').DataTable({
           "pageLength": 25,
           "aaSorting": [
@@ -238,6 +261,40 @@ $(document).ready(function() {
                </div>
           </div>
      </div>
+
+     <!-------------------------------------------------------------------------------------------------------------------------->
+     <div class="modal fade" id="bai-mov" tabindex="-1" role="dialog" aria-labelledby="tel-mov" aria-hidden="true"
+          data-backdrop="static">
+          <div class="modal-dialog modal-lg" role="document">
+               <!-- modal-sm modal-lg modal-xl -->
+               <form id="frmMosMov" name="frmMosMov" action="con-movto.php" method="POST">
+                    <div class="modal-content">
+                         <div class="modal-header bg-primary text-white">
+                              <h5 class="modal-title" id="tel-mov">Baixa de Movimento</h5>
+                              <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+                                   <span aria-hidden="true">&times;</span>
+                              </button>
+                         </div>
+                         <div class="modal-body">
+                              <div class="row">
+                                   <div class="col-md-12 text-center">
+                                        <div id="dad_mov"></div>
+                                   </div>
+                              </div>
+                              <br />
+                         </div>
+                         <div class="modal-footer">
+                              <button type="button" id="gra_m" name="salvar"
+                                   class="btn btn-outline-success">Baixar</button>
+                              <button type="button" id="fec_m" name="fec_m" class="btn btn-outline-danger"
+                                   data-dismiss="modal">Fechar</button>
+                         </div>
+                    </div>
+               </form>
+          </div>
+     </div>
+     <!------------------------------------------------------------------------------------------------------------------------>
+
      <div id="box10">
           <img class="subir" src="img/subir.png" title="Volta a página para o seu topo." />
      </div>
@@ -247,7 +304,7 @@ $(document).ready(function() {
 function carrega_usu($usu) {
      $sta = 0;
      include_once "dados.php";    
-     echo '<option value="0" selected="selected">Selecione o usuário ...</option>';
+     echo '<option value="0" selected="selected">Selecione ...</option>';
      $com = "Select idsenha, usunome from tb_usuario where usustatus = 0 and usuempresa = " . $_SESSION['wrkcodemp'] . " order by usunome, idsenha";
      $nro = leitura_reg($com, $reg);
      foreach ($reg as $lin) {
@@ -263,7 +320,7 @@ function carrega_usu($usu) {
 function carrega_pro($pro) {
      $sta = 0;
      include_once "dados.php";    
-     echo '<option value="0" selected="selected">Programa ...</option>';
+     echo '<option value="0" selected="selected">Selecione ...</option>';
      $com = "Select idprograma, prodescricao from tb_programa where prostatus = 0 and proempresa = " . $_SESSION['wrkcodemp'] . " order by prodescricao, idprograma";
      $nro = leitura_reg($com, $reg);
      foreach ($reg as $lin) {
@@ -287,18 +344,29 @@ function carrega_mov($ope, $usu, $pro, $dti, $dtf) {
      $com .= "left join tb_intermediario I on M.movintermediario = I.idintermediario) ";
      $com .= "left join tb_cartao X on M.movcartao = X.idcartao) ";
      $com .= "where movempresa = " . $_SESSION['wrkcodemp'] . " and movdata between '" . $dti . "' and '" . $dtf . "' ";
-     if ($ope != 0) { $com .="and movtipo = " . $ope; }
-     if ($usu != 0) { $com .="and movusuario = " . $usu; }
-     if ($pro != 0) { $com .="and movprograma = " . $pro; }
+     if ($ope != 0) { $com .=" and movtipo = " . $ope; }
+     if ($usu != 0) { $com .=" and movusuario = " . $usu; }
+     if ($pro != 0) { $com .=" and movprograma = " . $pro; }
      $com .= " order by idmovto desc";          
      $nro = leitura_reg($com, $lin);
      foreach ($lin as $reg) {               
           $txt =  '<tr>';
-          $txt .= '<td class="text-center"><a class="cur-x" href="#" ope=2 cod=' . $reg['idmovto'] . ' title="Efetua baixa de qauntidade ou valor recebido do movimento informado na linha"><i class="fa fa-check-square-o fa-2x" aria-hidden="true"></i></a></td>';
-          if ($reg['movtipo'] == 1) {$txt .= "<td>" . "Compra (+)" . "</td>";}
-          if ($reg['movtipo'] == 2) {$txt .= "<td>" . "Transferência (*)" . "</td>";}
-          if ($reg['movtipo'] == 3) {$txt .= "<td>" . "Venda (-)" . "</td>";} 
-          if ($reg['movtipo'] == 4) {$txt .= "<td>" . "Passagem (-)" . "</td>";} 
+          if ($reg['movstatus'] == 0) {
+               $txt .= '<td class="text-center"></td>';
+          }
+          if ($reg['movstatus'] == 1) {
+               $txt .= '<td class="text-center"><a class="cur-1 baixa" href="#" ope=' . $reg['movstatus']. ' cod=' . $reg['idmovto'] . ' title="Efetua baixa de quantidade ou valor recebido do movimento informado na linha ..."><i class="fa fa-check-square-o fa-2x" aria-hidden="true"></i></a></td>';
+          }
+          if ($reg['movstatus'] == 2) {
+               $txt .= '<td class="text-center"><a class="cur-1 baixa" href="#" ope=' . $reg['movstatus']. ' cod=' . $reg['idmovto'] . ' title="Efetua baixa de quantidade ou valor recebido do movimento informado na linha ..."><i class="fa fa-money fa-2x" aria-hidden="true"></i></a></td>';
+          }
+          if ($reg['movstatus'] == 3) {
+               $txt .= '<td class="text-center"></td>';
+          }
+          if ($reg['movstatus'] == 0) {$txt .= "<td>" . "Compra (+)" . "</td>";}
+          if ($reg['movstatus'] == 1) {$txt .= "<td>" . "Transferência (*)" . "</td>";}
+          if ($reg['movstatus'] == 2) {$txt .= "<td>" . "Venda (-)" . "</td>";} 
+          if ($reg['movstatus'] == 3) {$txt .= "<td>" . "Passagem (-)" . "</td>";} 
           $txt .= '<td>' . $reg['usunome'] . '</td>';
           $txt .= '<td>' . $reg['prodescricao'] . '</td>';
           $txt .= '<td>' . date('d/m/Y',strtotime($reg['movdata'])) . '</td>';

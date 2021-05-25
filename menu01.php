@@ -120,7 +120,7 @@ $(document).ready(function() {
                     <span><strong><?php echo number_format($dad['qtd_v'], 0,"," , "."); ?></strong></span>
                </div>
                <div class="col-md-3 bg-primary text-white">
-                    <p>Valor Vendida</p>
+                    <p>Valor Vendido</p>
                     <span><strong><?php echo "R$ " . number_format($dad['val_v'], 2,"," , "."); ?></strong></span>
                </div>
           </div>
