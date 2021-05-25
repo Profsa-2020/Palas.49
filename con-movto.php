@@ -100,6 +100,22 @@ $(document).ready(function() {
           $('#bai-mov').modal('show');
      });
 
+     $('#gra_m').click(function() {
+          let ope = 0;
+          $.getJSON("ajax/gravar-bai.php", {
+                    ope: ope })
+               .done(function(data) {
+                    if (data.men != "") {
+                         alert(data.men);
+                    } else {
+                         $('#frmTelCon').submit();
+                    }
+               }).fail(function(data) {
+                    console.log('Erro: ' + JSON.stringify(data));
+                    alert("Erro ocorrido na gravação do movimento solicitado");
+               });
+     });
+
      $('#tab-0').DataTable({
           "pageLength": 25,
           "aaSorting": [
@@ -170,7 +186,7 @@ $(document).ready(function() {
           <div class="row">
                <div class="col-md-12">
                     <div class="container">
-                         <form class="qua-2" name="frmTelCon" action="" method="POST">
+                         <form class="qua-2" id="frmTelCon" name="frmTelCon" action="" method="POST">
                               <p class="lit-4">Consulta de Movimentos</p><br />
                               <div class="row">
                                    <div class="col-md-2">
@@ -355,10 +371,18 @@ function carrega_mov($ope, $usu, $pro, $dti, $dtf) {
                $txt .= '<td class="text-center"></td>';
           }
           if ($reg['movstatus'] == 1) {
-               $txt .= '<td class="text-center"><a class="cur-1 baixa" href="#" ope=' . $reg['movstatus']. ' cod=' . $reg['idmovto'] . ' title="Efetua baixa de quantidade ou valor recebido do movimento informado na linha ..."><i class="fa fa-check-square-o fa-2x" aria-hidden="true"></i></a></td>';
+               if ($reg['movliquidado'] == 1) {
+                    $txt .= '<td class="text-center"><i class="fa fa-check-square-o fa-2x" aria-hidden="true"></i></td>';
+               } else { 
+                    $txt .= '<td class="text-center"><a class="cur-1 baixa" href="#" ope=' . $reg['movstatus']. ' cod=' . $reg['idmovto'] . ' title="Efetua baixa de quantidade ou valor recebido do movimento informado na linha ..."><i class="fa fa-check-square-o fa-2x" aria-hidden="true"></i></a></td>';
+               }
           }
           if ($reg['movstatus'] == 2) {
-               $txt .= '<td class="text-center"><a class="cur-1 baixa" href="#" ope=' . $reg['movstatus']. ' cod=' . $reg['idmovto'] . ' title="Efetua baixa de quantidade ou valor recebido do movimento informado na linha ..."><i class="fa fa-money fa-2x" aria-hidden="true"></i></a></td>';
+               if ($reg['movliquidado'] == 1) {
+                    $txt .= '<td class="text-center"><i class="fa fa-money fa-2x" aria-hidden="true"></i></td>';
+               } else { 
+                    $txt .= '<td class="text-center"><a class="cur-1 baixa" href="#" ope=' . $reg['movstatus']. ' cod=' . $reg['idmovto'] . ' title="Efetua baixa de quantidade ou valor recebido do movimento informado na linha ..."><i class="fa fa-money fa-2x" aria-hidden="true"></i></a></td>';
+               }
           }
           if ($reg['movstatus'] == 3) {
                $txt .= '<td class="text-center"></td>';

@@ -1,5 +1,6 @@
 <?php
-     $ret = 0;
+     $ope = 0;
+     $cod = 0;
      $tab = array();
      session_start();
      $tab['men'] = '';
@@ -9,6 +10,9 @@
      date_default_timezone_set("America/Sao_Paulo");
      if (isset($_REQUEST['ope']) == true) { $ope = $_REQUEST['ope']; }
      if (isset($_REQUEST['cod']) == true) { $cod = $_REQUEST['cod']; }
+
+     $_SESSION['wrkopereg'] = $ope; $_SESSION['wrkcodreg'] = $cod; 
+
      $com  = "Select M.*, U.usunome, P.prodescricao, I.intdescricao from (((((tb_movto M left join tb_conta C on M.movconta = C.idconta) ";
      $com .= "left join tb_usuario U on M.movusuario = U.idsenha) ";
      $com .= "left join tb_programa P on M.movprograma = P.idprograma) ";
@@ -27,6 +31,9 @@
           $tab['txt'] .= 'Usuário: ' . $reg['usunome'] . '<br />';
           $tab['txt'] .= 'Programa: ' . $reg['prodescricao'] . '<br />';
           $tab['txt'] .= 'Data da Operação: ' . date('d/m/Y',strtotime($reg['movdata'])) . '<br />';
+          if ($reg['intdescricao'] != null) {
+               $tab['txt'] .= 'Intermediário: ' . $reg['intdescricao'] . '<br />';
+          }
           $tab['txt'] .= 'Quantidade: ' . number_format($reg['movquantidade'], 0, ",", ".") . '<br />';
           $tab['txt'] .= 'Valor: R$ ' . number_format($reg['movvalor'], 2, ",", ".") . '<br />';
           $tab['txt'] .= 'Observação: ' . $reg['movobservacao'] . '<br />';
