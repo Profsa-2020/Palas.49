@@ -63,6 +63,11 @@ $(document).ready(function() {
 
      $('#usu').change(function() {
           $('#tab-0 tbody').empty();
+          let usu = $('#usu').val();
+          $.get( "ajax/carrega-pro.php", { usu: usu })
+               .done(function(data) {
+                    $('#pro').empty().html(data);
+               });
      });
 
      $('#pro').change(function() {
@@ -81,9 +86,9 @@ $(document).ready(function() {
           let cod = $(this).attr("cod");
           let ope = $(this).attr("ope");
           if (ope == 1) {
-               $('#tel-mov').text("Baixa de bônus recebido (Transferência)");
+               $('#tel-mov').text("Baixa de Bônus Recebido (Transferência)");
           } else {
-               $('#tel-mov').text("Baixa de valor recebido (Venda)");
+               $('#tel-mov').text("Baixa de Valor Recebido (Venda)");
           }
           $.getJSON("ajax/carrega-mov.php", {
                     ope: ope, cod: cod })

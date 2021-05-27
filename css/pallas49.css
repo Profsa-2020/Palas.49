@@ -143,8 +143,12 @@
     z-index: 1050 !important;
 }
 
-nav {
+nav, .dropdown-menu {
     background-color: #3d7e92 !important;
+}
+
+.dropdown-menu {
+    overflow: hidden;   
 }
 
 nav ul li:hover, nav ul li a:hover {

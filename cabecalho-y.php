@@ -36,19 +36,31 @@
                     <a class="nav-link" href="menu01.php"><i class="fa fa-home fa-2x"
                               aria-hidden="true"></i><br /> Início </a>
                </li>
-               <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"
-                         data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                         <i class="fa fa-desktop fa-2x" aria-hidden="true"></i><br /> Cadastros
-                    </a>
-                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                         <a class="dropdown-item" href="con-usuario.php">Usuários</a>
-                         <a class="dropdown-item" href="man-programa.php?ope=1&cod=0">Programas</a>
-                         <a class="dropdown-item" href="man-conta.php?ope=1&cod=0">Contas</a>
-                         <a class="dropdown-item" href="man-cartao.php?ope=1&cod=0">Cartões</a>
-                         <a class="dropdown-item" href="man-intermediario.php?ope=1&cod=0">Intermediários</a>
-                    </div>
-               </li>               
+               <li class="nav-item">
+                    <a class="nav-link" href="con-usuario.php"><i class="fa fa-users fa-2x"
+                              aria-hidden="true"></i><br />
+                         Usuários </a>
+               </li>
+               <li class="nav-item">
+                    <a class="nav-link" href="man-programa.php?ope=1&cod=0"><i class="fa fa-plane fa-2x"
+                              aria-hidden="true"></i><br />
+                         Programas </a>
+               </li>
+               <li class="nav-item">
+                    <a class="nav-link" href="man-conta.php?ope=1&cod=0"><i class="fa fa-briefcase fa-2x"
+                              aria-hidden="true"></i><br />
+                         Contas </a>
+               </li>
+               <li class="nav-item">
+                    <a class="nav-link" href="man-intermediario.php?ope=1&cod=0"><i class="fa fa-handshake-o fa-2x"
+                              aria-hidden="true"></i><br />
+                         Intermediários </a>
+               </li>
+               <li class="nav-item">
+                    <a class="nav-link" href="man-cartao.php?ope=1&cod=0"><i class="fa fa-credit-card fa-2x"
+                              aria-hidden="true"></i><br />
+                         Cartão </a>
+               </li>
                <li class="nav-item">
                     <a class="nav-link" href="man-movto.php?ope=1&cod=0"> <i class="fa fa-money fa-2x"
                               aria-hidden="true"></i><br /> Movimento </a>

@@ -197,6 +197,9 @@ $(document).ready(function() {
                               <option value="1" <?php echo ($tip != 1 ? '' : 'selected="selected"'); ?>>
                                    Pontos
                               </option>
+                              <option value="2" <?php echo ($tip != 2 ? '' : 'selected="selected"'); ?>>
+                                   Agência
+                              </option>
                          </select>
                     </div>
                     <div class="col-md-2">
@@ -296,6 +299,7 @@ function carrega_pro() {
           $txt .= '<td class="text-left">' . $lin['prodescricao'] . "</td>";
           if ($lin['protipo'] == 0) {$txt .= "<td>" . "Milhas" . "</td>";}
           if ($lin['protipo'] == 1) {$txt .= "<td>" . "Pontos" . "</td>";}
+          if ($lin['protipo'] == 2) {$txt .= "<td>" . "Agência" . "</td>";}
           if ($lin['datinc'] == null) {
                $txt .= "<td>" . '' . "</td>";
           }else{

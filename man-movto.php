@@ -109,7 +109,7 @@ $(function() {
      });
 
      $('#nom_v').autocomplete({
-          source: "ajax/mostrar-con.php",
+          source: "ajax/mostrar-mil.php",
           minLength: 3,
           select: function(event, ui) {
                $('#cta_v').val(ui.item.id);
@@ -124,7 +124,7 @@ $(function() {
      });
 
      $('#nom_p').autocomplete({
-          source: "ajax/mostrar-con.php",
+          source: "ajax/mostrar-mil.php",
           minLength: 3,
           select: function(event, ui) {
                $('#cta_p').val(ui.item.id);
