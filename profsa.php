@@ -255,6 +255,7 @@ function limpa_pro($nom)  {
  function valida_cpf ($cpf) {
      $sta = 0; $som = 0;
      if ($cpf == "0") { return $sta; }
+     if (strlen(limpa_nro($cpf)) != 11) { return 2; }  
      $cpf = preg_replace('/[^0-9]/','',$cpf);  // Troca não numeros por branco.
      for ($ind=0, $nro=10; $ind <= 8 ; $ind++, $nro--) {
          $som = $som + $cpf[$ind] * $nro;

@@ -181,3 +181,71 @@ li { flex-grow: 1;  }
     color: #ecebeb;
     background: #3d7e92;
 }
+
+/* Estilização de páginas de vendas e cadastro de cliente */
+.fun-a {
+    width: 100%;
+    height: 100vh;
+    background-image: url(../img/fundo-03.jpg);
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+ }
+
+ .qua-a {
+    width: 50%;
+    height: auto;
+    color: #ffffff; 
+    padding: 10px 15px;
+    margin: 100px auto;
+    border-radius: 15px;
+    animation-duration: 3s;
+    background-color: #3d7e92;
+}
+
+@media only screen and (max-width: 800px) {  
+    .qua-a {
+        width: 90%;
+        margin: 70px auto;
+    }
+ }
+
+.bot-a {
+    cursor: pointer;
+    width: 120px;
+    height: 30px;
+    color: #ffffff;
+    font-size: 14px;
+    border-radius: 5px;
+    border: 0.5px solid #ffffff;
+    background-color: #21b6e4;
+}
+
+.fas-b {
+    cursor: pointer;
+    width: 22px;
+    height: 22px;
+    font-size: 14px;
+    font-weight: bold;
+    border-radius: 50%;
+    background-color: #ff0000;
+}
+
+.fas-c {
+    color: #d4d4d4;
+    cursor: pointer;
+    width: 22px;
+    height: 22px;
+    font-size: 14px;
+    font-weight: bold;
+    border-radius: 50%;
+    background-color: #918f8f;
+}
+
+.opc-a input[type=radio] {
+    width: 20px;
+    height: 20px;
+ }
+
+/*----------------------------------------------------------------- */
+

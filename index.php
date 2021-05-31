@@ -28,7 +28,7 @@
      <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
 
      <link href="css/pallas49.css" rel="stylesheet" type="text/css" media="screen" />
-     <title>Login - Gerenciamento de Milhas  - Alexandre Rautemberg - Profsa Informátda Ltda</title>
+     <title>Login - Gerenciamento de Milhas - Alexandre Rautemberg - Profsa Informátda Ltda</title>
 </head>
 
 <script>
@@ -79,15 +79,19 @@ $(document).ready(function() {
 ?>
 
 <body class="login">
-<h1 class="cab-0">Login inicial sistema de Gerenciamento de Milhas - Profsa Informática</h1>
+     <h1 class="cab-0">Login inicial sistema de Gerenciamento de Milhas - Profsa Informática</h1>
      <div class="entrada">
           <div class="qua-1 animated bounceInDown">
+               <div class="row">
+                    <div class="col-md-12 text-center">
+                         <img class="img-a" src="img/logo-06.png">
+                    </div>
+               </div>
                <form class="cpo-0" id="frmLogin" name="frmLogin" action="" method="POST">
-                    <br />
                     <div class="row">
                          <div class="col s1"></div>
-                         <div class="input-field col s10">                         
-                              <input type="email" class="center" id="ema" name="ema" maxlength="75" value="" required >
+                         <div class="input-field col s10">
+                              <input type="email" class="center" id="ema" name="ema" maxlength="75" value="" required>
                               <label for="nome">Seu e-mail para acesso ...</label>
                          </div>
                          <div class="col s1"></div>
@@ -95,7 +99,8 @@ $(document).ready(function() {
                     <div class="row">
                          <div class="col s1"></div>
                          <div class="input-field col s10">
-                              <input type="password" class="center" id="sen" name="sen" maxlength="15" value="" required >
+                              <input type="password" class="center" id="sen" name="sen" maxlength="15" value=""
+                                   required>
                               <label for="senha">Sua senha para entrada ...</label>
                          </div>
                          <div class="col s1"></div>

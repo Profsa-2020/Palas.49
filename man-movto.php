@@ -469,6 +469,30 @@ $(document).ready(function() {
           }
      });
 
+     $('#nom_p').blur(function() {
+          let cta = $('#cta_p').val();
+          if (cta != 0) {
+               $.getJSON("ajax/carrega-sdo.php", {
+                         cta: cta
+                    })
+                    .done(function(data) {
+                         if (data.men != "") {
+                              alert(data.men);
+                         } else {
+                              $('#sal_p').text(data.sal);
+                              $('#lib_p').text(data.lib);
+                              $('#qtd_s').val(data.sal);
+                              $('#tot_s').val(data.tot);
+                              $('#val_s').val(data.val);
+                              $('#qtd_m').val(data.qtd);
+                         }
+                    }).fail(function(data) {
+                         console.log('Erro: ' + JSON.stringify(data));
+                         alert("Erro ocorrido no processamento do saldo da conta para passagem");
+                    });
+          }
+     });
+
      $('#dat').blur(function() {
           if ($('#dat').val() == "") {
                var dat = new Date;
@@ -892,7 +916,7 @@ $(document).ready(function() {
      $vai_t = (isset($_REQUEST['vai_t']) == false ? '' : $_REQUEST['vai_t']);
      $vol_t = (isset($_REQUEST['vol_t']) == false ? '' : $_REQUEST['vol_t']);
      $bon_t = (isset($_REQUEST['bon_t']) == false ? '' : $_REQUEST['bon_t']);
-     $dtb_t = (isset($_REQUEST['dtb_t']) == false ? '' : $_REQUEST['dtb_t']);
+     $dtb_t = (isset($_REQUEST['dtb_t']) == false ? date('d/m/Y', strtotime('+18 days')) : $_REQUEST['dtb_t']);
      $dat_t = (isset($_REQUEST['dat_t']) == false ? date('d/m/Y') : $_REQUEST['dat_t']);
      $obs_t = (isset($_REQUEST['obs_t']) == false ? '' : str_replace("'", "´", $_REQUEST['obs_t']));
 
@@ -900,7 +924,7 @@ $(document).ready(function() {
           $nom = ""; $qtd = ""; $val = ""; $dat = date('d/m/Y'); $obs = ""; $car = 0;
           $nom_v = ""; $qtd_v = ""; $val_v = ""; $dat_v = date('d/m/Y'); $obs_v = ""; $rec_v = date('d/m/Y', strtotime('+45 days')); $int_v = 0; 
           $nom_p = ""; $qtd_p = ""; $dat_p = date('d/m/Y'); $obs_p = ""; $loc_p = ""; $int_p = 0; $cpf_p = 0; 
-          $nom_t = ""; $qtd_t = ""; $dat_t = date('d/m/Y'); $obs_t = ""; $des_t = ""; $pro_t = 1; $val_t = ''; $vai_t = ''; $vol_t = ''; $bon_t = '';
+          $nom_t = ""; $qtd_t = ""; $dat_t = date('d/m/Y'); $obs_t = ""; $des_t = ""; $pro_t = 1; $val_t = ''; $vai_t = ''; $vol_t = ''; $bon_t = ''; $dtb = date('d/m/Y', strtotime('+18 days'));
      }
 ?>
 
@@ -1290,7 +1314,14 @@ $(document).ready(function() {
                               <input type="text" class="form-control text-right" maxlength="12" id="qtd_p" name="qtd_p"
                                    value="<?php echo $qtd_p; ?>" />
                          </div>
-                         <div class="col-md-4"></div>
+                         <div class="lit-1 col-md-2 text-center">
+                              <label>Saldo Atual</label><br />
+                              <p id="sal_p">0</p>
+                         </div>
+                         <div class="lit-1 col-md-2 text-center">
+                              <label>Saldo Liberar</label><br />
+                              <p id="lib_p">0</p>
+                         </div>
                     </div>
                     <div class="row">
                          <div class="col-md-4"></div>

@@ -140,7 +140,7 @@ $(document).ready(function() {
                     </thead>
                     <tbody>
                          <?php 
-                              $nro = count( $dad['cta']);
+                              $nro = count($dad['cta']);
                               foreach( $dad['cta'] as $cpo => $con ) {                                   
                                    $txt =  '<tr>';
                                    $txt .= '<td>' . $dad['usu'][$cpo] . '</td>';
@@ -205,6 +205,8 @@ function carrega_das(&$dad) {
      $dad['qtd_c'] = 0;
      $dad['val_v'] = 0;
      $dad['qtd_v'] = 0;
+     $dad['int'] = array();
+     $dad['cta'] = array();
      include_once "dados.php";
      $com  = "Select * from tb_movto where movempresa = " . $_SESSION['wrkcodemp'];
      $nro = leitura_reg($com, $reg);
