@@ -116,7 +116,7 @@ $(document).ready(function() {
      $_SESSION['wrknompro'] = __FILE__;
      date_default_timezone_set("America/Sao_Paulo");
      if (isset($_SESSION['wrkdadven']) == false) { $_SESSION['wrkdadven'] = array(); }
-     
+
      if (isset($_SESSION['wrkdadven']['nom_c']) == false) { 
           echo '<script>alert("Dados básicos do usuário não foram informados ainda !");</script>';
           exit('<script>location.href = "venda-1.php"</script>');
@@ -162,8 +162,16 @@ $(document).ready(function() {
                     </div>
                     <div class="row">
                          <div class="col-md-12 text-center">
-                              <?php echo '<strong>' . 'Plano escolhido: ' . $_SESSION['wrkdadven']['des_v'] . '</strong><br />'; ?>
-                              <?php echo '<strong>' . 'Valor mensal: R$ ' . number_format($_SESSION['wrkdadven']['val_v'], 2, ",", ".") . '</strong>'; ?>
+                              <?php 
+                              if ($_SESSION['wrkdadven']['val_v'] == "") {
+                                   echo '<strong>' . 'Plano escolhido: ' . 'Contate a administração ...' . '</strong><br />'; 
+                                   echo '<strong>' . 'Valor mensal: R$ ' . "a combinar ..." . '</strong>'; 
+                              } else {
+                                   echo '<strong>' . 'Plano escolhido: ' . $_SESSION['wrkdadven']['des_v'] . '</strong><br />'; 
+                                   echo '<strong>' . 'Valor mensal: R$ ' . number_format($_SESSION['wrkdadven']['val_v'], 2, ",", ".") . '</strong>'; 
+                              }
+                              ?>
+
                          </div>
                     </div>
                     <br />

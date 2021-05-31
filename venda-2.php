@@ -104,6 +104,7 @@ $(document).ready(function() {
                     if ($('#est').val() == "") {
                          $('#est').val(data.uf);
                     }
+                    $('#num').focus();
                });
           }
      });
@@ -177,7 +178,6 @@ $(document).ready(function() {
           echo '<script>alert("Dados básicos do usuário não foram informados ainda !");</script>';
           exit('<script>location.href = "venda-1.php"</script>');
      }
-
 
 ?>
 

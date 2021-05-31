@@ -73,11 +73,12 @@ $(document).ready(function() {
 </script>
 
 <?php
+     $pla = 0;
      $_SESSION['wrkdirsis'] = __DIR__;
      $_SESSION['wrknompro'] = __FILE__;
      date_default_timezone_set("America/Sao_Paulo");
      if (isset($_SESSION['wrkdadven']) == false) { $_SESSION['wrkdadven'] = array(); }
-     if (isset($_SESSION['wrkdadven']['pla_v']) == false) { $pla = 0; }
+     if (isset($_SESSION['wrkdadven']['pla_v']) == false) {$pla = 0; }
      if (isset($_SESSION['wrkdadven']['pla_v']) == true) { $pla = $_SESSION['wrkdadven']['pla_v']; }
 
      if (isset($_SESSION['wrkdadven']['nom_c']) == false) { 
@@ -148,8 +149,8 @@ function carrega_pla($pla) {
      $nro = leitura_reg($com, $reg);
      foreach ($reg as $lin) {
           $txt =  '<tr>';
-          if ($lin['idplano'] == $pla) {
-               $txt .= '<td class="text-center">' . '<input type="radio" name="plano" value="' . $lin['idplano'] . '" checked />' . '</td>';
+          if ($pla == 0 || $lin['idplano'] == $pla) {
+               $txt .= '<td class="text-center">' . '<input type="radio" name="plano" value="' . $lin['idplano'] . '" checked />' . '</td>'; $pla = 88; 
           } else {
                $txt .= '<td class="text-center">' . '<input type="radio" name="plano" value="' . $lin['idplano'] . '" />' . '</td>';
           }
@@ -160,7 +161,7 @@ function carrega_pla($pla) {
           echo $txt; $num = $num + 1; $qtd = $lin['planumerotit'];
      }
      $txt =  '<tr>';
-     $txt .= '<td class="text-center">' . '<input type="radio" name="plano" value="99" />' . '</td>';
+     $txt .= '<td class="text-center">' . '<input type="radio" name="plano" value="99"' . ($pla != 99 ? '': ' checked ') . '/>' . '</td>';
      $txt .= '<td class="text-left">' . 'Plano - X' . '</td>';
      $txt .= '<td>' . 'Acima de ' . $qtd . ' usuários entrar em contato ...' . '</td>';
      $txt .= '<td class="text-center">' . '<i class="fa fa-whatsapp fa-1g" aria-hidden="true"></i>' . '</td>';
