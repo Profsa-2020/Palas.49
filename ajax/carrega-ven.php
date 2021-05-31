@@ -14,7 +14,7 @@
      if ($tip == 1 && isset($_SESSION['wrkdadven']['nom_c']) == false) {
           $tab['men'] = '*';
      } 
-     if ($tip == 1 && $tab['men'] == "") {
+     if ($tab['men'] == "") {
           $tab['nom'] = $_SESSION['wrkdadven']['nom_c'];
           $tab['ema'] = $_SESSION['wrkdadven']['ema_c'];
           $tab['cel'] = $_SESSION['wrkdadven']['cel_c'];

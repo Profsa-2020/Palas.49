@@ -111,10 +111,10 @@ $(document).ready(function() {
      include_once "dados.php";
      include_once "profsa.php";
      $_SESSION['wrknompro'] = __FILE__;
-     if ($_SESSION['wrktipusu'] <= 3) {
-     echo '<script>alert("Nível de usuário não permite visualização de log de acesso");</script>';
-     echo '<script>history.go(-1);</script>';
-}     
+     if ($_SESSION['wrktipusu'] <= 4) {
+          echo '<script>alert("Nível de usuário não permite visualização de log de acesso");</script>';
+          echo '<script>history.go(-1);</script>';
+     }     
      date_default_timezone_set("America/Sao_Paulo");
      $hoj = date('d/m/Y');
      $dti = date('d/m/Y', strtotime('-6 days'));

@@ -125,11 +125,16 @@ $(document).ready(function() {
      $ret = 0; 
      $per = "";
      $del = "";
+     $hab = "";
      $bot = "Salvar";
      include_once "dados.php";
      include_once "profsa.php";
      $_SESSION['wrknompro'] = __FILE__; 
      date_default_timezone_set("America/Sao_Paulo");
+     if ($_SESSION['wrktipusu'] <= 3) {
+          echo '<script>alert("Nível de usuário não permite visualização de log de acesso");</script>';
+          echo '<script>history.go(-1);</script>';
+     }     
      $_SESSION['wrkdatide'] = date ("d/m/Y H:i:s", getlastmod());
      $_SESSION['wrknomide'] = get_current_user();
      if (isset($_SERVER['HTTP_REFERER']) == true) {
@@ -143,6 +148,8 @@ $(document).ready(function() {
      if (isset($_SESSION['wrknumvol']) == false) { $_SESSION['wrknumvol'] = 1; }
      if (isset($_REQUEST['ope']) == true) { $_SESSION['wrkopereg'] = $_REQUEST['ope']; }
      if (isset($_REQUEST['cod']) == true) { $_SESSION['wrkcodreg'] = $_REQUEST['cod']; }
+
+     if ($_SESSION['wrktipusu'] <= 4) { $hab = " disabled "; }
 
      $cod = (isset($_REQUEST['cod']) == false ? 0  : $_REQUEST['cod']);
      $sta = (isset($_REQUEST['sta']) == false ? 0  : $_REQUEST['sta']);
@@ -255,23 +262,27 @@ $(document).ready(function() {
                     <div class="col-md-2">
                          <label>Tipo</label>
                          <select id="tip" name="tip" class="form-control" required>
-                              <option value="0" <?php echo ($tip != 0 ? '' : 'selected="selected"'); ?>>
-                                   Visitante</option>
+                              <?php if ($_SESSION['wrktipusu'] >= 5) { ?>
+                                   <option value="0" <?php echo ($tip != 0 ? '' : 'selected="selected"'); ?>>
+                                        Visitante</option>
+                                   <?php } ?>                                   
                               <option value="1" <?php echo ($tip != 1 ? '' : 'selected="selected"'); ?>>
                                    Vendedor</option>
                               <option value="2" <?php echo ($tip != 2 ? '' : 'selected="selected"'); ?>>
                                    Titular</option>
                               <option value="3" <?php echo ($tip != 3 ? '' : 'selected="selected"'); ?>>
                                    Gerente</option>
-                              <option value="4" <?php echo ($tip != 4 ? '' : 'selected="selected"'); ?>>
-                                   Administrador</option>
-                              <option value="5" <?php echo ($tip != 5 ? '' : 'selected="selected"'); ?>>
-                                   Usuário Master</option>
+                              <?php if ($_SESSION['wrktipusu'] >= 5) { ?>
+                                   <option value="4" <?php echo ($tip != 4 ? '' : 'selected="selected"'); ?>>
+                                        Administrador</option>
+                                   <option value="5" <?php echo ($tip != 5 ? '' : 'selected="selected"'); ?>>
+                                        Usuário Master</option>
+                                   <?php } ?>
                          </select>
                     </div>
                     <div class="col-md-2">
                          <label>Status</label>
-                         <select name="sta" class="form-control">
+                         <select name="sta" class="form-control" <?php echo $hab; ?> >
                               <option value="0" <?php echo ($sta != 0 ? '' : 'selected="selected"'); ?>>
                                    Ativo</option>
                               <option value="1" <?php echo ($sta != 1 ? '' : 'selected="selected"'); ?>>
@@ -285,12 +296,12 @@ $(document).ready(function() {
                     <div class="col-md-2">
                          <label>Acessos</label>
                          <input type="text" class="form-control text-center" maxlength="6" id="ace" name="ace"
-                              value="<?php echo $ace; ?>" />
+                              value="<?php echo $ace; ?>" <?php echo $hab; ?> />
                     </div>
                     <div class="col-md-2">
                          <label>Validade</label>
                          <input type="text" class="form-control text-center" maxlength="10" id="val" name="val"
-                              value="<?php echo $val; ?>" />
+                              value="<?php echo $val; ?>" <?php echo $hab; ?> />
                     </div>
                </div>
                <div class="row">
@@ -504,10 +515,12 @@ function ultimo_cod() {
                return 8;
           }
      }
-     if ($_REQUEST['val'] != "") {
-          if (valida_dat($_REQUEST['val']) != 0) {
-               echo '<script>alert("Data de validade informada no usuário não é valida");</script>';
-               return 4;
+     if (isset($_REQUEST['val']) == true) {
+          if ($_REQUEST['val'] != "") {
+               if (valida_dat($_REQUEST['val']) != 0) {
+                    echo '<script>alert("Data de validade informada no usuário não é valida");</script>';
+                    return 4;
+               }
           }
      }
      if ($_REQUEST['tip'] > $_SESSION['wrktipusu'] ) {
@@ -540,12 +553,14 @@ function ultimo_cod() {
  }    
      
  function incluir_usu() {
-     $ret = 0;
+     $ret = 0; $emp = 0;
      include_once "dados.php";
+     if ($_SESSION['wrktipusu'] >= 4) { $emp = $reg['idsenha']; }
      if ($_REQUEST['ape'] == "") { $_REQUEST['ape'] = primeiro_nom($_REQUEST['nom']); }
      $ace = str_replace(".", "", $_REQUEST['ace']); $ace = str_replace(",", ".", $ace);
      $val = substr($_REQUEST['val'],6,4) . "-" . substr($_REQUEST['val'],3,2) . "-" . substr($_REQUEST['val'],0,2);     
      $sql  = "insert into tb_usuario (";
+     $sql .= "usuempresa, ";
      $sql .= "usustatus, ";
      $sql .= "usunome, ";
      $sql .= "usuapelido, ";
@@ -554,8 +569,12 @@ function ultimo_cod() {
      $sql .= "usucelular, ";
      $sql .= "ususenha, ";
      $sql .= "usutipo, ";
-     $sql .= "usuacessos, ";
-     $sql .= "usuvalidade, ";
+     if (isset($_REQUEST['ace']) == true) {
+          $sql .= "usuacessos, ";
+     }
+     if (isset($_REQUEST['val']) == true) {
+          $sql .= "usuvalidade, ";
+     }
      $sql .= "usucep, ";
      $sql .= "usuendereco, ";
      $sql .= "usunumero, ";
@@ -574,6 +593,7 @@ function ultimo_cod() {
      $sql .= "keyinc, ";
      $sql .= "datinc ";
      $sql .= ") value ( ";
+     $sql .= "'" . $emp . "',";
      $sql .= "'" . $_REQUEST['sta'] . "',";
      $sql .= "'" . $_REQUEST['nom'] . "',";
      $sql .= "'" . $_REQUEST['ape'] . "',";
@@ -582,8 +602,12 @@ function ultimo_cod() {
      $sql .= "'" . $_REQUEST['cel'] . "',";
      $sql .= "'" . base64_encode($_REQUEST['sen']) . "',";
      $sql .= "'" . $_REQUEST['tip'] . "',";
-     $sql .= "'" . ($ace == "" || $ace == "0" ? '999999' : $ace) . "',";
-     $sql .= "'" . ($val == "--" ? date('Y-m-d', strtotime('+180 days')) : $val) . "',";
+     if (isset($_REQUEST['ace']) == true) {
+          $sql .= "'" . ($ace == "" || $ace == "0" ? '999999' : $ace) . "',";
+     }
+     if (isset($_REQUEST['val']) == true) {
+          $sql .= "'" . ($val == "--" ? date('Y-m-d', strtotime('+180 days')) : $val) . "',";
+     }
      $sql .= "'" . limpa_nro($_REQUEST['cep']) . "',";
      $sql .= "'" . $_REQUEST['end'] . "',";
      $sql .= "'" . limpa_nro($_REQUEST['num']) . "',";
@@ -619,20 +643,30 @@ function ultimo_cod() {
 function alterar_usu() {
      $ret = 0;
      include_once "dados.php";
-     $ace = str_replace(".", "", $_REQUEST['ace']); $ace = str_replace(",", ".", $ace);
-     $val = substr($_REQUEST['val'],6,4) . "-" . substr($_REQUEST['val'],3,2) . "-" . substr($_REQUEST['val'],0,2);
+     if (isset($_REQUEST['ace']) == true) {
+          $ace = str_replace(".", "", $_REQUEST['ace']); $ace = str_replace(",", ".", $ace);
+     }
+     if (isset($_REQUEST['val']) == true) {
+          $val = substr($_REQUEST['val'],6,4) . "-" . substr($_REQUEST['val'],3,2) . "-" . substr($_REQUEST['val'],0,2);
+     }
      $sql  = "update tb_usuario set ";
      $sql .= "usunome = '". $_REQUEST['nom'] . "', ";
      $sql .= "usuapelido = '". $_REQUEST['ape'] . "', ";
      $sql .= "usucpf = '". limpa_nro($_REQUEST['cpf']) . "', ";
-     $sql .= "usustatus = '". $_REQUEST['sta'] . "', ";
+     if (isset($_REQUEST['sta']) == true) {
+          $sql .= "usustatus = '". $_REQUEST['sta'] . "', ";
+     }
      $sql .= "usutipo = '". $_REQUEST['tip'] . "', ";
      $sql .= "ususenha = '". base64_encode($_REQUEST['sen']) . "', ";
      $sql .= "usuemail = '". $_REQUEST['ema'] . "', ";
      $sql .= "usutelefone = '". $_REQUEST['tel'] . "', ";
      $sql .= "usucelular = '". $_REQUEST['cel'] . "', ";
-     $sql .= "usuacessos = '". ($ace == "0" ? '1000000' : $ace) . "', ";
-     $sql .= "usuvalidade =  ". ($val == "--" ? 'null' : "'" . $val . "'") . " , ";
+     if (isset($_REQUEST['ace']) == true) {
+          $sql .= "usuacessos = '". ($ace == "0" ? '1000000' : $ace) . "', ";
+     }
+     if (isset($_REQUEST['val']) == true) {
+          $sql .= "usuvalidade =  ". ($val == "--" ? 'null' : "'" . $val . "'") . " , ";
+     }
      $sql .= "usucep = '". limpa_nro($_REQUEST['cep']) . "', ";
      $sql .= "usuendereco = '". $_REQUEST['end'] . "', ";
      $sql .= "usunumero = '". limpa_nro($_REQUEST['num']) . "', ";

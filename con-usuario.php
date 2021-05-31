@@ -102,7 +102,10 @@ $(document).ready(function() {
      $_SESSION['wrknumvol'] = 0;
      $_SESSION['wrknompro'] = __FILE__; 
      date_default_timezone_set("America/Sao_Paulo");     
-
+     if ($_SESSION['wrktipusu'] <= 3) {
+          echo '<script>alert("Nível de usuário não permite visualização de log de acesso");</script>';
+          echo '<script>history.go(-1);</script>';
+     }     
 ?>
 
 <body id="box00">

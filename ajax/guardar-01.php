@@ -19,6 +19,12 @@
           $tab['men'] = "Dígito de controle do C.p.f. informado não está correto !";
      }
      if ($tab['men'] == "") {
+          $cha = existe_cpf($_REQUEST['cpf'], $nom);
+          if ($cha != 0) {
+               $tab['men'] = "Número de C.p.f. informado já cadastrado no sistema !";
+          }
+     }
+     if ($tab['men'] == "") {
           $_SESSION['wrkdadven']['nom_c'] = $_REQUEST['nom'];
           $_SESSION['wrkdadven']['ema_c'] = $_REQUEST['ema'];
           $_SESSION['wrkdadven']['cel_c'] = $_REQUEST['cel'];
@@ -29,4 +35,16 @@
      
      echo json_encode($tab);     
 
+
+     function existe_cpf($cpf, &$nom) {
+          $ret = 0;
+          include_once "../dados.php";
+          $nro = acessa_reg("Select idsenha, usunome from tb_usuario where usucpf = '" . limpa_nro($cpf) . "'", $reg);            
+          if ($nro == 1) {
+               $ret = $reg['idsenha'];
+               $nom = $reg['usunome'];
+          }
+          return $ret;
+     }
+     
 ?>
