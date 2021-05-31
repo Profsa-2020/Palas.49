@@ -110,6 +110,8 @@ $(document).ready(function() {
 </script>
 
 <?php
+     include_once "dados.php";
+     include_once "profsa.php";
      $_SESSION['wrkdirsis'] = __DIR__;
      $_SESSION['wrknompro'] = __FILE__;
      date_default_timezone_set("America/Sao_Paulo");
@@ -117,6 +119,8 @@ $(document).ready(function() {
      $_SESSION['wrknomide'] = get_current_user();
      $_SESSION['wrknumusu'] = getmypid();
      if (isset($_SESSION['wrkdadven']) == false) { $_SESSION['wrkdadven'] = array(); }
+
+     $ret = sessao_pag();
 
 ?>
 
@@ -190,5 +194,55 @@ $(document).ready(function() {
           </div>
      </div>
 </body>
+
+<?php
+function sessao_pag() {
+     $sta = 0; $_SESSION['wrkdadven']['err_e'] = ""; $_SESSION['wrkdadven']['ses_e'] = "";
+     $_SESSION['wrkdadven']['tip_e'] = retorna_dad('emptipo', 'tb_empresa', 'idempresa', 1); 
+     $_SESSION['wrkdadven']['ema_e'] = retorna_dad('empemail', 'tb_empresa', 'idempresa', 1); 
+     if ($_SESSION['wrkdadven']['ema_e'] == "") {
+          echo '<script>alert("E-Mail informado na empresa para PagSeguro em branco !");</script>';
+          return 1;
+     }
+     if ($_SESSION['wrkdadven']['tip_e'] == 1) {  // 0-Homologação 1-Produção
+          $_SESSION['wrkdadven']['tok_e'] = retorna_dad('emptokenpro', 'tb_empresa', 'idempresa', 1); 
+          $url = "https://ws.pagseguro.uol.com.br/v2/sessions?" . 'email=' . $_SESSION['wrkdadven']['ema_e'] . '&token=' . $_SESSION['wrkdadven']['tok_e'];
+     } else {
+          $_SESSION['wrkdadven']['tok_e'] = retorna_dad('emptokenhom', 'tb_empresa', 'idempresa', 1); 
+          $url = "https://ws.sandbox.pagseguro.uol.com.br/v2/sessions?" . 'email=' . $_SESSION['wrkdadven']['ema_e'] . '&token=' . $_SESSION['wrkdadven']['tok_e'];
+     }
+
+     $cur  = curl_init($url);
+     curl_setopt($cur, CURLOPT_HTTPHEADER, array("Content-Type: application/x-www-form-urlencode; charset=UTF-8"));
+     curl_setopt($cur, CURLOPT_POST, 1);
+     if ($_SESSION['wrkdadven']['tip_e'] == 1) {
+          curl_setopt($cur, CURLOPT_SSL_VERIFYPEER, true);
+     } else {
+          curl_setopt($cur, CURLOPT_SSL_VERIFYPEER, false);
+     }
+     curl_setopt($cur, CURLOPT_RETURNTRANSFER, true);
+     
+     $ret = curl_exec($cur);
+     curl_close($cur);
+     if ($ret == false) { 
+          echo '<script>alert("Acesso a PagSeguro para identificação não foi autorizado");</script>';
+          return 2;
+     }
+     if ($ret == 'Unauthorized') { 
+          echo '<script>alert("Informações para logar no PagSeguro não estão corretas");</script>';
+          return 3;
+     }
+     $xml = simplexml_load_string($ret);
+     if (isset($xml->error) == true) {
+          $sta = 4;
+          $_SESSION['wrkdadven']['err_e'] = (string) $xml->error->code;
+          echo '<script>alert("' . $_SESSION['wrkdadven']['err_e'] . '");</script>';
+     }else{
+          $_SESSION['wrkdadven']['ses_e'] = (string) $xml->id;
+     }
+     return $sta;
+}
+
+?>
 
 </html>

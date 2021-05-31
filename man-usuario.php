@@ -265,7 +265,7 @@ $(document).ready(function() {
                               <?php if ($_SESSION['wrktipusu'] >= 5) { ?>
                                    <option value="0" <?php echo ($tip != 0 ? '' : 'selected="selected"'); ?>>
                                         Visitante</option>
-                                   <?php } ?>                                   
+                              <?php } ?>                                   
                               <option value="1" <?php echo ($tip != 1 ? '' : 'selected="selected"'); ?>>
                                    Vendedor</option>
                               <option value="2" <?php echo ($tip != 2 ? '' : 'selected="selected"'); ?>>
@@ -277,7 +277,7 @@ $(document).ready(function() {
                                         Administrador</option>
                                    <option value="5" <?php echo ($tip != 5 ? '' : 'selected="selected"'); ?>>
                                         Usuário Master</option>
-                                   <?php } ?>
+                              <?php } ?>
                          </select>
                     </div>
                     <div class="col-md-2">
