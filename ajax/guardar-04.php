@@ -5,6 +5,7 @@
      include_once "../dados.php";
      include_once "../profsa.php";
      date_default_timezone_set("America/Sao_Paulo");
+     if (isset($_SESSION['wrkcodreg']) == false) { $_SESSION['wrkcodreg'] = 0; }
      if (strlen($_REQUEST['nom']) <= 5) {
           $tab['men'] = "Nome no cartão não pode conter menos de 5 caracteres !";
      }
@@ -27,18 +28,19 @@
      }
      if ($tab['men'] == "") {
           $ret = enviar_ema();
+          $ret = gravar_usu();
           $_SESSION['wrkdadven']['nom_v'] = $_REQUEST['nom'];
           $_SESSION['wrkdadven']['cpf_v'] = $_REQUEST['cpf'];
           $_SESSION['wrkdadven']['dat_v'] = $_REQUEST['dat'];
           $_SESSION['wrkdadven']['cvv_v'] = $_REQUEST['cvv'];
           $_SESSION['wrkdadven']['car_v'] = $_REQUEST['car'];
-          $ret = gravar_log(26,"Finzalização de Adesão do cliente: " . $_REQUEST['nom'] . " Cpf: " . $_REQUEST['cpf'] . " Valor: " . number_format($_SESSION['wrkdadven']['val_v'], 2, ",", "."));
+          $ret = gravar_log(26,"Finalização de Adesão do cliente: " . $_SESSION['wrkdadven']['nom_c'] . " Cpf: " . $_SESSION['wrkdadven']['cpf_c'] . " Valor: " . number_format($_SESSION['wrkdadven']['val_v'], 2, ",", "."));
      }
      
      echo json_encode($tab);     
 
      function enviar_ema() {
-          $erro = "";
+          $sta = 0; $erro = "";
           $tex  = '<!DOCTYPE html>';
           $tex .= '<html lang="pt_br">';
           $tex .= '<head>';
@@ -73,11 +75,99 @@
           $sta = envia_email($_SESSION['wrkdadven']['ema_c'], $asu, $tex, $_SESSION['wrkdadven']['nom_c'], '', '');
 
           if ($sta == 1) {
-               $erro = "Senha e Login de acesso enviado com sucesso !";
+               $erro = "Dados de adesão do usuário enviado com sucesso !";
           }else{
-               $erro = "Erro no envio de login e senha para o usuário, lamento !";
+               $erro = "Erro no envio de processo de adesão para o usuário, lamento !";
           }          
-          return $erro;
+          return $sta;
      }
 
+     function gravar_usu() {
+          $ret = 0; $erro = ""; $emp = 0;
+          include_once "../dados.php";
+          $sql  = "insert into tb_usuario (";
+          $sql .= "usuempresa, ";
+          $sql .= "usustatus, ";
+          $sql .= "usunome, ";
+          $sql .= "usuapelido, ";
+          $sql .= "usuemail, ";
+          $sql .= "usutelefone, ";
+          $sql .= "usucelular, ";
+          $sql .= "ususenha, ";
+          $sql .= "usutipo, ";
+          $sql .= "usuacessos, ";
+          $sql .= "usuvalidade, ";
+          $sql .= "usucep, ";
+          $sql .= "usuendereco, ";
+          $sql .= "usunumero, ";
+          $sql .= "usucomplemento, ";
+          $sql .= "usubairro, ";
+          $sql .= "usucidade, ";
+          $sql .= "usuestado, ";
+          $sql .= "usucomissaov, ";
+          $sql .= "usucomissaop, ";
+          $sql .= "usucpf, ";
+          $sql .= "usudocto, ";
+          $sql .= "usubanco, ";
+          $sql .= "usuagencia, ";
+          $sql .= "usuconta, ";
+          $sql .= "usuobservacao, ";
+          $sql .= "keyinc, ";
+          $sql .= "datinc ";
+          $sql .= ") value ( ";
+          $sql .= "'" . $emp . "',";
+          $sql .= "'" . '0' . "',";
+          $sql .= "'" . $_SESSION['wrkdadven']['nom_c'] . "',";
+          $sql .= "'" . primeiro_nom($_SESSION['wrkdadven']['nom_c']) . "',";
+          $sql .= "'" . $_SESSION['wrkdadven']['ema_c'] . "',";
+          $sql .= "'" . $_SESSION['wrkdadven']['cel_c'] . "',";
+          $sql .= "'" . $_SESSION['wrkdadven']['cel_c'] . "',";
+          $sql .= "'" . base64_encode($_SESSION['wrkdadven']['sen_c']) . "',";
+          if ($_SESSION['wrkdadven']['pla_v'] == "88") {    // Visitante
+               $sql .= "'" . '0' . "',";
+               $sql .= "'" . '100' . "',";
+               $sql .= "'" . date('Y-m-d', strtotime('+30 days')) . "',";     
+          } else if ($_SESSION['wrkdadven']['pla_v'] == "99") {  // a combinar
+               $sql .= "'" . '0' . "',";
+               $sql .= "'" . '100' . "',";
+               $sql .= "'" . date('Y-m-d', strtotime('+10 days')) . "',";     
+          } else {
+               $sql .= "'" . '4' . "',";
+               $sql .= "'" . '999999' . "',";
+               $sql .= "'" . '2031-12-31' . "',";     
+          }
+          $sql .= "'" . limpa_nro($_SESSION['wrkdadven']['cep_e']) . "',";
+          $sql .= "'" . $_SESSION['wrkdadven']['end_e'] . "',";
+          $sql .= "'" . limpa_nro($_SESSION['wrkdadven']['num_e']) . "',";
+          $sql .= "'" . $_SESSION['wrkdadven']['com_e'] . "',";
+          $sql .= "'" . $_SESSION['wrkdadven']['bai_e'] . "',";
+          $sql .= "'" . $_SESSION['wrkdadven']['cid_e'] . "',";
+          $sql .= "'" . $_SESSION['wrkdadven']['est_e'] . "',";
+          $sql .= "'" . "0" . "',";
+          $sql .= "'" . "0" . "',";
+          $sql .= "'" . limpa_nro($_SESSION['wrkdadven']['cpf_c']) . "',";
+          $sql .= "'" . '0' . "',";
+          $sql .= "'" . '' . "',";
+          $sql .= "'" . '' . "',";
+          $sql .= "'" . '' . "',";
+          $sql .= "'" . 'Adesão do cliente efetuada via página de venda em: ' . date('d/m/Y H:i:s') . "',";
+          $sql .= "'" . '0' . "',";
+          $sql .= "'" . date("Y/m/d H:i:s") . "')";
+          $ret = comando_tab($sql, $nro, $cha, $men);
+          $_SESSION['wrkcodreg'] = $cha;     // Chave do usuário criado
+          if ($ret == false) {
+               $erro = $sql;
+          } else {
+               $sql  = "update tb_usuario set ";
+               $sql .= "usuempresa = '". $_SESSION['wrkcodreg'] . "', ";
+               $sql .= "keyalt = '" . $_SESSION['wrkideusu'] . "', ";
+               $sql .= "datalt = '" . date("Y/m/d H:i:s") . "' ";
+               $sql .= "where idsenha = " . $_SESSION['wrkcodreg'];
+               $ret = comando_tab($sql, $nro, $cha, $men);
+               if ($ret == false) {
+                    $erro = $sql;
+               }          
+          }     
+          return $ret;
+     }
 ?>

@@ -59,8 +59,8 @@ $(document).ready(function() {
      $('#tab-0').DataTable({
           "pageLength": 25,
           "aaSorting": [
-               [3, 'asc'],
-               [2, 'asc']
+               [2, 'asc'],
+               [3, 'asc']
           ],
           "language": {
                "lengthMenu": "Demonstrar _MENU_ linhas por páginas",
@@ -165,35 +165,39 @@ $(document).ready(function() {
 <?php
 function carrega_usu() {
      include_once "dados.php";
-     $com = "Select * from tb_usuario order by usunome, idsenha";
+     if ($_SESSION['wrktipusu'] == 5) {
+          $com = "Select * from tb_usuario order by usunome, idsenha";
+     } else {
+          $com = "Select * from tb_usuario where usuempresa = " . $_SESSION['wrkcodemp'] . " order by usunome, idsenha";
+     }
      $nro = leitura_reg($com, $reg);
      foreach ($reg as $lin) {
-         $txt =  '<tr>';
-         $txt .= '<td class="text-center"><a href="man-usuario.php?ope=2&cod=' . $lin['idsenha'] . '" title="Efetua alteração do registro informado na linha"><i class="large material-icons">healing</i></a></td>';
-         $txt .= '<td class="lit-d text-center"><a href="man-usuario.php?ope=3&cod=' . $lin['idsenha'] . '" title="Efetua exclusão do registro informado na linha"><i class="cor-1 large material-icons">delete_forever</i></a></td>';
-         $txt .= '<td class="text-center">' . $lin['idsenha'] . '</td>';
-         $txt .= "<td>" . $lin['usunome'] . "</td>";
-         if ($lin['usustatus'] == 0) {$txt .= "<td>" . "Ativo" . "</td>";}
-         if ($lin['usustatus'] == 1) {$txt .= "<td>" . "Bloqueado" . "</td>";}
-         if ($lin['usustatus'] == 2) {$txt .= "<td>" . "Suspenso" . "</td>";}
-         if ($lin['usustatus'] == 3) {$txt .= "<td>" . "Cancelado" . "</td>";}
-         $txt .= "<td>" . $lin['usuemail'] . "</td>";
-         if ($lin['usutipo'] == 0) {$txt .= "<td>" . "Visitante" . "</td>";}
-         if ($lin['usutipo'] == 1) {$txt .= "<td>" . "Vendedor" . "</td>";}
-         if ($lin['usutipo'] == 2) {$txt .= "<td>" . "Titular" . "</td>";}
-         if ($lin['usutipo'] == 3) {$txt .= "<td>" . "Gerente" . "</td>";}
-         if ($lin['usutipo'] == 4) {$txt .= "<td>" . "Administrador" . "</td>";}
-         if ($lin['usutipo'] == 5) {$txt .= "<td>" . "Usuário Master" . "</td>";}
-         if ($lin['usuvalidade'] == null) {
+          $txt =  '<tr>';
+          $txt .= '<td class="text-center"><a href="man-usuario.php?ope=2&cod=' . $lin['idsenha'] . '" title="Efetua alteração do registro informado na linha"><i class="large material-icons">healing</i></a></td>';
+          $txt .= '<td class="lit-d text-center"><a href="man-usuario.php?ope=3&cod=' . $lin['idsenha'] . '" title="Efetua exclusão do registro informado na linha"><i class="cor-1 large material-icons">delete_forever</i></a></td>';
+          $txt .= '<td class="text-center">' . str_pad($lin['usuempresa'],3,"0",STR_PAD_LEFT) . "-" . $lin['idsenha'] . '</td>';
+          $txt .= "<td>" . $lin['usunome'] . "</td>";
+          if ($lin['usustatus'] == 0) {$txt .= "<td>" . "Ativo" . "</td>";}
+          if ($lin['usustatus'] == 1) {$txt .= "<td>" . "Bloqueado" . "</td>";}
+          if ($lin['usustatus'] == 2) {$txt .= "<td>" . "Suspenso" . "</td>";}
+          if ($lin['usustatus'] == 3) {$txt .= "<td>" . "Cancelado" . "</td>";}
+          $txt .= "<td>" . $lin['usuemail'] . "</td>";
+          if ($lin['usutipo'] == 0) {$txt .= "<td>" . "Visitante" . "</td>";}
+          if ($lin['usutipo'] == 1) {$txt .= "<td>" . "Vendedor" . "</td>";}
+          if ($lin['usutipo'] == 2) {$txt .= "<td>" . "Titular" . "</td>";}
+          if ($lin['usutipo'] == 3) {$txt .= "<td>" . "Gerente" . "</td>";}
+          if ($lin['usutipo'] == 4) {$txt .= "<td>" . "Administrador" . "</td>";}
+          if ($lin['usutipo'] == 5) {$txt .= "<td>" . "Usuário Master" . "</td>";}
+          if ($lin['usuvalidade'] == null) {
                $txt .= "<td>" . '' . "</td>";
           }else{
                $txt .= "<td>" . date('d/m/Y',strtotime($lin['usuvalidade'])) . "</td>";
           }
-         $txt .= '<td class="text-center">' . $lin['usuacessos'] . '</td>';
-         $txt .= "<td>" . $lin['usucelular'] . "</td>";
-         $txt .= "<td>" . $lin['usutelefone'] . "</td>";
-         $txt .= "</tr>";
-         echo $txt;
+          $txt .= '<td class="text-center">' . $lin['usuacessos'] . '</td>';
+          $txt .= "<td>" . $lin['usucelular'] . "</td>";
+          $txt .= "<td>" . $lin['usutelefone'] . "</td>";
+          $txt .= "</tr>";
+          echo $txt;
      }
 }
 

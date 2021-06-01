@@ -190,7 +190,11 @@ $(document).ready(function() {
      if ($_SESSION['wrkopereg'] >= 2) {
           if (isset($_REQUEST['salvar']) == false) { 
                $cha = $_SESSION['wrkcodreg']; $_SESSION['wrknumvol'] = 1;
-               $ret = ler_usuario($cha, $nom, $ape, $sta, $tip, $sen, $ema, $val, $ace, $tel, $cel, $cep, $end, $num, $com, $bai, $cid, $est, $cmv, $cmt, $cpf, $doc, $bco, $age, $cta, $fav, $obs); 
+               $ret = ler_usuario($cha, $emp, $nom, $ape, $sta, $tip, $sen, $ema, $val, $ace, $tel, $cel, $cep, $end, $num, $com, $bai, $cid, $est, $cmv, $cmt, $cpf, $doc, $bco, $age, $cta, $fav, $obs); 
+               if ($_SESSION['wrkcodemp'] != $emp) {
+                    echo '<script>alert("Seu nível de acesso a este usuário não permido para você, lamento");</script>';
+                    echo '<script>history.go(-2);</script>';
+               }     
           }
      }
      if (isset($_REQUEST['salvar']) == true) {
@@ -220,8 +224,6 @@ $(document).ready(function() {
                echo '<script>history.go(-' . $_SESSION['wrknumvol'] . ');</script>'; $_SESSION['wrknumvol'] = 1;
           }
      }
-
-
 ?>
 
 <body id="box00">
@@ -318,6 +320,7 @@ $(document).ready(function() {
                     </div>
                     <div class="col-md-3"></div>
                </div>
+               <hr />
                <div class="row">
                     <div class="col-md-2">
                          <label>CEP</label>
@@ -374,8 +377,9 @@ $(document).ready(function() {
                     </div>
                     <div class="col-md-3"></div>
                </div>
+               <hr />
                <div class="row">
-                    <div class="col-md-2">
+                    <div class="col-md-1">
                          <label>Banco</label>
                          <input type="text" class="form-control" maxlength="3" id="bco" name="bco"
                               value="<?php echo $bco; ?>" />
@@ -385,21 +389,27 @@ $(document).ready(function() {
                          <input type="text" class="form-control" maxlength="6" id="cel" name="age"
                               value="<?php echo $age; ?>" />
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                          <label>Conta</label>
                          <input type="text" class="form-control" maxlength="15" id="cta" name="cta"
                               value="<?php echo $cta; ?>" />
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                          <label>CPF</label>
                          <input type="text" class="form-control" maxlength="15" id="doc" name="doc"
                               value="<?php echo $doc; ?>" />
                     </div>
+                    <div class="col-md-3">
+                         <label>Favorecido</label>
+                         <input type="text" class="form-control" maxlength="50" id="fav" name="fav"
+                              value="<?php echo $fav; ?>" />
+                    </div>
                </div>
                <div class="row">
-                    <div class="col-md-9 text-center"><br />
+                    <div class="col-md-3"></div>
+                    <div class="col-md-6 text-left"><br />
                          <input type="radio" id="val" name="cmt" value="0"
-                              <?php echo ($cmt == 0 ? 'checked' : ''); ?> /> Comissão por Valor &nbsp; &nbsp; &nbsp; 
+                              <?php echo ($cmt == 0 ? 'checked' : ''); ?> /> Comissão por Valor &nbsp; &nbsp; &nbsp; <br />
                          <input type="radio" id="per" name="cmt" value="1"
                               <?php echo ($cmt == 1 ? 'checked' : ''); ?> /> Comissão por Percentual
                     </div>
@@ -449,7 +459,7 @@ function ultimo_cod() {
      return $cod;
  }
 
- function ler_usuario($cha, &$nom, &$ape, &$sta, &$tip, &$sen, &$ema, &$val, &$ace, &$tel, &$cel, &$cep, &$end, &$num, &$com, &$bai, &$cid, &$est, &$cmv, &$cmt, &$cpf, &$doc, &$bco, &$age, &$cta, &$fav, &$obs) {
+ function ler_usuario($cha, &$emp, &$nom, &$ape, &$sta, &$tip, &$sen, &$ema, &$val, &$ace, &$tel, &$cel, &$cep, &$end, &$num, &$com, &$bai, &$cid, &$est, &$cmv, &$cmt, &$cpf, &$doc, &$bco, &$age, &$cta, &$fav, &$obs) {
      include_once "dados.php";
      $nro = acessa_reg("Select * from tb_usuario where idsenha = " . $cha, $reg);            
      if ($nro == 0 || $reg == false) {
@@ -457,6 +467,7 @@ function ultimo_cod() {
           $nro = 1;
      } else {
           $cha = $reg['idsenha'];
+          $emp = $reg['usuempresa'];
           $nom = $reg['usunome'];
           $ape = $reg['usuapelido'];
           $sta = $reg['usustatus'];
@@ -528,14 +539,14 @@ function ultimo_cod() {
           return 5;
      }
      include_once "dados.php";     
-     $nro = acessa_reg("Select idsenha from tb_usuario where usuemail = '" . $_REQUEST['ema'] . "'", $reg);       
+     $nro = acessa_reg("Select idsenha from tb_usuario where usuempresa = " . $_SESSION['wrkcodemp'] . " and usuemail = '" . $_REQUEST['ema'] . "'", $reg);       
      if ($nro > 0) {
           if ($reg['idsenha'] != 0 && $reg['idsenha'] != $_SESSION['wrkcodreg']) {
                echo '<script>alert("E-mail informado para usuário já existe cadastrado");</script>';
                return 6;
           }
      }
-     $nro = acessa_reg("Select idsenha from tb_usuario where usucpf = " . limpa_nro($_REQUEST['cpf']) . "", $reg);       
+     $nro = acessa_reg("Select idsenha from tb_usuario where  usuempresa = " . $_SESSION['wrkcodemp'] . " and usucpf = " . limpa_nro($_REQUEST['cpf']) . "", $reg);       
      if ($nro > 0) {
           if ($reg['idsenha'] != 0 && $reg['idsenha'] != $_SESSION['wrkcodreg']) {
                echo '<script>alert("C.P.F. informado para usuário já existe cadastrado");</script>';
@@ -553,12 +564,16 @@ function ultimo_cod() {
  }    
      
  function incluir_usu() {
-     $ret = 0; $emp = 0;
+     $ret = 0; $emp = 0; $ace = 999999; $val = date('Y-m-d', strtotime('+365 days'));
      include_once "dados.php";
-     if ($_SESSION['wrktipusu'] >= 4) { $emp = $reg['idsenha']; }
+     if ($_SESSION['wrktipusu'] >= 4) { $emp = $_SESSION['wrkcodemp']; }
      if ($_REQUEST['ape'] == "") { $_REQUEST['ape'] = primeiro_nom($_REQUEST['nom']); }
-     $ace = str_replace(".", "", $_REQUEST['ace']); $ace = str_replace(",", ".", $ace);
-     $val = substr($_REQUEST['val'],6,4) . "-" . substr($_REQUEST['val'],3,2) . "-" . substr($_REQUEST['val'],0,2);     
+     if (isset($_REQUEST['ace']) == true) {
+          $ace = str_replace(".", "", $_REQUEST['ace']); $ace = str_replace(",", ".", $ace);
+     }
+     if (isset($_REQUEST['val']) == true) {
+          $val = substr($_REQUEST['val'],6,4) . "-" . substr($_REQUEST['val'],3,2) . "-" . substr($_REQUEST['val'],0,2);     
+     }
      $sql  = "insert into tb_usuario (";
      $sql .= "usuempresa, ";
      $sql .= "usustatus, ";
@@ -589,12 +604,13 @@ function ultimo_cod() {
      $sql .= "usubanco, ";
      $sql .= "usuagencia, ";
      $sql .= "usuconta, ";
+     $sql .= "usufavorecido, ";
      $sql .= "usuobservacao, ";
      $sql .= "keyinc, ";
      $sql .= "datinc ";
      $sql .= ") value ( ";
      $sql .= "'" . $emp . "',";
-     $sql .= "'" . $_REQUEST['sta'] . "',";
+     $sql .= "'" . '0' . "',";
      $sql .= "'" . $_REQUEST['nom'] . "',";
      $sql .= "'" . $_REQUEST['ape'] . "',";
      $sql .= "'" . $_REQUEST['ema'] . "',";
@@ -627,6 +643,7 @@ function ultimo_cod() {
      $sql .= "'" . $_REQUEST['bco'] . "',";
      $sql .= "'" . $_REQUEST['age'] . "',";
      $sql .= "'" . $_REQUEST['cta'] . "',";
+     $sql .= "'" . $_REQUEST['fav'] . "',";
      $sql .= "'" . $_REQUEST['obs'] . "',";
      $sql .= "'" . $_SESSION['wrkideusu'] . "',";
      $sql .= "'" . date("Y/m/d H:i:s") . "')";
@@ -677,6 +694,7 @@ function alterar_usu() {
      $sql .= "usubanco = '". $_REQUEST['bco'] . "', ";
      $sql .= "usuagencia = '". $_REQUEST['age'] . "', ";
      $sql .= "usuconta = '". $_REQUEST['cta'] . "', ";
+     $sql .= "usufavorecido = '". $_REQUEST['fav'] . "', ";
      $sql .= "usudocto = '". limpa_nro($_REQUEST['doc']) . "', ";
      if ($_REQUEST['cmt'] == '0') {
           $sql .= "usucomissaov = '". ($_REQUEST['cmv'] == "" ? '0' : limpa_val($_REQUEST['cmv'])) . "', ";
@@ -690,7 +708,7 @@ function alterar_usu() {
      $ret = comando_tab($sql, $nro, $cha, $men);
      if ($ret == true) {
           echo '<script>alert("Registro alterado no sistema com Sucesso !");</script>';
-     }else{
+     } else {
           print_r($sql);
           echo '<script>alert("Erro na regravação do registro solicitado !");</script>';
      }

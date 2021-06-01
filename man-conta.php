@@ -59,8 +59,9 @@ $(document).ready(function() {
      $('#tab-0').DataTable({
           "pageLength": 25,
           "aaSorting": [
-               [4, 'asc'],
-               [2, 'asc']
+               [3, 'asc'],
+               [5, 'asc'],
+               [6, 'asc']
           ],
           "language": {
                "lengthMenu": "Demonstrar _MENU_ linhas por páginas",
@@ -121,6 +122,7 @@ $(document).ready(function() {
      $cod = (isset($_REQUEST['cod']) == false ? 0 : $_REQUEST['cod']);
      $sta = (isset($_REQUEST['sta']) == false ? 0 : $_REQUEST['sta']);
      $usu = (isset($_REQUEST['usu']) == false ? 0 : $_REQUEST['usu']);
+     $ger = (isset($_REQUEST['ger']) == false ? 0 : $_REQUEST['ger']);
      $pro = (isset($_REQUEST['pro']) == false ? 0 : $_REQUEST['pro']);
      $num = (isset($_REQUEST['num']) == false ? '' : $_REQUEST['num']);
      $des = (isset($_REQUEST['des']) == false ? '' : str_replace("'", "´", $_REQUEST['des']));
@@ -130,7 +132,7 @@ $(document).ready(function() {
      if ($_SESSION['wrkopereg'] >= 2) {
           if (isset($_REQUEST['salvar']) == false) { 
                $cha = $_SESSION['wrkcodreg']; 
-               $ret = ler_conta($cha, $usu, $sta, $pro, $num); 
+               $ret = ler_conta($cha, $usu, $sta, $pro, $num, $ger); 
           }
      }
      if ($_SESSION['wrkopereg'] == 3) { 
@@ -146,7 +148,7 @@ $(document).ready(function() {
                 $ret = incluir_con();
                 $cod = ultimo_cod();
                 $ret = gravar_log(11,"Inclusão de novo Conta de Operação: " . $des); 
-                $usu = 0; $pro = 0; $sta = 0; $del = ""; $num = ""; $_SESSION['wrkopereg'] = 1; $_SESSION['wrkcodreg'] = 0;
+                $usu = 0; $pro = 0; $sta = 0; $ger = 0; $del = ""; $num = ""; $_SESSION['wrkopereg'] = 1; $_SESSION['wrkcodreg'] = 0;
            }
       }
       if ($_SESSION['wrkopereg'] == 2) {
@@ -155,14 +157,14 @@ $(document).ready(function() {
                 $ret = alterar_con();
                 $cod = ultimo_cod(); 
                 $ret = gravar_log(12,"Alteração de Conta cadastrada: " . $des); 
-                $usu = 0; $pro = 0; $sta = 0;  $del = ""; $num = ""; $_SESSION['wrkopereg'] = 1; $_SESSION['wrkcodreg'] = 0;
+                $usu = 0; $pro = 0; $sta = 0;  $ger = 0; $del = ""; $num = ""; $_SESSION['wrkopereg'] = 1; $_SESSION['wrkcodreg'] = 0;
            }
       }
       if ($_SESSION['wrkopereg'] == 3) {
            $ret = excluir_con(); $bot = 'Salvar'; $per = '';
            $cod = ultimo_cod(); 
            $ret = gravar_log(13,"Exclusão de Conta cadastrada: " . $des); 
-           $usu = 0; $pro = 0; $sta = 0;  $del = ""; $num = ""; $_SESSION['wrkopereg'] = 1; $_SESSION['wrkcodreg'] = 0;
+           $usu = 0; $pro = 0; $sta = 0;  $ger = 0; $del = ""; $num = ""; $_SESSION['wrkopereg'] = 1; $_SESSION['wrkcodreg'] = 0;
       }
 }
 ?>
@@ -180,12 +182,18 @@ $(document).ready(function() {
                          title="Abre janela para criação de nova conta de operação no sistema"><i class="fa fa-plus-circle fa-1g"
                               aria-hidden="true"></i></a></p>
                <div class="row">
-                    <div class="col-md-2">
+                    <div class="col-md-1">
                          <label>Código</label>
                          <input type="text" class="form-control text-center" maxlength="6" id="cod" name="cod"
                               value="<?php echo $cod; ?>" disabled />
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-2">
+                         <label>Gerente</label>
+                         <select id="ger" name="ger" class="form-control">
+                              <?php $ret = carrega_ger($ger); ?>
+                         </select>
+                    </div>
+                    <div class="col-md-2">
                          <label>Titular da conta</label>
                          <select id="usu" name="usu" class="form-control">
                               <?php $ret = carrega_usu($usu); ?>
@@ -239,6 +247,7 @@ $(document).ready(function() {
                               <th width="5%">Alterar</th>
                               <th width="5%">Excluir</th>
                               <th width="5%">Código</th>
+                              <th>Gerente</th>
                               <th>Status</th>
                               <th>Titular da conta</th>
                               <th>Programa de fidelidade</th>
@@ -278,6 +287,10 @@ function ultimo_cod() {
 
 function consiste_con() {
      $sta = 0;
+     if (trim($_REQUEST['ger']) == "" || trim($_REQUEST['ger']) == "0") {
+          echo '<script>alert("Gerente da conta não foi informado para a mesma !");</script>';
+          return 1;
+     }
      if (trim($_REQUEST['usu']) == "" || trim($_REQUEST['usu']) == "0") {
           echo '<script>alert("Nome do usuário não foi informado para a conta !");</script>';
           return 1;
@@ -291,13 +304,14 @@ function consiste_con() {
 
 function carrega_con() {
      include_once "dados.php";
-     $com = "Select C.*, U.usunome, P.prodescricao, P.protipo from ((tb_conta C left join tb_usuario U on C.conusuario = U.idsenha) left join tb_programa P on C.conprograma = P.idprograma) where conempresa = " . $_SESSION['wrkcodemp'] . " order by condescricao, idconta";
+     $com = "Select C.*, U.usunome, G.usunome as usugerente, P.prodescricao, P.protipo from (((tb_conta C left join tb_usuario U on C.conusuario = U.idsenha) left join tb_usuario G on C.congerente = G.idsenha) left join tb_programa P on C.conprograma = P.idprograma) where conempresa = " . $_SESSION['wrkcodemp'] . " order by condescricao, idconta";
      $nro = leitura_reg($com, $reg);
      foreach ($reg as $lin) {
           $txt =  '<tr>';
           $txt .= '<td class="text-center"><a href="man-conta.php?ope=2&cod=' . $lin['idconta'] . '" title="Efetua alteração do registro informado na linha"><i class="large material-icons">healing</i></a></td>';
           $txt .= '<td class="lit-d text-center"><a href="man-conta.php?ope=3&cod=' . $lin['idconta'] . '" title="Efetua exclusão do registro informado na linha"><i class="cor-1 large material-icons">delete_forever</i></a></td>';
           $txt .= '<td class="text-center">' . $lin['idconta'] . '</td>';
+          $txt .= '<td class="text-left">' . $lin['usugerente'] . "</td>";
           if ($lin['constatus'] == 0) {$txt .= "<td>" . "Ativo" . "</td>";}
           if ($lin['constatus'] == 1) {$txt .= "<td>" . "Bloqueado" . "</td>";}
           if ($lin['constatus'] == 2) {$txt .= "<td>" . "Suspenso" . "</td>";}
@@ -327,6 +341,7 @@ function incluir_con() {
      include_once "dados.php";
      $sql  = "insert into tb_conta (";
      $sql .= "constatus, ";
+     $sql .= "congerente, ";
      $sql .= "conempresa, ";
      $sql .= "conusuario, ";
      $sql .= "conprograma, ";
@@ -335,6 +350,7 @@ function incluir_con() {
      $sql .= "datinc ";
      $sql .= ") value ( ";
      $sql .= "'" . $_REQUEST['sta'] . "',";
+     $sql .= "'" . $_REQUEST['ger'] . "',";
      $sql .= "'" . $_SESSION['wrkcodemp'] . "',";
      $sql .= "'" . $_REQUEST['usu'] . "',";
      $sql .= "'" . $_REQUEST['pro'] . "',";
@@ -349,7 +365,7 @@ function incluir_con() {
      return $ret;
 }
 
-function ler_conta(&$cha, &$usu, &$sta, &$pro, &$num) {
+function ler_conta(&$cha, &$usu, &$sta, &$pro, &$num, &$ger) {
      include_once "dados.php";
      $nro = acessa_reg("Select * from tb_conta where idconta = " . $cha, $reg);            
      if ($nro == 0) {
@@ -358,6 +374,7 @@ function ler_conta(&$cha, &$usu, &$sta, &$pro, &$num) {
           $cha = $reg['idconta'];
           $usu = $reg['conusuario'];
           $sta = $reg['constatus'];
+          $ger = $reg['congerente'];
           $num = $reg['connumero'];
           $pro = $reg['conprograma'];
      }
@@ -371,6 +388,7 @@ function ler_conta(&$cha, &$usu, &$sta, &$pro, &$num) {
      $sql .= "constatus = '". $_REQUEST['sta'] . "', ";
      $sql .= "conusuario = '". $_REQUEST['usu'] . "', ";
      $sql .= "conprograma = '". $_REQUEST['pro'] . "', ";
+     $sql .= "congerente = '". $_REQUEST['ger'] . "', ";
      $sql .= "connumero = '". $_REQUEST['num'] . "', ";
      $sql .= "keyalt = '" . $_SESSION['wrkideusu'] . "', ";
      $sql .= "datalt = '" . date("Y/m/d H:i:s") . "' ";
@@ -395,13 +413,31 @@ function ler_conta(&$cha, &$usu, &$sta, &$pro, &$num) {
      return $ret;
  }
 
+ function carrega_ger($ger) {
+     $sta = 0;
+     include_once "dados.php";    
+     if ($usu == 0) {
+          echo '<option value="0" selected="selected">Selecione ...</option>';
+     }
+     $com = "Select idsenha, usunome from tb_usuario where usustatus = 0 and (usutipo = 3 or usutipo = 4) and usuempresa = " . $_SESSION['wrkcodemp'] . " order by usunome, idsenha";
+     $nro = leitura_reg($com, $reg);
+     foreach ($reg as $lin) {
+          if ($lin['idsenha'] != $usu) {
+               echo  '<option value ="' . $lin['idsenha'] . '">' . $lin['usunome'] . '</option>'; 
+          } else {
+               echo  '<option value ="' . $lin['idsenha'] . '" selected="selected">' . $lin['usunome'] . '</option>';
+          }
+     }
+     return $sta;
+}
+
 function carrega_usu($usu) {
      $sta = 0;
      include_once "dados.php";    
      if ($usu == 0) {
-          echo '<option value="0" selected="selected">Selecione titular da conta ...</option>';
+          echo '<option value="0" selected="selected">Selecione ...</option>';
      }
-     $com = "Select idsenha, usunome from tb_usuario where usustatus = 0 and usuempresa = " . $_SESSION['wrkcodemp'] . " order by usunome, idsenha";
+     $com = "Select idsenha, usunome from tb_usuario where usustatus = 0 and (usutipo = 2 or usutipo = 4) and usuempresa = " . $_SESSION['wrkcodemp'] . " order by usunome, idsenha";
      $nro = leitura_reg($com, $reg);
      foreach ($reg as $lin) {
           if ($lin['idsenha'] != $usu) {
@@ -417,7 +453,7 @@ function carrega_pro($pro) {
      $sta = 0;
      include_once "dados.php";    
      if ($pro == 0) {
-          echo '<option value="0" selected="selected">Selecione o programa de fidalidade ...</option>';
+          echo '<option value="0" selected="selected">Selecione ...</option>';
      }
      $com = "Select idprograma, prodescricao from tb_programa where prostatus = 0 and proempresa = " . $_SESSION['wrkcodemp'] . " order by prodescricao, idprograma";
      $nro = leitura_reg($com, $reg);
