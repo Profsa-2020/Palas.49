@@ -163,7 +163,10 @@ $(document).ready(function() {
                     <div class="row">
                          <div class="col-md-12 text-center">
                               <?php 
-                              if ($_SESSION['wrkdadven']['val_v'] == "") {
+                              if ($_SESSION['wrkdadven']['pla_v'] == "88") {
+                                   echo '<strong>' . 'Plano escolhido: ' . '30 dias de teste grátis...' . '</strong><br />'; 
+                                   echo '<strong>' . 'Valor mensal: R$ ' . " 0,00" . '</strong>'; 
+                              } else if ($_SESSION['wrkdadven']['pla_v'] == "99") {
                                    echo '<strong>' . 'Plano escolhido: ' . 'Contate a administração ...' . '</strong><br />'; 
                                    echo '<strong>' . 'Valor mensal: R$ ' . "a combinar ..." . '</strong>'; 
                               } else {

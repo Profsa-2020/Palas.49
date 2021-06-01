@@ -69,7 +69,7 @@ $(document).ready(function() {
                } else {
                     $('#cep').val(data.cep);
                     $('#end').val(data.end);
-                    $('#num').val(data.num);
+                    $('#num').val(data.num); 
                     $('#com').val(data.com);
                     $('#bai').val(data.bai);
                     $('#cid').val(data.cid);

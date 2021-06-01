@@ -114,14 +114,16 @@ $(document).ready(function() {
      include_once "profsa.php";
      $_SESSION['wrkdirsis'] = __DIR__;
      $_SESSION['wrknompro'] = __FILE__;
+     
      date_default_timezone_set("America/Sao_Paulo");
      $_SESSION['wrkdatide'] = date ("d/m/Y H:i:s", getlastmod());
      $_SESSION['wrknomide'] = get_current_user();
-     $_SESSION['wrknumusu'] = getmypid();
+     $_SESSION['wrknumdoc'] = getmypid();
      if (isset($_SESSION['wrkdadven']) == false) { $_SESSION['wrkdadven'] = array(); }
-
-     $ret = sessao_pag();
-
+     if (isset($_SESSION['wrkendser']) == false) { $_SESSION['wrkendser'] = getenv("REMOTE_ADDR");; }
+     if (isset($_SESSION['wrkdadven']['ses_e'] ) == false) {
+          $ret = sessao_pag();
+     }
 ?>
 
 <body id="box00" class="fun-a">

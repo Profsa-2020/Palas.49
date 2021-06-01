@@ -8,8 +8,8 @@
      if (strlen($_REQUEST['nom']) <= 5) {
           $tab['men'] = "Nome do usuário não pode conter menos de 5 caracteres !";
      }
-     if (strlen($_REQUEST['nom']) <= 6) {
-          $tab['men'] = "Senha de acesso não pode conter menos de 5 caracteres !";
+     if (strlen($_REQUEST['sen']) <= 4) {
+          $tab['men'] = "Senha de acesso não pode conter menos de 4 caracteres !";
      }
      if (strlen($_REQUEST['cel']) < 15) {
           $tab['men'] = "Número do celular não pode conter menos de 15 dígitos !";
@@ -22,6 +22,12 @@
           $cha = existe_cpf($_REQUEST['cpf'], $nom);
           if ($cha != 0) {
                $tab['men'] = "Número de C.p.f. informado já cadastrado no sistema !";
+          }
+     }
+     if ($tab['men'] == "") {
+          $cha = existe_ema($_REQUEST['ema'], $nom);
+          if ($cha != 0) {
+               $tab['men'] = "E-Mail do usuário informado já cadastrado no sistema !";
           }
      }
      if ($tab['men'] == "") {
@@ -46,5 +52,16 @@
           }
           return $ret;
      }
-     
+
+     function existe_ema($ema, &$nom) {
+          $ret = 0;
+          include_once "../dados.php";
+          $nro = acessa_reg("Select idsenha, usunome from tb_usuario where usuemail = '" . limpa_nro($ema) . "'", $reg);            
+          if ($nro == 1) {
+               $ret = $reg['idsenha'];
+               $nom = $reg['usunome'];
+          }
+          return $ret;
+     }
+
 ?>

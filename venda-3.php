@@ -73,7 +73,7 @@ $(document).ready(function() {
 </script>
 
 <?php
-     $pla = 0;
+     $pla = 1;
      $_SESSION['wrkdirsis'] = __DIR__;
      $_SESSION['wrknompro'] = __FILE__;
      date_default_timezone_set("America/Sao_Paulo");
@@ -147,6 +147,13 @@ function carrega_pla($pla) {
      include_once "dados.php"; $num = 1; $qtd = 0;
      $com = "Select * from tb_plano where plastatus = 0 order by idplano";
      $nro = leitura_reg($com, $reg);
+     $txt =  '<tr>';
+     $txt .= '<td class="text-center">' . '<input type="radio" name="plano" value="88"' . ($pla != 88 ? '': ' checked ') . '/>' . '</td>';
+     $txt .= '<td class="text-left">' . 'Plano - 0' . '</td>';
+     $txt .= '<td>' . 'Teste por 30 dias grátis ...' . '</td>';
+     $txt .= '<td class="text-right">' . '0,00' . '</td>';
+     $txt .= '</tr>';
+     echo $txt;
      foreach ($reg as $lin) {
           $txt =  '<tr>';
           if ($pla == 0 || $lin['idplano'] == $pla) {

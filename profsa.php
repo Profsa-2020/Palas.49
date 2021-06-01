@@ -42,7 +42,7 @@ function gravar_log($ope = 0, $obs = "", $cod = "") {
      $tip = 00;
      $gap = 00;
  
-     if (isset($_SESSION['wrkcodloj']) == true) {$emp = $_SESSION['wrkcodloj'];}
+     if (isset($_SESSION['wrkcodemp']) == true) {$emp = $_SESSION['wrkcodemp'];}
      if (isset($_SESSION['wrkstasen']) == true) {$sta = $_SESSION['wrkstasen'];}
      if (isset($_SESSION['wrknomusu']) == true) {$nom = $_SESSION['wrknomusu'];}
      if (isset($_SESSION['wrkideusu']) == true) {$sen = $_SESSION['wrkideusu'];}
