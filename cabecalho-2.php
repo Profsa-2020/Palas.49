@@ -4,6 +4,11 @@
      $_SESSION['wrknompro'] = __FILE__;
      date_default_timezone_set("America/Sao_Paulo");
 
+     if ($_SESSION['wrktipusu'] != 5) {
+          echo '<script>alert("Tipo de usuário não permite visualização de menu de acesso");</script>';
+          echo '<script>history.go(-1);</script>';
+     }     
+
      if (isset($_SESSION['wrknomusu']) == false) {
           exit('<script>location.href = "index.php"</script>');   
      } elseif ($_SESSION['wrknomusu'] == "") {
@@ -13,10 +18,6 @@
      } elseif ($_SESSION['wrknomusu'] == "#") {
           exit('<script>location.href = "index.php"</script>');   
      }   
-     if ($_SESSION['wrktipusu'] != 5) {
-          echo '<script>alert("Tipo de usuário não permite visualização de menu de acesso");</script>';
-          echo '<script>history.go(-1);</script>';
-     }     
 ?>
 
 <nav class="navbar navbar-expand-lg navbar-light text-white fixed-top"> 
@@ -54,11 +55,11 @@
                </li>
                <li class="nav-item">
                     <a class="nav-link" href="con-titulo.php"><i class="fa fa-money fa-2x"
-                              aria-hidden="true"></i><br /> Movimento </a>
+                              aria-hidden="true"></i><br /> Recebimentos </a>
                </li>
                <li class="nav-item">
                     <a class="nav-link" href="con-usuario.php"><i class="fa fa-users fa-2x"
-                              aria-hidden="true"></i><br /> Usuáros </a>
+                              aria-hidden="true"></i><br /> Usuários </a>
                </li>
                <li class="nav-item">
                     <a class="nav-link" href="saida.php"><i class="fa fa-sign-out fa-2x"

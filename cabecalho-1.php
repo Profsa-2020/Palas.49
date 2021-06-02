@@ -59,6 +59,17 @@
                     <a class="nav-link" href="con-movto.php"><i class="fa fa-search fa-2x"
                               aria-hidden="true"></i><br /> Consultas </a>
                </li>
+               <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"
+                         data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                         <i class="fa fa-bar-chart fa-2x" aria-hidden="true"></i><br /> Resumos
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                         <a class="dropdown-item" href="res-conta.php">Por Conta</a>
+                         <a class="dropdown-item" href="res-docto.php">Por CPF´s</a>
+                         <a class="dropdown-item" href="res-intermediario.php">Por Intermediário</a>
+                    </div>
+               </li>               
                <li class="nav-item">
                     <a class="nav-link" href="saida.php"><i class="fa fa-sign-out fa-2x"
                               aria-hidden="true"></i><br /> Saída </a>

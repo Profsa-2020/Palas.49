@@ -45,10 +45,17 @@
      <script type="text/javascript" src="js/datepicker-pt-BR.js"></script>
 
      <link href="css/pallas49.css" rel="stylesheet" type="text/css" media="screen" />
-     <title>Programas - Gerenciamento de Milhas - Alexandre Rautemberg - Profsa Informátda Ltda</title>
+     <title>Indicação - Gerenciamento de Milhas - Alexandre Rautemberg - Profsa Informátda Ltda</title>
 </head>
 
 <script>
+$(function() {
+     $("#cel").mask("(00)0-0000-0000");
+     $("#com").mask("000.000,00", {
+          reverse: true
+     });     
+});
+
 $(document).ready(function() {
      var alt = $(window).height();
      var lar = $(window).width();
@@ -66,7 +73,7 @@ $(document).ready(function() {
                "lengthMenu": "Demonstrar _MENU_ linhas por páginas",
                "zeroRecords": "Não existe registros a demonstar ...",
                "info": "Mostrada página _PAGE_ de _PAGES_",
-               "infoEmpty": "Sem registros de Programas ...",
+               "infoEmpty": "Sem registros de Indicações ...",
                "sSearch": "Buscar:",
                "infoFiltered": "(Consulta de _MAX_ total de linhas)",
                "oPaginate": {
@@ -105,12 +112,16 @@ $(document).ready(function() {
      include_once "profsa.php";
      $_SESSION['wrknompro'] = __FILE__; 
      date_default_timezone_set("America/Sao_Paulo");
+     if ($_SESSION['wrktipusu'] != 5) {
+          echo '<script>alert("Tipo de usuário não permite visualização desta opção do menu");</script>';
+          echo '<script>history.go(-1);</script>';
+     }     
      $_SESSION['wrkdatide'] = date ("d/m/Y H:i:s", getlastmod());
      $_SESSION['wrknomide'] = get_current_user();
      if (isset($_SERVER['HTTP_REFERER']) == true) {
           if (limpa_pro($_SESSION['wrknompro']) != limpa_pro($_SERVER['HTTP_REFERER'])) {
                $_SESSION['wrkproant'] = limpa_pro($_SERVER['HTTP_REFERER']);
-               $ret = gravar_log(6, "Entrada na página de manutenção de programas do sistema Pallas.49 ");  
+               $ret = gravar_log(6, "Entrada na página de manutenção de indicações do sistema Pallas.49 ");  
           }
      }
      if (isset($_SESSION['wrkopereg']) == false) { $_SESSION['wrkopereg'] = 1; }
@@ -121,61 +132,73 @@ $(document).ready(function() {
      $cod = (isset($_REQUEST['cod']) == false ? 0 : $_REQUEST['cod']);
      $sta = (isset($_REQUEST['sta']) == false ? 0 : $_REQUEST['sta']);
      $tip = (isset($_REQUEST['tip']) == false ? 0 : $_REQUEST['tip']);
-     $des = (isset($_REQUEST['des']) == false ? '' : str_replace("'", "´", $_REQUEST['des']));
+     $ema = (isset($_REQUEST['ema']) == false ? '' : $_REQUEST['ema']);
+     $cel = (isset($_REQUEST['cel']) == false ? '' : $_REQUEST['cel']);
+     $com = (isset($_REQUEST['com']) == false ? 0 : $_REQUEST['com']);
+     $key = (isset($_REQUEST['key']) == false ? rand(100, 999) : $_REQUEST['key']);
+     $nom = (isset($_REQUEST['nom']) == false ? '' : str_replace("'", "´", $_REQUEST['nom']));
+     $obs = (isset($_REQUEST['obs']) == false ? '' : str_replace("'", "´", $_REQUEST['obs']));
+
      if ($_SESSION['wrkopereg'] == 1) { 
           $cod = ultimo_cod();
      }
      if ($_SESSION['wrkopereg'] >= 2) {
           if (isset($_REQUEST['salvar']) == false) { 
                $cha = $_SESSION['wrkcodreg']; 
-               $ret = ler_programa($cha, $des, $sta, $tip); 
+               $ret = ler_indicacao($cha, $nom, $sta, $ema, $cel, $tip, $com, $key, $obs); 
           }
      }
      if ($_SESSION['wrkopereg'] == 3) { 
           $bot = 'Deletar'; 
           $del = "cor-3";
-          $per = ' onclick="return confirm(\'Confirma exclusão de Programa informado em tela ?\')" ';
+          $per = ' onclick="return confirm(\'Confirma exclusão de Indicação informado em tela ?\')" ';
      }
 
  if (isset($_REQUEST['salvar']) == true) {
       if ($_SESSION['wrkopereg'] == 1) {
-           $sta = consiste_pro();
+           $sta = consiste_ind();
            if ($sta == 0) {
-                $ret = incluir_pro();
+                $ret = incluir_ind();
                 $cod = ultimo_cod();
-                $ret = gravar_log(11,"Inclusão de novo Programa: " . $des); 
-                $des = ''; $tip = 0; $sta = 0; $del = ""; $_SESSION['wrkopereg'] = 1; $_SESSION['wrkcodreg'] = 0;
+                $ret = gravar_log(11,"Inclusão de novo Indicação: " . $nom); 
+                $nom = ''; $tip = 0; $sta = 0; $cel = ''; $key = rand(100, 999); $com = 0; $ema = ""; $obs = ""; $_SESSION['wrkopereg'] = 1; $_SESSION['wrkcodreg'] = 0;
            }
       }
       if ($_SESSION['wrkopereg'] == 2) {
-           $sta = consiste_pro();
+           $sta = consiste_ind();
            if ($sta == 0) {
-                $ret = alterar_pro();
+                $ret = alterar_ind();
                 $cod = ultimo_cod(); 
-                $ret = gravar_log(12,"Alteração de Programa cadastrado: " . $des); 
-                $des = ''; $tip = 0; $sta = 0;  $del = ""; $_SESSION['wrkopereg'] = 1; $_SESSION['wrkcodreg'] = 0;
+                $ret = gravar_log(12,"Alteração de Indicação cadastrado: " . $nom); 
+                $nom = ''; $tip = 0; $sta = 0; $cel = ''; $key = rand(100, 999); $com = 0; $ema = ""; $obs = ""; $_SESSION['wrkopereg'] = 1; $_SESSION['wrkcodreg'] = 0;
            }
       }
       if ($_SESSION['wrkopereg'] == 3) {
-           $ret = excluir_pro(); $bot = 'Salvar'; $per = '';
+           $ret = excluir_ind(); $bot = 'Salvar'; $per = '';
            $cod = ultimo_cod(); 
-           $ret = gravar_log(13,"Exclusão de Programa cadastrado: " . $des); 
-           $des = ''; $tip = 0; $sta = 0;  $del = ""; $_SESSION['wrkopereg'] = 1; $_SESSION['wrkcodreg'] = 0;
-      }
+           $ret = gravar_log(13,"Exclusão de Indicação cadastrado: " . $nom); 
+           $nom = ''; $tip = 0; $sta = 0; $cel = ''; $key = rand(100, 999); $com = 0; $ema = ""; $obs = ""; $_SESSION['wrkopereg'] = 1; $_SESSION['wrkcodreg'] = 0;
+          }
 }
 ?>
 
 <body id="box00">
-     <h1 class="cab-0">Programas - Gerenciamento de Pontos e Milhas - Profsa Informática</h1>
+     <h1 class="cab-0">Indicações - Gerenciamento de Pontos e Milhas - Profsa Informática</h1>
      <div class="row">
           <div class="col-md-12">
-               <?php include_once "cabecalho-1.php"; ?>
+          <?php 
+                    if ($_SESSION['wrktipusu'] != 5) {
+                         include_once "cabecalho-1.php"; 
+                    } else {
+                         include_once "cabecalho-2.php"; 
+                    }
+               ?>
           </div>
      </div>
      <div class="container">
-          <form class="qua-2" name="frmTelMan" action="man-programa.php" method="POST">
-               <p class="lit-4">Manutenção de Programas &nbsp; &nbsp; &nbsp; <a href="man-programa.php?ope=1&cod=0"
-                         title="Abre janela para criação de novo programa de fidelidade no sistema"><i class="fa fa-plus-circle fa-1g"
+          <form class="qua-2" name="frmTelMan" action="man-indicacao.php" method="POST">
+               <p class="lit-4">Manutenção de Indicações &nbsp; &nbsp; &nbsp; <a href="man-indicacao.php?ope=1&cod=0"
+                         title="Abre janela para criação de nova indicação de fidelidade no sistema"><i class="fa fa-plus-circle fa-1g"
                               aria-hidden="true"></i></a></p>
                <div class="row">
                     <div class="col-md-2">
@@ -183,24 +206,10 @@ $(document).ready(function() {
                          <input type="text" class="form-control text-center" maxlength="6" id="cod" name="cod"
                               value="<?php echo $cod; ?>" disabled />
                     </div>
-                    <div class="col-md-6">
-                         <label>Nome do Programa de Fidelidade</label>
-                         <input type="text" class="form-control" maxlength="50" id="des" name="des"
-                              value="<?php echo $des; ?>" required />
-                    </div>
-                    <div class="col-md-2">
-                         <label>Tipo</label><br />
-                         <select name="tip" class="form-control">
-                              <option value="0" <?php echo ($tip != 0 ? '' : 'selected="selected"'); ?>>
-                                   Milhas
-                              </option>
-                              <option value="1" <?php echo ($tip != 1 ? '' : 'selected="selected"'); ?>>
-                                   Pontos
-                              </option>
-                              <option value="2" <?php echo ($tip != 2 ? '' : 'selected="selected"'); ?>>
-                                   Agência
-                              </option>
-                         </select>
+                    <div class="col-md-8">
+                         <label>Nome do Indicado</label>
+                         <input type="text" class="form-control" maxlength="50" id="nom" name="nom"
+                              value="<?php echo $nom; ?>" required />
                     </div>
                     <div class="col-md-2">
                          <label>Status</label><br />
@@ -218,6 +227,28 @@ $(document).ready(function() {
                                    Cancelado
                               </option>
                          </select>
+                    </div>
+               </div>
+               <div class="row">
+                    <div class="col-md-2">
+                         <label>Comissao</label>
+                         <input type="text" class="form-control text-right" maxlength="12" id="com" name="com"
+                              value="<?php echo $com; ?>" required />
+                    </div>
+                    <div class="col-md-2">
+                         <label>Chave</label>
+                         <input type="text" class="form-control text-center" maxlength="5" id="key" name="key"
+                              value="<?php echo $key; ?>" required />
+                    </div>
+                    <div class="col-md-2">
+                         <label>Celular</label>
+                         <input type="text" class="form-control" maxlength="15" id="cel" name="cel"
+                              value="<?php echo $cel; ?>" required />
+                    </div>
+                    <div class="col-md-6">
+                         <label>E-Mail</label>
+                         <input type="email" class="form-control" maxlength="50" id="ema" name="ema"
+                              value="<?php echo $ema; ?>" required />
                     </div>
                </div>
                <br />
@@ -240,14 +271,17 @@ $(document).ready(function() {
                               <th width="5%">Excluir</th>
                               <th width="5%">Número</th>
                               <th>Status</th>
-                              <th>Nome do Programa de Fidelidade</th>
-                              <th>Tipo de Programa de Fidelidade</th>
+                              <th>Nome do Indicado</th>
+                              <th>Chave</th>
+                              <th>Celular</th>
+                              <th>E-Mail</th>
+                              <th>Comissão</th>
                               <th>Inclusão</th>
                               <th>Alteração</th>
                          </tr>
                     </thead>
                     <tbody>
-                         <?php $ret = carrega_pro();  ?>
+                         <?php $ret = carrega_ind();  ?>
                     </tbody>
                </table>
           </div>
@@ -261,45 +295,46 @@ $(document).ready(function() {
 
 <?php
 if ($_SESSION['wrkopereg'] == 1 && $_SESSION['wrkcodreg'] == $cod) {
-     exit('<script>location.href = "man-programa.php?ope=1&cod=0"</script>');
+     exit('<script>location.href = "man-indicacao.php?ope=1&cod=0"</script>');
 }
 
 function ultimo_cod() {
      $cod = 1;
      include_once "dados.php";
-     $nro = acessa_reg('Select idprograma from tb_programa order by idprograma desc Limit 1', $reg);
+     $nro = acessa_reg('Select idindicacao from tb_indicacao order by idindicacao desc Limit 1', $reg);
      if ($nro == 1) {
-          $cod = $reg['idprograma'] + 1;
+          $cod = $reg['idindicacao'] + 1;
      }        
      return $cod;
 }
 
-function consiste_pro() {
+function consiste_ind() {
      $sta = 0;
-     if (trim($_REQUEST['des']) == "") {
-          echo '<script>alert("Descrição do Programa não pode estar em branco");</script>';
+     if (trim($_REQUEST['nom']) == "") {
+          echo '<script>alert("Nome do Indicado não pode estar em branco");</script>';
           return 1;
      }
      return $sta;
  }
 
-function carrega_pro() {
+function carrega_ind() {
      include_once "dados.php";
-     $com = "Select * from tb_programa where proempresa = " . $_SESSION['wrkcodemp'] . " order by prodescricao, idprograma";
+     $com = "Select * from tb_indicacao order by indnome, idindicacao";
      $nro = leitura_reg($com, $reg);
      foreach ($reg as $lin) {
           $txt =  '<tr>';
-          $txt .= '<td class="text-center"><a href="man-programa.php?ope=2&cod=' . $lin['idprograma'] . '" title="Efetua alteração do registro informado na linha"><i class="large material-icons">healing</i></a></td>';
-          $txt .= '<td class="lit-d text-center"><a href="man-programa.php?ope=3&cod=' . $lin['idprograma'] . '" title="Efetua exclusão do registro informado na linha"><i class="cor-1 large material-icons">delete_forever</i></a></td>';
-          $txt .= '<td class="text-center">' . $lin['idprograma'] . '</td>';
-          if ($lin['prostatus'] == 0) {$txt .= "<td>" . "Ativo" . "</td>";}
-          if ($lin['prostatus'] == 1) {$txt .= "<td>" . "Bloqueado" . "</td>";}
-          if ($lin['prostatus'] == 2) {$txt .= "<td>" . "Suspenso" . "</td>";}
-          if ($lin['prostatus'] == 3) {$txt .= "<td>" . "Cancelado" . "</td>";}
-          $txt .= '<td class="text-left">' . $lin['prodescricao'] . "</td>";
-          if ($lin['protipo'] == 0) {$txt .= "<td>" . "Milhas" . "</td>";}
-          if ($lin['protipo'] == 1) {$txt .= "<td>" . "Pontos" . "</td>";}
-          if ($lin['protipo'] == 2) {$txt .= "<td>" . "Agência" . "</td>";}
+          $txt .= '<td class="text-center"><a href="man-indicacao.php?ope=2&cod=' . $lin['idindicacao'] . '" title="Efetua alteração do registro informado na linha"><i class="large material-icons">healing</i></a></td>';
+          $txt .= '<td class="lit-d text-center"><a href="man-indicacao.php?ope=3&cod=' . $lin['idindicacao'] . '" title="Efetua exclusão do registro informado na linha"><i class="cor-1 large material-icons">delete_forever</i></a></td>';
+          $txt .= '<td class="text-center">' . $lin['idindicacao'] . '</td>';
+          if ($lin['indstatus'] == 0) {$txt .= "<td>" . "Ativo" . "</td>";}
+          if ($lin['indstatus'] == 1) {$txt .= "<td>" . "Bloqueado" . "</td>";}
+          if ($lin['indstatus'] == 2) {$txt .= "<td>" . "Suspenso" . "</td>";}
+          if ($lin['indstatus'] == 3) {$txt .= "<td>" . "Cancelado" . "</td>";}
+          $txt .= '<td class="text-left">' . $lin['indnome'] . "</td>";
+          $txt .= '<td class="text-center">' . $lin['indchave'] . "</td>";
+          $txt .= '<td class="text-left">' . $lin['indcelular'] . "</td>";
+          $txt .= '<td class="text-left">' . $lin['indemail'] . "</td>";
+          $txt .= '<td class="text-right">' . number_format($lin['indcomissao'], 2, ",", ".") . '</td>';
           if ($lin['datinc'] == null) {
                $txt .= "<td>" . '' . "</td>";
           }else{
@@ -315,21 +350,33 @@ function carrega_pro() {
      }
 }
 
-function incluir_pro() {
+function incluir_ind() {
      $ret = 0;
      include_once "dados.php";
-     $sql  = "insert into tb_programa (";
-     $sql .= "prostatus, ";
-     $sql .= "proempresa, ";
-     $sql .= "protipo, ";
-     $sql .= "prodescricao, ";
+     $sql  = "insert into tb_indicacao (";
+     $sql .= "indstatus, ";
+     $sql .= "indempresa, ";
+     $sql .= "indnome, ";
+     $sql .= "indapelido, ";
+     $sql .= "indchave, ";
+     $sql .= "indcelular, ";
+     $sql .= "indemail, ";
+     $sql .= "indtipo, ";
+     $sql .= "indcomissao, ";
+     $sql .= "indobservacao, ";
      $sql .= "keyinc, ";
      $sql .= "datinc ";
      $sql .= ") value ( ";
      $sql .= "'" . $_REQUEST['sta'] . "',";
      $sql .= "'" . $_SESSION['wrkcodemp'] . "',";
-     $sql .= "'" . $_REQUEST['tip'] . "',";
-     $sql .= "'" . str_replace("'", "´", $_REQUEST['des']) . "',";
+     $sql .= "'" . str_replace("'", "´", $_REQUEST['nom']) . "',";
+     $sql .= "'" . primeiro_nom($_REQUEST['nom']) . "',";
+     $sql .= "'" . $_REQUEST['key'] . "',";
+     $sql .= "'" . $_REQUEST['cel'] . "',";
+     $sql .= "'" . $_REQUEST['ema'] . "',";
+     $sql .= "'" . "0" . "',";
+     $sql .= "'" . str_replace(",", ".", str_replace(".", "", $_REQUEST['com'])) . "',";
+     $sql .= "'" . "" . "',";
      $sql .= "'" . $_SESSION['wrkideusu'] . "',";
      $sql .= "'" . date("Y/m/d H:i:s") . "')";
      $ret = comando_tab($sql, $nro, $ult, $men);
@@ -340,30 +387,38 @@ function incluir_pro() {
      return $ret;
 }
 
-function ler_programa(&$cha, &$des, &$sta, &$tip) {
+function ler_indicacao($cha, &$nom, &$sta, &$ema, &$cel, &$tip, &$com, &$key, &$obs) {
      include_once "dados.php";
-     $nro = acessa_reg("Select * from tb_programa where idprograma = " . $cha, $reg);            
+     $nro = acessa_reg("Select * from tb_indicacao where idindicacao = " . $cha, $reg);            
      if ($nro == 0) {
-          echo '<script>alert("Código do Programa informado não cadastrado no sistema");</script>';
+          echo '<script>alert("Código do Indicação informado não cadastrado no sistema");</script>';
      } else {
-          $cha = $reg['idprograma'];
-          $des = $reg['prodescricao'];
-          $sta = $reg['prostatus'];
-          $tip = $reg['protipo'];
+          $cha = $reg['idindicacao'];
+          $nom = $reg['indnome'];
+          $sta = $reg['indstatus'];
+          $ema = $reg['indemail'];
+          $cel = $reg['indcelular'];
+          $tip = $reg['indtipo'];
+          $key = $reg['indchave'];
+          $obs = $reg['indobservacao'];
+          $com = number_format($reg['indcomissao'], 2, ",", ".");
      }
      return $cha;
  }
 
- function alterar_pro() {
+ function alterar_ind() {
      $ret = 0;
      include_once "dados.php";
-     $sql  = "update tb_programa set ";
-     $sql .= "prostatus = '". $_REQUEST['sta'] . "', ";
-     $sql .= "prodescricao = '". $_REQUEST['des'] . "', ";
-     $sql .= "protipo = '". $_REQUEST['tip'] . "', ";
+     $sql  = "update tb_indicacao set ";
+     $sql .= "indstatus = '". $_REQUEST['sta'] . "', ";
+     $sql .= "indnome = '". $_REQUEST['nom'] . "', ";
+     $sql .= "indapelido = '". primeiro_nom($_REQUEST['nom']) . "', ";
+     $sql .= "indcomissao = '". str_replace(",", ".", str_replace(".", "", $_REQUEST['com'])) . "', ";
+     $sql .= "indcelular = '". $_REQUEST['cel'] . "', ";
+     $sql .= "indemail = '". $_REQUEST['ema'] . "', ";
      $sql .= "keyalt = '" . $_SESSION['wrkideusu'] . "', ";
      $sql .= "datalt = '" . date("Y/m/d H:i:s") . "' ";
-     $sql .= "where idprograma = " . $_SESSION['wrkcodreg'];
+     $sql .= "where idindicacao = " . $_SESSION['wrkcodreg'];
      $ret = comando_tab($sql, $nro, $ult, $men);
      if ($ret == false) {
           print_r($sql);
@@ -372,10 +427,10 @@ function ler_programa(&$cha, &$des, &$sta, &$tip) {
      return $ret;
  } 
 
- function excluir_pro() {
+ function excluir_ind() {
      $ret = 0;
      include_once "dados.php";
-     $sql  = "delete from tb_programa where idprograma = " . $_SESSION['wrkcodreg'] ;
+     $sql  = "delete from tb_indicacao where idindicacao = " . $_SESSION['wrkcodreg'] ;
      $ret = comando_tab($sql, $nro, $ult, $men);
      if ($ret == false) {
           print_r($sql);

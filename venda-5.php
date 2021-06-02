@@ -47,6 +47,10 @@ $(function() {
 $(document).ready(function() {
      var tipo = 5;
 
+     $('#log-1').click(function() {
+          location.href = "index.php";
+     });
+
      $('#fas-1').click(function() {
           location.href = "venda-1.php";
      });
@@ -125,7 +129,7 @@ $(document).ready(function() {
                     <br />
                     <div class="row">
                          <div class="col-12 text-center">
-                              <button type="submit" id="log" name="login" class="bot-a">Login</button>
+                              <button type="button" id="log-1" name="login" class="bot-a">Login</button>
                          </div>
                     </div>
                </form>

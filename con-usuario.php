@@ -112,7 +112,13 @@ $(document).ready(function() {
      <h1 class="cab-0">Menu Principal - Gerenciamento de Pontos e Milhas - Profsa Informática</h1>
      <div class="row">
           <div class="col-md-12">
-               <?php include_once "cabecalho-1.php"; ?>
+               <?php 
+                    if ($_SESSION['wrktipusu'] != 5) {
+                         include_once "cabecalho-1.php"; 
+                    } else {
+                         include_once "cabecalho-2.php"; 
+                    }
+               ?>
           </div>
      </div>
      <div class="container">
@@ -175,7 +181,7 @@ function carrega_usu() {
           $txt =  '<tr>';
           $txt .= '<td class="text-center"><a href="man-usuario.php?ope=2&cod=' . $lin['idsenha'] . '" title="Efetua alteração do registro informado na linha"><i class="large material-icons">healing</i></a></td>';
           $txt .= '<td class="lit-d text-center"><a href="man-usuario.php?ope=3&cod=' . $lin['idsenha'] . '" title="Efetua exclusão do registro informado na linha"><i class="cor-1 large material-icons">delete_forever</i></a></td>';
-          $txt .= '<td class="text-center">' . str_pad($lin['usuempresa'],3,"0",STR_PAD_LEFT) . "-" . $lin['idsenha'] . '</td>';
+          $txt .= '<td class="text-center">' . str_pad($lin['usuempresa'], 3, "0", STR_PAD_LEFT) . "-" . $lin['idsenha'] . '</td>';
           $txt .= "<td>" . $lin['usunome'] . "</td>";
           if ($lin['usustatus'] == 0) {$txt .= "<td>" . "Ativo" . "</td>";}
           if ($lin['usustatus'] == 1) {$txt .= "<td>" . "Bloqueado" . "</td>";}

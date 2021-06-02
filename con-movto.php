@@ -132,7 +132,7 @@ $(document).ready(function() {
                "lengthMenu": "Demonstrar _MENU_ linhas por páginas",
                "zeroRecords": "Não existe registros a demonstar ...",
                "info": "Mostrada página _PAGE_ de _PAGES_",
-               "infoEmpty": "Sem registros de Log ...",
+               "infoEmpty": "Sem registros de Movimento ...",
                "sSearch": "Buscar:",
                "infoFiltered": "(Consulta de _MAX_ total de linhas)",
                "oPaginate": {

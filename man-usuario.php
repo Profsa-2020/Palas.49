@@ -230,7 +230,13 @@ $(document).ready(function() {
      <h1 class="cab-0">Usuários - Gerenciamento de Pontos e Milhas - Profsa Informática</h1>
      <div class="row">
           <div class="col-md-12">
-               <?php include_once "cabecalho-1.php"; ?>
+          <?php 
+                    if ($_SESSION['wrktipusu'] != 5) {
+                         include_once "cabecalho-1.php"; 
+                    } else {
+                         include_once "cabecalho-2.php"; 
+                    }
+               ?>
           </div>
      </div>
      <div class="container">

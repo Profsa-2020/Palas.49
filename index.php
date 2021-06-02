@@ -51,7 +51,11 @@ $(document).ready(function() {
                          if (data.men != "") {
                               alert(data.men);
                          }
-                         location.href = "menu01.php";
+                         if (data.tip != 5) {
+                              location.href = "menu01.php";
+                         } else {
+                              location.href = "menu02.php";
+                         }
                     }
                }).fail(function(data) {
                     console.log('Erro: ' + JSON.stringify(data));

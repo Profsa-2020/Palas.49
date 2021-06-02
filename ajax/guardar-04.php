@@ -29,6 +29,7 @@
      if ($tab['men'] == "") {
           $ret = enviar_ema();
           $ret = gravar_usu();
+          $ret = gravar_tit();
           $_SESSION['wrkdadven']['nom_v'] = $_REQUEST['nom'];
           $_SESSION['wrkdadven']['cpf_v'] = $_REQUEST['cpf'];
           $_SESSION['wrkdadven']['dat_v'] = $_REQUEST['dat'];
@@ -39,6 +40,8 @@
      
      echo json_encode($tab);     
 
+
+     
      function enviar_ema() {
           $sta = 0; $erro = "";
           $tex  = '<!DOCTYPE html>';
@@ -50,7 +53,7 @@
           $tex .= '<body>'; 
           $tex .= '<a href="http://www.admmilhas.com.br/">';
           $tex .= '<p align="center">';
-          $tex .= '<img border="0" src="https://www.admmilhas.com.br/img/logo-03.png"></p></a>';
+          $tex .= '<img border="0" src="https://www.admmilhas.com.br/img/logo-06.png"></p></a>';
           $tex .= '<p align="center">&nbsp;</p>';
           $tex .= '<p align="center"><font size="5" face="Verdana" color="#FF0000"><b>Processo de Adesão ao Sistema</b></font></p>';
           $tex .= '<p align="center">&nbsp;</p>';
@@ -170,4 +173,45 @@
           }     
           return $ret;
      }
+
+     function gravar_tit() {
+          $ret = 0; $erro = ""; 
+          include_once "../dados.php";
+          $sql  = "insert into tb_titulo (";
+          $sql .= "tittipo, ";
+          $sql .= "titstatus, ";
+          $sql .= "titparcela, ";
+          $sql .= "titplano, ";
+          $sql .= "titindicacao, ";
+          $sql .= "titadministrador, ";
+          $sql .= "titdataemi, ";
+          $sql .= "titdataven, ";
+          $sql .= "titvalor, ";
+          $sql .= "titpago, ";
+          $sql .= "titcomissao, ";
+          $sql .= "titobservacao, ";
+          $sql .= "keyinc, ";
+          $sql .= "datinc ";
+          $sql .= ") value ( ";
+          $sql .= "'" . '1' . "',";
+          $sql .= "'" . '0' . "',";
+          $sql .= "'" . date('m') . "',";
+          $sql .= "'" . $_SESSION['wrkdadven']['pla_v'] . "',";
+          $sql .= "'" . '0' . "',";
+          $sql .= "'" . $_SESSION['wrkcodreg'] . "',";
+          $sql .= "'" . date('Y-m-d') . "',";
+          $sql .= "'" . date('Y-m-d', strtotime('+30 days')) . "',";     
+          $sql .= "'" . $_SESSION['wrkdadven']['val_v'] . "',";
+          $sql .= "'" . '0' . "',";
+          $sql .= "'" . '0' . "',";
+          $sql .= "'" . 'Adesão do cliente efetuada via página de venda em: ' . date('d/m/Y H:i:s') . "',";
+          $sql .= "'" . '0' . "',";
+          $sql .= "'" . date("Y/m/d H:i:s") . "')";
+          $ret = comando_tab($sql, $nro, $cha, $men);
+          if ($ret == false) {
+               $erro = $sql;
+          }     
+          return $ret;
+     }
+
 ?>

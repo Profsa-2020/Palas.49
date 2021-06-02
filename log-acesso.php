@@ -171,7 +171,7 @@ $(document).ready(function() {
                                    <table id="tab-0" class="table table-sm table-striped">
                                         <thead>
                                              <tr>
-                                                  <th>Emp</th>
+                                                  <th>Adm</th>
                                                   <th>Data</th>
                                                   <th>Hora</th>
                                                   <th>Ope</th>

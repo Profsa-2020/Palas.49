@@ -6,6 +6,7 @@
      session_start();
      $tab['men'] = '';
      $tab['err'] = '';
+     $tab['tip'] = 0;
      date_default_timezone_set("America/Sao_Paulo");
      if (isset($_REQUEST['sen']) == true) { $sen = $_REQUEST['sen']; }
      if (isset($_REQUEST['ema']) == true) { $ema = $_REQUEST['ema']; }
@@ -66,6 +67,7 @@
                }
           }
           if ($tab['err'] == "") {
+               $tab['tip'] = $reg['usutipo'];
                $_SESSION['wrkideusu'] = $reg['idsenha']; 
                $_SESSION['wrknomusu'] = $reg['usunome'];
                $_SESSION['wrktipusu'] = $reg['usutipo'];
