@@ -59,7 +59,7 @@
                <li class="nav-item">
                     <a class="nav-link" href="man-cartao.php?ope=1&cod=0"><i class="fa fa-credit-card fa-2x"
                               aria-hidden="true"></i><br />
-                         Cartão </a>
+                         Cartão </a> 
                </li>
                <li class="nav-item">
                     <a class="nav-link" href="man-movto.php?ope=1&cod=0"> <i class="fa fa-money fa-2x"
