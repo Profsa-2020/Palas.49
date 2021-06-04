@@ -136,6 +136,7 @@ $(document).ready(function() {
                               <th>Valor Investido</th>
                               <th>Qtde Saída</th>
                               <th>Valor Saída</th>
+                              <th>Preço Médio</th>
                          </tr>
                     </thead>
                     <tbody>
@@ -150,6 +151,11 @@ $(document).ready(function() {
                                    $txt .= '<td class="text-right">' . number_format($dad['inv'][$cpo], 2,"," , ".") . '</td>';
                                    $txt .= '<td class="text-right">' . number_format($dad['sai'][$cpo], 0,"," , ".") . '</td>';
                                    $txt .= '<td class="text-right">' . number_format($dad['ven'][$cpo], 2,"," , ".") . '</td>';
+                                   if ($dad['com'][$cpo] == $dad['ven'][$cpo]) { 
+                                        $txt .= '<td class="text-right">' . '0,0000' . '</td>';
+                                   } else {
+                                        $txt .= '<td class="text-right">' . number_format(($dad['com'][$cpo] - $dad['ven'][$cpo]) / ($dad['ent'][$cpo] - $dad['sai'][$cpo]) * 1000, 4,"," , ".") . '</td>';
+                                   }
                                    $txt .=  '</tr>';
                                    echo $txt;
                               }
@@ -177,9 +183,9 @@ $(document).ready(function() {
                                         $txt =  '<tr>';
                                         $txt .= '<td>' . $dad['des'][$cpo] . '</td>';
                                         $txt .= '<td class="text-center">' . $dad['cpf'][$cpo] . '</td>';
+                                        $txt .= '<td class="text-center">' . number_format($dad['com'][$cpo], 0,"," , ".") . '</td>';
                                         $txt .= '<td class="text-center">' . number_format($dad['vnd'][$cpo], 0,"," , ".") . '</td>';
-                                        $txt .= '<td class="text-center">' . number_format($dad['uti'][$cpo], 0,"," , ".") . '</td>';
-                                        $txt .= '<td class="text-center">' . number_format($dad['vnd'][$cpo] - $dad['uti'][$cpo], 0,"," , ".") . '</td>';
+                                        $txt .= '<td class="text-center">' . number_format($dad['com'][$cpo] - $dad['vnd'][$cpo], 0,"," , ".") . '</td>';
                                         $txt .=  '</tr>';
                                         echo $txt;
                                    }
@@ -261,6 +267,8 @@ function carrega_das(&$dad) {
                     $dad['ven'][$reg['movdestino']] = 0;
                     $dad['inv'][$reg['movdestino']] = $reg['movquantidade'] * $reg['movcusto'];
                } else {
+                    $dad['ent'][$reg['movdestino']] += $reg['movquantidade'];
+                    $dad['com'][$reg['movdestino']] += $reg['movquantidade'] * $reg['movcusto'];
                     $dad['inv'][$reg['movdestino']] += $reg['movquantidade'] * $reg['movcusto'];
                }     
           }
@@ -277,16 +285,17 @@ function carrega_das(&$dad) {
           if (isset($dad['int'][$reg['movintermediario']]) == false) {
                $dad['int'][$reg['movintermediario']] = $reg['movintermediario'];
                $dad['des'][$reg['movintermediario']] = $reg['intdescricao'];
+               $dad['com'][$reg['movintermediario']] = 0;
                $dad['vnd'][$reg['movintermediario']] = 0;
                $dad['uti'][$reg['movintermediario']] = 0;
                $dad['cpf'][$reg['movintermediario']] = 0;
           }
+          if ($reg['movstatus'] == 2) {
+               $dad['com'][$reg['movintermediario']] += $reg['movquantidade'];
+          }
           if ($reg['movstatus'] == 3) {
                $dad['vnd'][$reg['movintermediario']] += $reg['movquantidade'];
                $dad['cpf'][$reg['movintermediario']] += $reg['movnumerocpf'];
-          }
-          if ($reg['movstatus'] == 4) {
-               $dad['uti'][$reg['movintermediario']] += $reg['movquantidade'];
           }
      }
      return $ret;

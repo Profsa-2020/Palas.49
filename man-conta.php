@@ -413,16 +413,16 @@ function ler_conta(&$cha, &$usu, &$sta, &$pro, &$num, &$ger) {
      return $ret;
  }
 
- function carrega_ger($ger) { 
+ function carrega_ger($ger) {
      $sta = 0;
      include_once "dados.php";    
-     if ($usu == 0) {
+     if ($ger == 0) {
           echo '<option value="0" selected="selected">Selecione ...</option>';
      }
      $com = "Select idsenha, usunome from tb_usuario where usustatus = 0 and (usutipo = 3 or usutipo = 4) and usuempresa = " . $_SESSION['wrkcodemp'] . " order by usunome, idsenha";
      $nro = leitura_reg($com, $reg);
      foreach ($reg as $lin) {
-          if ($lin['idsenha'] != $usu) {
+          if ($lin['idsenha'] != $ger) {
                echo  '<option value ="' . $lin['idsenha'] . '">' . $lin['usunome'] . '</option>'; 
           } else {
                echo  '<option value ="' . $lin['idsenha'] . '" selected="selected">' . $lin['usunome'] . '</option>';

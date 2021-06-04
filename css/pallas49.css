@@ -9,8 +9,8 @@
     color: #ffffff;
     font-size: 16px;
     border-radius: 5px;
-    border: 0.5px solid #3d7e92;
-    background-color: #3d7e92;
+    border: 0.5px solid #244751;
+    background-color: #244751;
 }
 
 .bot-2 {
@@ -144,7 +144,7 @@
 }
 
 nav, .dropdown-menu {
-    background-color: #3d7e92 !important;
+    background-color: #244751 !important;
 }
 
 .dropdown-menu {
@@ -179,7 +179,7 @@ li { flex-grow: 1;  }
     width: 100%;
     height: 100vh;
     color: #ecebeb;
-    background: #3d7e92;
+    background: #244751;
 }
 
 /* Estilização de páginas de vendas e cadastro de cliente */
@@ -200,7 +200,7 @@ li { flex-grow: 1;  }
     margin: 100px auto;
     border-radius: 15px;
     animation-duration: 3s;
-    background-color: #3d7e92;
+    background-color: #244751;
 }
 
 @media only screen and (max-width: 800px) {  
@@ -245,6 +245,11 @@ li { flex-grow: 1;  }
 .opc-a input[type=radio] {
     width: 20px;
     height: 20px;
+ }
+
+ .sel-a , .sel-a option {
+    font-size: 18px !important;
+    font-weight: bold !important;
  }
 
 /*----------------------------------------------------------------- */

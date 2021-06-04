@@ -28,7 +28,7 @@
      <a class="navbar-brand" href="menu02.php">
           <?php
           if ($_SESSION['wrklogemp'] == "") {
-               echo '<img class="log-1" src="img/logo-05.png">';
+               echo '<img class="log-1" src="img/logo-02.jpg">';
           } else {
                echo '<img class="log-1" src="' . $_SESSION['wrklogemp'] . '">';
           }

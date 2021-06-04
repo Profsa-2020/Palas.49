@@ -672,10 +672,13 @@ $(document).ready(function() {
 
      $('#qtd_v').blur(function() {
           var qtd = $('#qtd_v').val();
+          var sal = $('#qtd_s').val();
+          qtd = qtd.replace('.', ''); qtd = qtd.replace(',', '.');
+          sal = sal.replace('.', ''); sal = sal.replace(',', '.');
           if (qtd == "") {
                $('#qtd_v').val($('#qtd_s').val());
           }
-          if (qtd > $('#qtd_s').val()) {
+          if (parseFloat(qtd, 10) > parseFloat(sal, 10)) {
                alert("Quantidade a vender não pode ser maior que quantidade em saldo !");
                $('#qtd_v').val($('#qtd_s').val());
           }
@@ -1120,7 +1123,7 @@ $(document).ready(function() {
                                              </div>
                                              <br />
                                              <div class="lin-3"></div>
-                                             <br /> 
+                                             <br />
                                              <div class="col-md-6">
                                                   <label id="tit_d">Quantidade Transferida</label>
                                                   <input type="text" class="form-control text-center" maxlength="12"

@@ -86,9 +86,10 @@ $(document).ready(function() {
      <h1 class="cab-0">Login inicial sistema de Gerenciamento de Milhas - Profsa Informática</h1>
      <div class="entrada">
           <div class="qua-1 animated bounceInDown">
+               <br />
                <div class="row">
                     <div class="col-md-12 text-center">
-                         <img class="img-a" src="img/logo-06.png">
+                         <img class="img-a" src="img/logo-03.jpg">
                     </div>
                </div>
                <form class="cpo-0" id="frmLogin" name="frmLogin" action="" method="POST">

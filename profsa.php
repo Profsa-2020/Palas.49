@@ -236,7 +236,7 @@ function limpa_pro($nom)  {
      for ($ind = 0, $nro = 5; $ind <= 11 ; $ind++, $nro--) {
          $som = $som + $cgc[$ind] * $nro;
           if ($nro == 2) {$nro = 10; }
-     } 
+     }
      $res1 = 11 - $som % 11;
      if ($res1 == 10 || $res1 == 11) { $res1 = 0; }
      $cgc = $cgc . $res1;
@@ -345,9 +345,9 @@ function saldos_cta($cta, &$ent, &$sai, &$vai, &$vol, &$val, &$tot) {
      $com  = "Select M.*, U.usunome, P.prodescricao from (((tb_movto M left join tb_conta C on M.movconta = C.idconta) ";
      $com .= "left join tb_usuario U on M.movusuario = U.idsenha) ";
      $com .= "left join tb_programa P on M.movprograma = P.idprograma) ";
-     $com .= "where movempresa = " . $_SESSION['wrkcodemp'] . " and movconta =  " . $cta;
+     $com .= "where movempresa = " . $_SESSION['wrkcodemp'] . " and (movconta = " . $cta . " or movdestino = " . $cta . ")";
      $nro = leitura_reg($com, $reg);
-     foreach ($reg as $lin) {
+     foreach ($reg as $lin) {          
           if ($lin['movstatus'] == 0) {
                $ent = $ent + $lin['movquantidade'];
                $sal = $sal + $lin['movquantidade'];
@@ -355,9 +355,15 @@ function saldos_cta($cta, &$ent, &$sai, &$vai, &$vol, &$val, &$tot) {
           }
           if ($lin['movstatus'] == 1) {
                $sai = $sai + $lin['movquantidade'];
-               $sal = $sal - $lin['movquantidade'];
                $vai = $vai + ($lin['movquantidade'] * $lin['movpercvai'] / 100);
                $vol = $vol + ($lin['movquantidade'] * $lin['movpercvolta'] / 100);
+               if ($lin['movdestino'] == $cta) {
+                    $sal = $sal + $lin['movquantidade'];
+                    $val = $val + $lin['movquantidade'] * $lin['movcusto'];
+               } else {
+                    $sal = $sal - $lin['movquantidade'];
+                    $val = $val - $lin['movquantidade'] * $lin['movcusto'];
+               }
           }
           if ($lin['movstatus'] == 2) {
                $sai = $sai + $lin['movquantidade'];
@@ -365,6 +371,7 @@ function saldos_cta($cta, &$ent, &$sai, &$vai, &$vol, &$val, &$tot) {
                $val = $val - $lin['movvalor'];
           }
      }
+
      $vai = round($vai, 0); $vol = round($vol, 0); $tot = $val;
 
      return $sal;

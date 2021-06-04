@@ -421,8 +421,8 @@ function carrega_mov($ope, $usu, $pro, $dti, $dtf) {
           if ($reg['movpromocao'] == 0) {$txt .= '<td>' . "" . '</td>';}
           if ($reg['movpromocao'] == 1) {$txt .= '<td class="text-center">' . "Comum" . '</td>';}
           if ($reg['movpromocao'] == 2) {$txt .= '<td class="text-center">' . "Bumerangue" . '</td>';}
-          $des = retorna_dad('conprograma', 'tb_conta', 'idconta', $reg['movdestino']); 
-          $des = retorna_dad('prodescricao', 'tb_programa', 'idprograma', $des); 
+          $cod = retorna_dad('conprograma', 'tb_conta', 'idconta', $reg['movdestino']); 
+          $des = retorna_dad('prodescricao', 'tb_programa', 'idprograma', $cod); 
           $txt .= '<td>' . $des . '</td>';
           if ($reg['movpercvai'] == '0') {
                $txt .= '<td>' . '' . '</td>';

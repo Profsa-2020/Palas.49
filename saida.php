@@ -68,12 +68,12 @@
 <body>
      <h1 class="cab-0">Página de Saída Sistema Gerenciamento de Milhas - Profsa Informática Ltda</h1>
      <div id="particles-js" class="sai-1 text-center">
-          <br />
+          <br /><br />
           <div class="ima-2 animated zoomInUp text-center">
                <div class="row text-center">
                     <div class="col-md-12">
                          <a href="index.php">
-                              <img class="img-fluid" src="img/logo-03.png" class="img-responsive center-block"
+                              <img class="img-fluid" src="img/logo-03.jpg" class="img-responsive center-block"
                                    alt="Logotipo da empresa Administração de Milhas"
                                    title="Acesso ao site principal da Administração de Milhas - Gerenciamento de Milhas" />
                          </a>

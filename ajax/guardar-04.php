@@ -114,6 +114,7 @@
           $sql .= "usubanco, ";
           $sql .= "usuagencia, ";
           $sql .= "usuconta, ";
+          $sql .= "usunumerotit, ";
           $sql .= "usuobservacao, ";
           $sql .= "keyinc, ";
           $sql .= "datinc ";
@@ -153,6 +154,7 @@
           $sql .= "'" . '' . "',";
           $sql .= "'" . '' . "',";
           $sql .= "'" . '' . "',";
+          $sql .= "'" . $_SESSION['wrkdadven']['qtd_v'] . "',";
           $sql .= "'" . 'Adesão do cliente efetuada via página de venda em: ' . date('d/m/Y H:i:s') . "',";
           $sql .= "'" . '0' . "',";
           $sql .= "'" . date("Y/m/d H:i:s") . "')";
