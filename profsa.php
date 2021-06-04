@@ -236,7 +236,7 @@ function limpa_pro($nom)  {
      for ($ind = 0, $nro = 5; $ind <= 11 ; $ind++, $nro--) {
          $som = $som + $cgc[$ind] * $nro;
           if ($nro == 2) {$nro = 10; }
-     }
+     } 
      $res1 = 11 - $som % 11;
      if ($res1 == 10 || $res1 == 11) { $res1 = 0; }
      $cgc = $cgc . $res1;

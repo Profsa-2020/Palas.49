@@ -1120,7 +1120,7 @@ $(document).ready(function() {
                                              </div>
                                              <br />
                                              <div class="lin-3"></div>
-                                             <br />
+                                             <br /> 
                                              <div class="col-md-6">
                                                   <label id="tit_d">Quantidade Transferida</label>
                                                   <input type="text" class="form-control text-center" maxlength="12"

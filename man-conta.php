@@ -413,7 +413,7 @@ function ler_conta(&$cha, &$usu, &$sta, &$pro, &$num, &$ger) {
      return $ret;
  }
 
- function carrega_ger($ger) {
+ function carrega_ger($ger) { 
      $sta = 0;
      include_once "dados.php";    
      if ($usu == 0) {

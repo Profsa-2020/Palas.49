@@ -178,7 +178,7 @@ $(document).ready(function() {
                <?php include_once "cabecalho-1.php"; ?>
           </div>
      </div>
-     <div class="container">
+     <div class="container"> 
           <form class="qua-2" name="frmTelMan" action="man-cartao.php" method="POST">
                <p class="lit-4">Manutenção de Cartões &nbsp; &nbsp; &nbsp; <a href="man-cartao.php?ope=1&cod=0"
                          title="Abre janela para criação de novo cartão de crédito no sistema"><i class="fa fa-plus-circle fa-1g"
