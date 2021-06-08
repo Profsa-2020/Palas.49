@@ -403,10 +403,10 @@ function carrega_mov($ope, $usu, $pro, $dti, $dtf) {
           $txt .= '<td>' . date('d/m/Y',strtotime($reg['movdata'])) . '</td>';
           $txt .= '<td class="text-right">' . number_format($reg['movquantidade'], 0, ",", ".") . '</td>';
           if ($reg['movtipo'] == 2) {
-               $txt .= '<td class="text-right">' . number_format($reg['movcusto'], 4, ",", ".") . '</td>';
+               $txt .= '<td class="text-right">' . number_format($reg['movcusto'], 2, ",", ".") . '</td>';
                $txt .= '<td class="text-right">' . number_format($reg['movcusto'] * $reg['movquantidade'] / 1000, 2, ",", ".") . '</td>';
           } else {
-               $txt .= '<td class="text-right">' . number_format($reg['movvalor'] / $reg['movquantidade'] * 1000, 4, ",", ".") . '</td>';
+               $txt .= '<td class="text-right">' . number_format($reg['movvalor'] / $reg['movquantidade'] * 1000, 2, ",", ".") . '</td>';
                $txt .= '<td class="text-right">' . number_format($reg['movvalor'], 2, ",", ".") . '</td>';
           }
           $txt .= '<td>' . $reg['intdescricao'] . '</td>';

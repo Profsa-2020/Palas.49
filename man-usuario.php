@@ -653,7 +653,7 @@ function ultimo_cod() {
           $sql .= "'" . ($ace == "" || $ace == "0" ? '999999' : $ace) . "',";
      }
      if (isset($_REQUEST['val']) == true) {
-          $sql .= "'" . ($val == "--" ? date('Y-m-d', strtotime('+180 days')) : $val) . "',";
+          $sql .= "'" . ($val == "--" ? date('Y-m-d', strtotime('+360 days')) : $val) . "',";
      }
      $sql .= "'" . limpa_nro($_REQUEST['cep']) . "',";
      $sql .= "'" . $_REQUEST['end'] . "',";
@@ -724,10 +724,10 @@ function alterar_usu() {
      $sql .= "usutelefone = '". $_REQUEST['tel'] . "', ";
      $sql .= "usucelular = '". $_REQUEST['cel'] . "', ";
      if (isset($_REQUEST['ace']) == true) {
-          $sql .= "usuacessos = '". ($ace == "0" ? '1000000' : $ace) . "', ";
+          $sql .= "usuacessos = '". ($ace == "" || $ace == "0" ? '888888' : $ace) . "', ";
      }
      if (isset($_REQUEST['val']) == true) {
-          $sql .= "usuvalidade =  ". ($val == "--" ? 'null' : "'" . $val . "'") . " , ";
+          $sql .= "usuvalidade =  ". ($val == "" || $val == "--" ? 'null' : "'" . $val . "'") . " , ";
      }
      $sql .= "usucep = '". limpa_nro($_REQUEST['cep']) . "', ";
      $sql .= "usuendereco = '". $_REQUEST['end'] . "', ";

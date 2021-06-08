@@ -166,7 +166,7 @@ $(document).ready(function() {
                                         if ($dad['ent'][$cpo] == 0 && $dad['sai'][$cpo] == 0 || $dad['ent'][$cpo] == $dad['sai'][$cpo]) {
                                              $txt .= '<td class="text-right">' . '0,0000' . '</td>';
                                         } else {
-                                             $txt .= '<td class="text-right">' . number_format(($dad['com'][$cpo] - $dad['ven'][$cpo]) / ($dad['ent'][$cpo] - $dad['sai'][$cpo]) * 1000, 4,"," , ".") . '</td>';
+                                             $txt .= '<td class="text-right">' . number_format(($dad['com'][$cpo] - $dad['ven'][$cpo]) / ($dad['ent'][$cpo] - $dad['sai'][$cpo]) * 1000, 2,"," , ".") . '</td>';
                                         }
                                    }
                                    $txt .=  '</tr>';

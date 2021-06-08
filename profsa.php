@@ -362,12 +362,12 @@ function calcula_idade($nas) {
      return $ida;
 }
 
-function saldos_cta($cta, &$ent, &$sai, &$vai, &$vol, &$val, &$tot) {
-     $sal = 0; $ent = 0; $sai = 0; $vai = 0; $vol = 0; $val =  0;
+function saldos_cta($cta, &$ent, &$sai, &$vai, &$vol, &$val, &$med, &$tot) {
+     $sal = 0; $ent = 0; $sai = 0; $vai = 0; $vol = 0; $val =  0; $med = 0;
      $com  = "Select M.*, U.usunome, P.prodescricao from (((tb_movto M left join tb_conta C on M.movconta = C.idconta) ";
      $com .= "left join tb_usuario U on M.movusuario = U.idsenha) ";
      $com .= "left join tb_programa P on M.movprograma = P.idprograma) ";
-     $com .= "where movempresa = " . $_SESSION['wrkcodemp'] . " and (movconta = " . $cta . " or movdestino = " . $cta . ")";
+     $com .= "where movempresa = " . $_SESSION['wrkcodemp'] . " and (movconta = " . $cta . " or movdestino = " . $cta . ") order by idmovto";
      $nro = leitura_reg($com, $reg);
      foreach ($reg as $lin) {          
           if ($lin['movstatus'] == 0) {
@@ -380,12 +380,15 @@ function saldos_cta($cta, &$ent, &$sai, &$vai, &$vol, &$val, &$tot) {
                $vai = $vai + ($lin['movquantidade'] * $lin['movpercvai'] / 100);
                $vol = $vol + ($lin['movquantidade'] * $lin['movpercvolta'] / 100);
                if ($lin['movdestino'] == $cta) {
-                    $sal = $sal + $lin['movquantidade'];
-                    $val = $val + $lin['movquantidade'] * $lin['movcusto'];
+                    if ($lin['movliquidado'] == 0) {
+                         $sal = $sal + $lin['movquantidade'];
+                         $val = $val + $lin['movquantidade'] * $lin['movcusto'];
+                    }
                } else {
                     $sal = $sal - $lin['movquantidade'];
-                    $val = $val - $lin['movquantidade'] * $lin['movcusto'];
+                    $val = $val - $lin['movvalor'];
                }
+               $med = $lin['movvalor'] / $lin['movquantidade'] * 1000;
           }
           if ($lin['movstatus'] == 2) {
                $sai = $sai + $lin['movquantidade'];

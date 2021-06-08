@@ -45,7 +45,7 @@
      <script type="text/javascript" src="js/datepicker-pt-BR.js"></script>
 
      <link href="css/pallas49.css" rel="stylesheet" type="text/css" media="screen" />
-     <title>Consultas - Gerenciamento de Milhas - Alexandre Rautemberg - Profsa Informátda Ltda</title>
+     <title>Contas - Gerenciamento de Milhas - Alexandre Rautemberg - Profsa Informátda Ltda</title>
 </head>
 
 <script>
@@ -211,7 +211,7 @@ $(document).ready(function() {
                               <div class="col-md-3 text-center">
                                    <span><?php 
                                    if ($dad['qtd_m'] != 0) {
-                                        echo 'R$ ' . number_format($dad['val_m'] / $dad['qtd_m'] * 1000, 4,"," ,"."); 
+                                        echo 'R$ ' . number_format($dad['val_m'] / $dad['qtd_m'] * 1000, 2,"," ,"."); 
                                    }
                                    ?></span>
                               </div>
@@ -322,7 +322,7 @@ function carrega_pro($usu, $pro) {
      $sta = 0;
      include_once "dados.php";    
      echo '<option value="0" selected="selected">Selecione ...</option>';
-     $com = "Select idprograma, prodescricao from tb_programa where prostatus = 0 and proempresa = " . $_SESSION['wrkcodemp'] . " order by prodescricao, idprograma";
+     $com = "Select idprograma, prodescricao from tb_programa where protipo = 1 and prostatus = 0 and proempresa = " . $_SESSION['wrkcodemp'] . " order by prodescricao, idprograma";
      $nro = leitura_reg($com, $reg);
      foreach ($reg as $lin) {
           if ($lin['idprograma'] != $pro) {

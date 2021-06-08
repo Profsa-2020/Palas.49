@@ -345,6 +345,8 @@ $(document).ready(function() {
           $('#usu_p').val('');
           $('#pro_p').val('');
           $('#nom_t').val('');
+          $('#dtb_t').val('');
+          $('#rec_v').val('');
           $('#des_t').val(0);
           $('#cta_t').val(0);
           $('#cta_d').val(0);
@@ -469,8 +471,6 @@ $(document).ready(function() {
                          if (data.men != "") {
                               alert(data.men);
                          } else {
-                              $('#sal_p').text(data.sal);
-                              $('#lib_p').text(data.lib);
                               $('#qtd_s').val(data.sal);
                               $('#tot_s').val(data.tot);
                               $('#val_s').val(data.val);
@@ -906,9 +906,9 @@ function() { // Qtd que vai - Calculo de transferência e Boomerangue com preço
 
      if (isset($_REQUEST['salvar']) == true) {
           $nom = ""; $qtd = ""; $val = ""; $dat = date('d/m/Y'); $obs = ""; $car = 0;
-          $nom_v = ""; $qtd_v = ""; $val_v = ""; $dat_v = date('d/m/Y'); $obs_v = ""; $rec_v = date('d/m/Y', strtotime('+45 days')); $int_v = 0; 
+          $nom_v = ""; $qtd_v = ""; $val_v = ""; $dat_v = date('d/m/Y'); $obs_v = ""; $rec_v = ''; $int_v = 0; 
           $nom_p = ""; $qtd_p = ""; $dat_p = date('d/m/Y'); $obs_p = ""; $loc_p = ""; $int_p = 0; $cpf_p = 0; 
-          $nom_t = ""; $qtd_t = ""; $dat_t = date('d/m/Y'); $obs_t = ""; $des_t = 0; $pro_t = 1; $val_t = ''; $vai_t = ''; $vol_t = ''; $bon_t = ''; $dtb = date('d/m/Y', strtotime('+18 days'));
+          $nom_t = ""; $qtd_t = ""; $dat_t = date('d/m/Y'); $obs_t = ""; $des_t = 0; $pro_t = 1; $val_t = ''; $vai_t = ''; $vol_t = ''; $bon_t = ''; $dtb = '';
      }
 ?>
 
@@ -1300,14 +1300,7 @@ function() { // Qtd que vai - Calculo de transferência e Boomerangue com preço
                               <input type="text" class="form-control text-right" maxlength="12" id="qtd_p" name="qtd_p"
                                    value="<?php echo $qtd_p; ?>" />
                          </div>
-                         <div class="lit-1 col-md-2 text-center">
-                              <label>Saldo Atual</label><br />
-                              <p id="sal_p">0</p>
-                         </div>
-                         <div class="lit-1 col-md-2 text-center">
-                              <label>Saldo Liberar</label><br />
-                              <p id="lib_p">0</p>
-                         </div>
+                         <div class="lit-1 col-md-4"></div>
                     </div>
                     <div class="row">
                          <div class="col-md-4"></div>

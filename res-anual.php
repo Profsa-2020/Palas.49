@@ -45,7 +45,7 @@
      <script type="text/javascript" src="js/datepicker-pt-BR.js"></script>
 
      <link href="css/pallas49.css" rel="stylesheet" type="text/css" media="screen" />
-     <title>Consultas - Gerenciamento de Milhas - Alexandre Rautemberg - Profsa Informátda Ltda</title>
+     <title>Conta Anual - Gerenciamento de Milhas - Alexandre Rautemberg - Profsa Informátda Ltda</title>
 </head>
 
 <script>

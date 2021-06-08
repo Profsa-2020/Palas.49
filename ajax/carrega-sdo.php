@@ -14,7 +14,7 @@
      date_default_timezone_set("America/Sao_Paulo");
      if (isset($_REQUEST['cta']) == true) { $cta = $_REQUEST['cta']; }
 
-     $sal = saldos_cta($cta, $ent, $sai, $vai, $vol, $val, $tot);
+     $sal = saldos_cta($cta, $ent, $sai, $vai, $vol, $val, $med, $tot);
      if ($sal != 0) {
           $tab['sal'] = number_format($sal, 0, ",", ".");
      }
@@ -33,10 +33,16 @@
      }
 
      $usu = retorna_dad('conusuario', 'tb_conta', 'idconta', $cta); // Somente programa de milhas protipo = 0
-     $com = "Select C.idconta, U.usunome, P.prodescricao, P.protipo from ((tb_conta C left join tb_usuario U on C.conusuario = U.idsenha) left join tb_programa P on C.conprograma = P.idprograma) where constatus = 0 and conempresa = " . $_SESSION['wrkcodemp'] . " and protipo = 0 and conusuario = " . $usu . "  order by prodescricao";
+     if ($_SESSION['wrktipusu'] >= 4) {
+          $com = "Select C.idconta, U.usunome, P.prodescricao, P.protipo from ((tb_conta C left join tb_usuario U on C.conusuario = U.idsenha) left join tb_programa P on C.conprograma = P.idprograma) where constatus = 0 and conempresa = " . $_SESSION['wrkcodemp'] . " and protipo = 0 and conusuario = " . $usu . "  order by prodescricao";
+     } else if ($_SESSION['wrktipusu'] == 3) {
+          $com = "Select C.idconta, U.usunome, P.prodescricao, P.protipo from ((tb_conta C left join tb_usuario U on C.conusuario = U.idsenha) left join tb_programa P on C.conprograma = P.idprograma) where constatus = 0 and conempresa = " . $_SESSION['wrkcodemp'] . " and protipo = 0 and congerente = " . $_SESSION['wrkideusu'] . " and conusuario = " . $usu . "  order by prodescricao";
+     } else {
+          $com = "Select C.idconta, U.usunome, P.prodescricao, P.protipo from ((tb_conta C left join tb_usuario U on C.conusuario = U.idsenha) left join tb_programa P on C.conprograma = P.idprograma) where constatus = 0 and conempresa = " . $_SESSION['wrkcodemp'] . " and protipo = 0 and conusuario = " . $usu . "  order by prodescricao";
+     }
      $nro = leitura_reg($com, $reg);     
      foreach ($reg as $lin) {
-          $tab['txt'] = '<option value ="' . $lin['idconta'] . '">' . $lin['usunome'] . " - " . $lin['prodescricao']. '</option>'; 
+          $tab['txt'] .= '<option value ="' . $lin['idconta'] . '">' . $lin['usunome'] . " - " . $lin['prodescricao']. '</option>'; 
      }     
 
      echo json_encode($tab);     

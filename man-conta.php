@@ -59,9 +59,8 @@ $(document).ready(function() {
      $('#tab-0').DataTable({
           "pageLength": 25,
           "aaSorting": [
-               [3, 'asc'],
-               [5, 'asc'],
-               [6, 'asc']
+               [1, 'asc'],
+               [0, 'asc']
           ],
           "language": {
                "lengthMenu": "Demonstrar _MENU_ linhas por páginas",
@@ -188,15 +187,15 @@ $(document).ready(function() {
                               value="<?php echo $cod; ?>" disabled />
                     </div>
                     <div class="col-md-2">
-                         <label>Gerente</label>
-                         <select id="ger" name="ger" class="form-control">
-                              <?php $ret = carrega_ger($ger); ?>
-                         </select>
-                    </div>
-                    <div class="col-md-2">
                          <label>Titular da conta</label>
                          <select id="usu" name="usu" class="form-control">
                               <?php $ret = carrega_usu($usu); ?>
+                         </select>
+                    </div>
+                    <div class="col-md-2">
+                         <label>Gerente</label>
+                         <select id="ger" name="ger" class="form-control">
+                              <?php $ret = carrega_ger($ger); ?>
                          </select>
                     </div>
                     <div class="col-md-3">
@@ -244,17 +243,17 @@ $(document).ready(function() {
                <table id="tab-0" class="table table-sm table-striped">
                     <thead>
                          <tr>
-                              <th width="5%">Alterar</th>
-                              <th width="5%">Excluir</th>
                               <th width="5%">Código</th>
+                              <th>Titular</th>
                               <th>Gerente</th>
-                              <th>Status</th>
-                              <th>Titular da conta</th>
-                              <th>Programa de fidelidade</th>
+                              <th>Programa</th>
                               <th>Tipo</th>
                               <th>Número</th>
                               <th>Inclusão</th>
                               <th>Alteração</th>
+                              <th>Status</th>
+                              <th width="5%">Alterar</th>
+                              <th width="5%">Excluir</th>
                          </tr>
                     </thead>
                     <tbody>
@@ -308,19 +307,13 @@ function carrega_con() {
      $nro = leitura_reg($com, $reg);
      foreach ($reg as $lin) {
           $txt =  '<tr>';
-          $txt .= '<td class="text-center"><a href="man-conta.php?ope=2&cod=' . $lin['idconta'] . '" title="Efetua alteração do registro informado na linha"><i class="large material-icons">healing</i></a></td>';
-          $txt .= '<td class="lit-d text-center"><a href="man-conta.php?ope=3&cod=' . $lin['idconta'] . '" title="Efetua exclusão do registro informado na linha"><i class="cor-1 large material-icons">delete_forever</i></a></td>';
           $txt .= '<td class="text-center">' . $lin['idconta'] . '</td>';
-          $txt .= '<td class="text-left">' . $lin['usugerente'] . "</td>";
-          if ($lin['constatus'] == 0) {$txt .= "<td>" . "Ativo" . "</td>";}
-          if ($lin['constatus'] == 1) {$txt .= "<td>" . "Bloqueado" . "</td>";}
-          if ($lin['constatus'] == 2) {$txt .= "<td>" . "Suspenso" . "</td>";}
-          if ($lin['constatus'] == 3) {$txt .= "<td>" . "Cancelado" . "</td>";}
           if ($lin['usunome'] == null) {
                $txt .= '<td class="text-left">' . '**********' . "</td>";
           } else {
                $txt .= '<td class="text-left">' . $lin['usunome'] . "</td>";
           }
+          $txt .= '<td class="text-left">' . $lin['usugerente'] . "</td>";
           if ($lin['prodescricao'] == null) {
                $txt .= '<td class="text-left">' . '**********' . "</td>";
           } else {
@@ -339,6 +332,12 @@ function carrega_con() {
           }else{
                $txt .= "<td>" . date('d/m/Y H:m:s',strtotime($lin['datalt'])) . "</td>";
           }
+          if ($lin['constatus'] == 0) {$txt .= "<td>" . "Ativo" . "</td>";}
+          if ($lin['constatus'] == 1) {$txt .= "<td>" . "Bloqueado" . "</td>";}
+          if ($lin['constatus'] == 2) {$txt .= "<td>" . "Suspenso" . "</td>";}
+          if ($lin['constatus'] == 3) {$txt .= "<td>" . "Cancelado" . "</td>";}
+          $txt .= '<td class="text-center"><a href="man-conta.php?ope=2&cod=' . $lin['idconta'] . '" title="Efetua alteração do registro informado na linha"><i class="large material-icons">healing</i></a></td>';
+          $txt .= '<td class="lit-d text-center"><a href="man-conta.php?ope=3&cod=' . $lin['idconta'] . '" title="Efetua exclusão do registro informado na linha"><i class="cor-1 large material-icons">delete_forever</i></a></td>';
           $txt .= "</tr>";
           echo $txt;
      }

@@ -175,7 +175,7 @@ function carrega_usu() {
      if ($_SESSION['wrktipusu'] == 5) {
           $com = "Select U.* , C.usunome as usucontratante from (tb_usuario U left join tb_usuario C on U.usuempresa = C.idsenha) order by usunome, idsenha";
      } else {
-          $com = "Select U.*, C.usunome as usucontratante from (tb_usuario U left join tb_usuario C on U.usuempresa = C.idsenha) where usuempresa = " . $_SESSION['wrkcodemp'] . " order by usunome, idsenha";
+          $com = "Select U.*, C.usunome as usucontratante from (tb_usuario U left join tb_usuario C on U.usuempresa = C.idsenha) where U.usuempresa = " . $_SESSION['wrkcodemp'] . " order by U.usunome, U.idsenha";
      }
      $nro = leitura_reg($com, $reg);
      foreach ($reg as $lin) {

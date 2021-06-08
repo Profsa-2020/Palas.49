@@ -67,6 +67,7 @@
                     <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                          <a class="dropdown-item" href="res-conta.php">Por Conta</a>
                          <a class="dropdown-item" href="res-docto.php">Por CPF´s</a>
+                         <a class="dropdown-item" href="res-ponto.php">Por Pontos</a>
                          <a class="dropdown-item" href="res-anual.php">Por Conta Anual</a>
                     </div>
                </li>               
