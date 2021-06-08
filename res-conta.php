@@ -370,7 +370,7 @@ function carrega_mov($ano, $usu, $pro, &$dad) {
           }
           if ($usu == $usu_t && $pro == $pro_t) {
                $dad['qtd_m'] += $lin['movquantidade'];
-               $dad['val_m'] += $lin['movquantidade'] * $lin['movcusto'];
+               $dad['val_m'] += $lin['movquantidade'] * $lin['movcusto'] / 1000;
           }
           if ($usu == $usu_t && $pro == $pro_t) {
                $dad['sal_m'] += $lin['movquantidade'];

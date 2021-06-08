@@ -316,8 +316,16 @@ function carrega_con() {
           if ($lin['constatus'] == 1) {$txt .= "<td>" . "Bloqueado" . "</td>";}
           if ($lin['constatus'] == 2) {$txt .= "<td>" . "Suspenso" . "</td>";}
           if ($lin['constatus'] == 3) {$txt .= "<td>" . "Cancelado" . "</td>";}
-          $txt .= '<td class="text-left">' . $lin['usunome'] . "</td>";
-          $txt .= '<td class="text-left">' . $lin['prodescricao'] . "</td>";
+          if ($lin['usunome'] == null) {
+               $txt .= '<td class="text-left">' . '**********' . "</td>";
+          } else {
+               $txt .= '<td class="text-left">' . $lin['usunome'] . "</td>";
+          }
+          if ($lin['prodescricao'] == null) {
+               $txt .= '<td class="text-left">' . '**********' . "</td>";
+          } else {
+               $txt .= '<td class="text-left">' . $lin['prodescricao'] . "</td>";
+          }
           if ($lin['protipo'] == 0) {$txt .= "<td>" . "Milhas" . "</td>";}
           if ($lin['protipo'] == 1) {$txt .= "<td>" . "Pontos" . "</td>";}
           $txt .= '<td class="text-left">' . $lin['connumero'] . "</td>";

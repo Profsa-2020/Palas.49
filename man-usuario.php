@@ -590,7 +590,7 @@ function ultimo_cod() {
  }    
      
  function incluir_usu() {
-     $ret = 0; $emp = 1; 
+     $ret = 0; $emp = 1; $erro = "";
      $ace = 999999; $val = date('Y-m-d', strtotime('+365 days'));
      include_once "dados.php";
      if ($_SESSION['wrktipusu'] >= 4) { $emp = $_SESSION['wrkideusu']; }
@@ -686,7 +686,17 @@ function ultimo_cod() {
           print_r($sql);
           echo '<script>alert("Erro na gravação do registro solicitado !");</script>';
      }
-
+     if ($_REQUEST['tip'] == 4) {
+          $sql  = "update tb_usuario set ";
+          $sql .= "usuempresa = idsenha, ";
+          $sql .= "keyalt = '" . $_SESSION['wrkideusu'] . "', ";
+          $sql .= "datalt = '" . date("Y/m/d H:i:s") . "' ";
+          $sql .= "where idsenha = " . $_SESSION['wrkchareg'];
+          $ret = comando_tab($sql, $nro, $cha, $men);
+          if ($ret == false) {
+               $erro = $sql;
+          }          
+     }
      return $ret;
  }
 

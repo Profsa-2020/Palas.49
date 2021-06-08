@@ -381,10 +381,10 @@ function saldos_cta($cta, &$ent, &$sai, &$vai, &$vol, &$val, &$tot) {
                $vol = $vol + ($lin['movquantidade'] * $lin['movpercvolta'] / 100);
                if ($lin['movdestino'] == $cta) {
                     $sal = $sal + $lin['movquantidade'];
-                    $val = $val + $lin['movquantidade'] * $lin['movcusto'] / 1000;
+                    $val = $val + $lin['movquantidade'] * $lin['movcusto'];
                } else {
                     $sal = $sal - $lin['movquantidade'];
-                    $val = $val - $lin['movquantidade'] * $lin['movcusto'] / 1000;
+                    $val = $val - $lin['movquantidade'] * $lin['movcusto'];
                }
           }
           if ($lin['movstatus'] == 2) {
@@ -393,7 +393,6 @@ function saldos_cta($cta, &$ent, &$sai, &$vai, &$vol, &$val, &$tot) {
                $val = $val - $lin['movvalor'];
           }
      }
-
      $vai = round($vai, 0); $vol = round($vol, 0); $tot = $val;
 
      return $sal;

@@ -223,14 +223,14 @@ $(document).ready(function() {
                                              $txt .=  '</tr>';
                                              echo $txt;
                                              $txt =  '<tr class="bg-primary text-white">';
-                                             $txt .= '<td>' . 'PREÇO MÉDIO: ' . '</td>';
+                                             $txt .= '<td>' . 'Custo médio de aquisição: ' . '</td>';
                                              $txt .= '<td class="text-right">' . '' . '</td>';
                                              if ($dad['com_q'] == 0) {
                                                   $txt .= '<td class="text-right">' . '0,00' . '</td>';
                                              } else {
                                                   $txt .= '<td class="text-right">' . number_format($dad['com_v'] / $dad['com_q'] * 1000, 2, ",", ".") . '</td>';
                                              }
-                                             $txt .= '<td>' . 'PREÇO MÉDIO: ' . '</td>';
+                                             $txt .= '<td>' . 'Preço médio de venda: ' . '</td>';
                                              $txt .= '<td class="text-right">' . '' . '</td>';
                                              if ($dad['ven_q'] == 0) {
                                                   $txt .= '<td class="text-right">' . '0,00' . '</td>';
@@ -243,8 +243,68 @@ $(document).ready(function() {
                                    </tbody>
                               </table>
                          </div>
-                         <hr />
-
+                         <br />
+                         <div class="row bg-warning text-dark">
+                              <div class="col-md-3">
+                                   <span>Quantidades adquiridas</span>
+                              </div>
+                              <div class="col-md-2 text-right">
+                                   <?php echo number_format($dad['qua_a'], 0, ",", "."); ?>
+                              </div>
+                              <div class="col-md-2"></div>
+                              <div class="col-md-3">
+                                   <span>Valor das vendas</span>
+                              </div>
+                              <div class="col-md-2 text-right">
+                                   <?php echo number_format($dad['vlo_v'], 2, ",", "."); ?>
+                              </div>
+                         </div>
+                         <div class="row bg-warning text-dark">
+                              <div class="col-md-3">
+                                   <span>Quantidades Vendida</span>
+                              </div>
+                              <div class="col-md-2 text-right">
+                                   <?php echo number_format($dad['qua_v'], 0, ",", "."); ?>
+                              </div>
+                              <div class="col-md-2"></div>
+                              <div class="col-md-3">
+                                   <span>Custo médio vendido</span>
+                              </div>
+                              <div class="col-md-2 text-right">
+                                   <?php echo number_format($dad['cus_m'], 2, ",", "."); ?>
+                              </div>
+                         </div>
+                         <div class="row bg-warning text-dark">
+                              <div class="col-md-3">
+                                   <span>Saldo em quantidades</span>
+                              </div>
+                              <div class="col-md-2 text-right">
+                                   <?php echo number_format($dad['sdo_q'], 0, ",", "."); ?>
+                              </div>
+                              <div class="col-md-2"></div>
+                              <div class="col-md-3">
+                                   <span>Lucro bruto R$</span>
+                              </div>
+                              <div class="col-md-2 text-right">
+                                   <?php echo number_format($dad['luc_r'], 2, ",", "."); ?>
+                              </div>
+                         </div>
+                         <div class="row bg-warning text-dark">
+                              <div class="col-md-3">
+                                   <span>Saldo em R$</span>
+                              </div>
+                              <div class="col-md-2 text-right">
+                                   <?php echo number_format($dad['sdo_v'], 2, ",", "."); ?>
+                              </div>
+                              <div class="col-md-2"></div>
+                              <div class="col-md-3">
+                                   <span>Lucro bruto %</span>
+                              </div>
+                              <div class="col-md-2 text-right">
+                                   <?php echo number_format($dad['luc_p'], 2, ",", ".") . "%"; ?>
+                              </div>
+                         </div>
+                         <br />
                     </div>
                </div>
           </div>
@@ -290,6 +350,8 @@ function carrega_pro($usu, $pro) {
 function carrega_mov($ano, $usu, $pro, &$dad) {
      include_once "dados.php";
      $dad['com_q'] = 0; $dad['com_v'] = 0; $dad['ven_q'] = 0; $dad['ven_v'] = 0;
+     $dad['qua_a'] = 0; $dad['qua_v'] = 0; $dad['sdo_q'] = 0; $dad['sdo_v'] = 0;
+     $dad['vlo_v'] = 0; $dad['cus_m'] = 0; $dad['luc_r'] = 0; $dad['luc_p'] = 0;
      for ($ind = 1; $ind <= 12 ; $ind++) {
           $dad['mes_c'][$ind] = mes_ano($ind);
           $dad['qtd_c'][$ind] = 0;
@@ -304,17 +366,19 @@ function carrega_mov($ano, $usu, $pro, &$dad) {
      } else {
           $com  = "Select * from tb_movto where movempresa = " . $_SESSION['wrkcodemp'] . " and movusuario = " . $usu . " and movprograma = ". $pro . " and movdata between '" . $dti . "' and '" . $dtf . "'";
      }
-
      $nro = leitura_reg($com, $reg);
      foreach ($reg as $lin) { // 0-Compra 1-Transferência 2-Venda 3-Venda intermediario
           $mes = (int) date('m', strtotime($lin['movdata']));
           if ($lin['movstatus'] == 0) {
+               $dad['qua_a'] += $lin['movquantidade'];
                $dad['com_q'] += $lin['movquantidade'];
                $dad['com_v'] += $lin['movvalor'];
                $dad['qtd_c'][$mes] += $lin['movquantidade'];
                $dad['val_c'][$mes] += $lin['movvalor'];
           }
           if ($lin['movstatus'] == 2) {
+               $dad['vlo_v'] += $lin['movvalor'];
+               $dad['qua_v'] += $lin['movquantidade'];
                $dad['ven_q'] += $lin['movquantidade'];
                $dad['ven_v'] += $lin['movvalor'];
                $dad['qtd_v'][$mes] += $lin['movquantidade'];
@@ -322,6 +386,32 @@ function carrega_mov($ano, $usu, $pro, &$dad) {
           }
      }
 
+     if ($usu != 0 && $pro != 0) {
+          $com  = "Select * from tb_movto where movempresa = " . $_SESSION['wrkcodemp'] . " and movdata between '" . $dti . "' and '" . $dtf . "'";
+          $nro = leitura_reg($com, $reg);
+          foreach ($reg as $lin) { // 0-Compra 1-Transferência 2-Venda 3-Venda intermediario
+               $mes = (int) date('m', strtotime($lin['movdata']));
+               $pro_t = retorna_dad('conprograma', 'tb_conta', 'idconta', $lin['movdestino']); 
+               $usu_t = retorna_dad('conusuario', 'tb_conta', 'idconta', $lin['movdestino']); 
+               if ($usu == $usu_t && $pro == $pro_t) {
+                    if ($lin['movstatus'] == 1) {
+                         $dad['qua_a'] += $lin['movquantidade'];
+                         $dad['com_q'] += $lin['movquantidade'];
+                         $dad['com_v'] += $lin['movcusto'] * $lin['movquantidade'] / 1000;
+                         $dad['qtd_c'][$mes] += $lin['movquantidade'];
+                         $dad['val_c'][$mes] += $lin['movcusto'] * $lin['movquantidade'] / 1000;
+                    }
+               }
+          }
+     }
+     $med = $dad['com_v'] / $dad['com_q'];   // Preço médio de compra
+     $dad['sdo_q'] = $dad['qua_a'] - $dad['qua_v'];
+     $dad['sdo_v'] = ($dad['qua_a'] - $dad['qua_v']) * $med;
+     $dad['cus_m'] = $med * $dad['ven_q'];
+     $dad['luc_r'] = $dad['vlo_v'] - $dad['cus_m'];
+     if ($dad['cus_m'] != 0) {
+          $dad['luc_p'] = $dad['luc_r'] / $dad['cus_m'] * 100;
+     }
      return $nro;
 }
 

@@ -265,7 +265,7 @@ $(document).ready(function() {
                                                   <th>Intermediário</th>
                                                   <th>Receber</th>
                                                   <th>Localizador</th>
-                                                  <th class="text-center">CPF´s</th>
+                                                  <th class="text-center">CPF</th>
                                                   <th>Promoção</th>
                                                   <th>Destino</th>
                                                   <th>% de Bônus</th>
@@ -404,10 +404,11 @@ function carrega_mov($ope, $usu, $pro, $dti, $dtf) {
           $txt .= '<td class="text-right">' . number_format($reg['movquantidade'], 0, ",", ".") . '</td>';
           if ($reg['movtipo'] == 2) {
                $txt .= '<td class="text-right">' . number_format($reg['movcusto'], 4, ",", ".") . '</td>';
+               $txt .= '<td class="text-right">' . number_format($reg['movcusto'] * $reg['movquantidade'] / 1000, 2, ",", ".") . '</td>';
           } else {
                $txt .= '<td class="text-right">' . number_format($reg['movvalor'] / $reg['movquantidade'] * 1000, 4, ",", ".") . '</td>';
+               $txt .= '<td class="text-right">' . number_format($reg['movvalor'], 2, ",", ".") . '</td>';
           }
-          $txt .= '<td class="text-right">' . number_format($reg['movvalor'], 2, ",", ".") . '</td>';
           $txt .= '<td>' . $reg['intdescricao'] . '</td>';
           if ($reg['movvecto'] == null) {
                if ($reg['movbonus'] == null) {
@@ -429,12 +430,12 @@ function carrega_mov($ope, $usu, $pro, $dti, $dtf) {
           if ($reg['movpercvai'] == '0') {
                $txt .= '<td>' . '' . '</td>';
           } else {
-               $txt .= '<td>' . number_format($reg['movpercvai'], 2, ",", ".") . '</td>';
+               $txt .= '<td class="text-center">' . number_format($reg['movpercvai'], 0, ",", ".") . '%' . '</td>';
           }
           if ($reg['movpercvolta'] == '0') {
                $txt .= '<td>' . '' . '</td>';
           } else {
-               $txt .= '<td>' . number_format($reg['movpercvolta'], 2, ",", ".") . '</td>';
+               $txt .= '<td class="text-center">' . number_format($reg['movpercvolta'], 0, ",", ".") . '%' . '</td>';
           }
           $txt .= '<td>' . $reg['movobservacao'] . '</td>';
           $txt .= '</tr>';

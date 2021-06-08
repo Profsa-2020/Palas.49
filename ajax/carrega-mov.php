@@ -34,8 +34,18 @@
           if ($reg['intdescricao'] != null) {
                $tab['txt'] .= 'Intermediário: ' . $reg['intdescricao'] . '<br />';
           }
+          if ($reg['movbonus'] != null) {
+               $tab['txt'] .= 'Data do Bônus: ' . date('d/m/Y',strtotime($reg['movbonus'])) . '<br />';
+          }
+          if ($reg['movvecto'] != null) {
+               $tab['txt'] .= 'Data do Recebimento: ' . date('d/m/Y',strtotime($reg['movvecto'])) . '<br />';
+          }
           $tab['txt'] .= 'Quantidade: ' . number_format($reg['movquantidade'], 0, ",", ".") . '<br />';
           $tab['txt'] .= 'Valor: R$ ' . number_format($reg['movvalor'], 2, ",", ".") . '<br />';
+          if ($reg['movstatus'] == 1) {
+               $tab['txt'] .= 'Ida: ' . number_format($reg['movpercvai'], 0, ",", ".") . ' % - Quantidade: ' . number_format($reg['movquantidade'] * $reg['movpercvai'] / 100 , 0, ",", ".") . '<br />';
+               $tab['txt'] .= 'Volta: ' . number_format($reg['movpercvolta'], 0, ",", ".") . ' % - Quantidade: ' . number_format($reg['movquantidade'] * $reg['movpercvolta'] / 100 , 0, ",", ".") . '<br />';
+          }
           $tab['txt'] .= 'Observação: ' . $reg['movobservacao'] . '<br />';
           $tab['txt'] .= '</strong>';
      }

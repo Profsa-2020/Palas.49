@@ -60,7 +60,7 @@ $(document).ready(function() {
           "pageLength": 25,
           "aaSorting": [
                [2, 'asc'],
-               [3, 'asc']
+               [4, 'asc']
           ],
           "language": {
                "lengthMenu": "Demonstrar _MENU_ linhas por páginas",
@@ -142,8 +142,9 @@ $(document).ready(function() {
                                    <tr>
                                         <th width="3%">Alterar</th>
                                         <th width="3%">Excluir</th>
+                                        <th>Contratante</th>
                                         <th width="3%">Código</th>
-                                        <th>Nome</th>
+                                        <th>Nome do Usuário</th>
                                         <th>Status</th>
                                         <th>E-Mail</th>
                                         <th>Tipo</th>
@@ -172,9 +173,9 @@ $(document).ready(function() {
 function carrega_usu() {
      include_once "dados.php";
      if ($_SESSION['wrktipusu'] == 5) {
-          $com = "Select * from tb_usuario order by usunome, idsenha";
+          $com = "Select U.* , C.usunome as usucontratante from (tb_usuario U left join tb_usuario C on U.usuempresa = C.idsenha) order by usunome, idsenha";
      } else {
-          $com = "Select * from tb_usuario where usuempresa = " . $_SESSION['wrkcodemp'] . " order by usunome, idsenha";
+          $com = "Select U.*, C.usunome as usucontratante from (tb_usuario U left join tb_usuario C on U.usuempresa = C.idsenha) where usuempresa = " . $_SESSION['wrkcodemp'] . " order by usunome, idsenha";
      }
      $nro = leitura_reg($com, $reg);
      foreach ($reg as $lin) {
@@ -182,6 +183,7 @@ function carrega_usu() {
                $txt =  '<tr>';
                $txt .= '<td class="text-center"><a href="man-usuario.php?ope=2&cod=' . $lin['idsenha'] . '" title="Efetua alteração do registro informado na linha"><i class="large material-icons">healing</i></a></td>';
                $txt .= '<td class="lit-d text-center"><a href="man-usuario.php?ope=3&cod=' . $lin['idsenha'] . '" title="Efetua exclusão do registro informado na linha"><i class="cor-1 large material-icons">delete_forever</i></a></td>';
+               $txt .= "<td>" . $lin['usucontratante'] . "</td>";
                $txt .= '<td class="text-center">' . str_pad($lin['usuempresa'], 3, "0", STR_PAD_LEFT) . "-" . $lin['idsenha'] . '</td>';
                $txt .= "<td>" . $lin['usunome'] . "</td>";
                if ($lin['usustatus'] == 0) {$txt .= "<td>" . "Ativo" . "</td>";}

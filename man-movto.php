@@ -628,18 +628,20 @@ $(document).ready(function() {
 
      $('#qtd_t').blur(function() {
           var qtd = $('#qtd_t').val();
-          var qua = $('#qtd_m').val();
+          var sal = $('#qtd_m').val();
           var pre = $('#med_t').val();
           if (qtd == "") {
                $('#qtd_t').val($('#qtd_s').val());
                $('#val_t').val($('#tot_s').val());
+               $('#cus_c').val(pre * 1000);
                var cus = (pre * 1000).toLocaleString("pt-BR", {
                     style: "currency",
                     currency: "BRL"
                });
                $('#cus_t').val(cus);
           }
-          if (qtd > $('#qtd_s').val()) {
+          qtd = qtd.replace('.', ''); qtd = qtd.replace(',', '.');
+          if (parseFloat(qtd, 10) > parseFloat(sal, 10)) {
                alert("Quantidade informada não pode ser maior que quantidade em saldo !");
                $('#qtd_t').val($('#qtd_s').val());
                $('#qtd_d').val($('#qtd_s').val());
@@ -753,6 +755,7 @@ function() { // Qtd que vai - Calculo de transferência e Boomerangue com preço
                if (pro == 1) {
                     let res = parseFloat(qtd, 10) * (1 + parseFloat(per, 10) / 100);
                     res = val / res * 1000;
+                    $('#cus_c').val(res);
                     res = res.toLocaleString("pt-BR", {
                          style: "currency",
                          currency: "BRL"
@@ -768,6 +771,7 @@ function() { // Qtd que vai - Calculo de transferência e Boomerangue com preço
                     let res = parseFloat(qtd, 10) * (1 - parseFloat(vol, 10) / 100);
                     res = res * med;
                     res = res / (qtd * (1 + parseFloat(vai, 10) / 100)) * 1000;
+                    $('#cus_c').val(res);
                     res = res.toLocaleString("pt-BR", {
                          style: "currency",
                          currency: "BRL"
@@ -807,6 +811,7 @@ function() { // Qtd que vai - Calculo de transferência e Boomerangue com preço
                if (pro == 1) {
                     let res = parseFloat(qtd, 10) * (1 + parseFloat(per, 10) / 100);
                     res = val / res * 1000;
+                    $('#cus_c').val(res);
                     res = res.toLocaleString("pt-BR", {
                          style: "currency",
                          currency: "BRL"
@@ -822,6 +827,7 @@ function() { // Qtd que vai - Calculo de transferência e Boomerangue com preço
                     let res = parseFloat(qtd, 10) * (1 - parseFloat(vol, 10) / 100);
                     res = res * med;
                     res = res / (qtd * (1 + parseFloat(vai, 10) / 100)) * 1000;
+                    $('#cus_c').val(res);    // Preço de custo hidden (escondido) para gravar
                     res = res.toLocaleString("pt-BR", {
                          style: "currency",
                          currency: "BRL"
@@ -1307,7 +1313,7 @@ function() { // Qtd que vai - Calculo de transferência e Boomerangue com preço
                          <div class="col-md-4"></div>
                          <div class="col-md-4">
                               <label id="tit">Localizador</label>
-                              <input type="text" class="form-control" maxlength="15" id="loc_p" name="loc_p"
+                              <input type="text" class="form-control text-center" maxlength="15" id="loc_p" name="loc_p"
                                    value="<?php echo $loc_p; ?>" />
                          </div>
                          <div class="col-md-4"></div>

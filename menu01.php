@@ -108,19 +108,27 @@ $(document).ready(function() {
           </div>
           <br />
           <div class="row text-center">
-               <div class="col-md-3 bg-primary text-white">
+               <div class="col-md-2 bg-primary text-white">
                     <p>Qtde Comprada</p>
                     <span><strong><?php echo number_format($dad['qtd_c'], 0,"," ,"."); ?></strong></span>
                </div>
-               <div class="col-md-3 bg-primary text-white">
+               <div class="col-md-2 bg-primary text-white">
                     <p>Valor Comprado</p>
                     <span><strong><?php echo "R$ " . number_format($dad['val_c'], 2,"," ,"."); ?></strong></span>
                </div>
-               <div class="col-md-3 bg-primary text-white">
+               <div class="col-md-2 bg-primary text-white">
+                    <p>Qtde Tranferida</p>
+                    <span><strong><?php echo number_format($dad['qtd_t'], 0,"," ,"."); ?></strong></span>
+               </div>
+               <div class="col-md-2 bg-primary text-white">
+                    <p>Valor Tranferido</p>
+                    <span><strong><?php echo "R$ " . number_format($dad['val_t'], 2,"," ,"."); ?></strong></span>
+               </div>
+               <div class="col-md-2 bg-primary text-white">
                     <p>Qtde Vendida</p>
                     <span><strong><?php echo number_format($dad['qtd_v'], 0,"," , "."); ?></strong></span>
                </div>
-               <div class="col-md-3 bg-primary text-white">
+               <div class="col-md-2 bg-primary text-white">
                     <p>Valor Vendido</p>
                     <span><strong><?php echo "R$ " . number_format($dad['val_v'], 2,"," , "."); ?></strong></span>
                </div>
@@ -218,6 +226,8 @@ function carrega_das(&$dad) {
      $dad['int_m'] = 0;
      $dad['val_c'] = 0;
      $dad['qtd_c'] = 0;
+     $dad['val_t'] = 0;
+     $dad['qtd_t'] = 0;
      $dad['val_v'] = 0;
      $dad['qtd_v'] = 0;
      $dad['int'] = array();
@@ -229,6 +239,12 @@ function carrega_das(&$dad) {
           if ($lin['movstatus'] == 0) {
                $dad['qtd_c'] += $lin['movquantidade'];
                $dad['val_c'] += $lin['movvalor'];
+          }
+          if ($lin['movstatus'] == 1) {
+               $dad['qtd_t'] += $lin['movquantidade'];
+               $dad['val_t'] += $lin['movquantidade'] * $lin['movcusto'] / 1000;
+               $dad['val_c'] -= $lin['movvalor'];
+               $dad['val_c'] += $lin['movquantidade'] * $lin['movcusto'] / 1000;
           }
           if ($lin['movstatus'] == 2) {
                $dad['qtd_v'] += $lin['movquantidade'];
