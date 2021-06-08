@@ -191,10 +191,12 @@ $(document).ready(function() {
           if (isset($_REQUEST['salvar']) == false) { 
                $cha = $_SESSION['wrkcodreg']; $_SESSION['wrknumvol'] = 1;
                $ret = ler_usuario($cha, $emp, $nom, $ape, $sta, $tip, $sen, $ema, $val, $ace, $tel, $cel, $cep, $end, $num, $com, $bai, $cid, $est, $cmv, $cmt, $cpf, $doc, $bco, $age, $cta, $fav, $obs); 
-               if ($_SESSION['wrkcodemp'] != $emp) {
-                    echo '<script>alert("Seu nível de acesso a este usuário não permido para você, lamento");</script>';
-                    echo '<script>history.go(-2);</script>';
-               }     
+               if ($_SESSION['wrktipusu'] != 5) {
+                    if ($_SESSION['wrkcodemp'] != $emp) {
+                         echo '<script>alert("Seu tipo de usuário não pode acessar outro administrador lamento");</script>';
+                         echo '<script>history.go(-2);</script>';
+                    }
+               }
           }
      }
      if (isset($_REQUEST['salvar']) == true) {

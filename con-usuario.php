@@ -178,7 +178,7 @@ function carrega_usu() {
      }
      $nro = leitura_reg($com, $reg);
      foreach ($reg as $lin) {
-          if ($lin['usustatus'] <$_SESSION['wrktipusu']) {
+          if ($_SESSION['wrktipusu'] == 5 || $lin['usutipo'] < $_SESSION['wrktipusu'] || $_SESSION['wrkideusu'] == $lin['idsenha']) {
                $txt =  '<tr>';
                $txt .= '<td class="text-center"><a href="man-usuario.php?ope=2&cod=' . $lin['idsenha'] . '" title="Efetua alteração do registro informado na linha"><i class="large material-icons">healing</i></a></td>';
                $txt .= '<td class="lit-d text-center"><a href="man-usuario.php?ope=3&cod=' . $lin['idsenha'] . '" title="Efetua exclusão do registro informado na linha"><i class="cor-1 large material-icons">delete_forever</i></a></td>';
