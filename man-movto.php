@@ -75,10 +75,10 @@ $(function() {
      $("#val_v").mask("000.000.000,00", {
           reverse: true
      });
-     $("#vai_t").mask("000,00", {
+     $("#vai_t").mask("000", {
           reverse: true
      });
-     $("#vol_t").mask("000,00", {
+     $("#vol_t").mask("000", {
           reverse: true
      });
      $("#val_t").mask("000.000.000,00", {
@@ -144,24 +144,10 @@ $(function() {
           select: function(event, ui) {
                let tam = ui.item.usuario.trim().length - 1;
                $('#cta_t').val(ui.item.id);
-               $('#des_t').val(ui.item.usuario.substring(0, tam));
                if (ui.item.tipo == 0) {
                     $('#tit_t').text("Milhas a Transferir");
                } else {
                     $('#tit_t').text("Pontos a Transferir");
-               }
-          }
-     });
-
-     $('#des_t').autocomplete({
-          source: "ajax/mostrar-mil.php",
-          minLength: 3,
-          select: function(event, ui) {
-               $('#cta_d').val(ui.item.id);
-               if (ui.item.tipo == 0) {
-                    $('#tit_d').text("Milhas Transferidas");
-               } else {
-                    $('#tit_d').text("Pontos Transferidos");
                }
           }
      });
@@ -218,7 +204,7 @@ $(document).ready(function() {
                dst = $('#des_t').val();
                pro = $('#pro_t').val();
                cta = $('#cta_t').val();
-               des = $('#cta_d').val();
+               des = $('#des_t').val();
                qtd = $('#qtd_t').val();
                val = $('#val_t').val();
                dat = $('#dat_t').val();
@@ -318,6 +304,8 @@ $(document).ready(function() {
                          $('#dat').val('');
                          $('#obs').val('');
                          $('#car').val('');
+                         $('#dtb_t').val('');
+                         $('#rec_v').val('');
                          $('#cus_c').val(0);
                          $('#tot_s').val(0);
                          $('#med_t').val(0);
@@ -327,6 +315,7 @@ $(document).ready(function() {
                          $('#cta_t').val(0);
                          $('#cta_d').val(0);
                          $('#cta_v').val(0);
+                         $('#des_t').val(0);
                     }
                }, "json");
           }
@@ -356,7 +345,7 @@ $(document).ready(function() {
           $('#usu_p').val('');
           $('#pro_p').val('');
           $('#nom_t').val('');
-          $('#des_t').val('');
+          $('#des_t').val(0);
           $('#cta_t').val(0);
           $('#cta_d').val(0);
           $('#cus_c').val(0);
@@ -436,6 +425,7 @@ $(document).ready(function() {
                               $('#tot_s').val(data.tot);
                               $('#val_s').val(data.val);
                               $('#qtd_m').val(data.qtd);
+                              $('#des_t').html(data.txt);
                          }
                     }).fail(function(data) {
                          console.log('Erro: ' + JSON.stringify(data));
@@ -488,9 +478,15 @@ $(document).ready(function() {
                          }
                     }).fail(function(data) {
                          console.log('Erro: ' + JSON.stringify(data));
-                         alert("Erro ocorrido no processamento do saldo da conta para passagem");
+                         alert(
+                              "Erro ocorrido no processamento do saldo da conta para passagem");
                     });
           }
+     });
+
+     $('#des_t').change(function() {
+          let cta = $('#des_t').val();
+          $('#cta_d').val(cta);
      });
 
      $('#dat').blur(function() {
@@ -513,16 +509,6 @@ $(document).ready(function() {
           }
      });
 
-     $('#rec_v').blur(function() {
-          if ($('#rec_v').val() == "") {
-               var dat = new Date;
-               var ddd = ('0' + dat.getDate()).slice(-2);
-               var mmm = ('0' + (dat.getMonth() + 1)).slice(-2);
-               var aaa = dat.getFullYear();
-               $('#rec_v').val(ddd + "/" + mmm + "/" + aaa);
-          }
-     });
-
      $('#dat_p').blur(function() {
           if ($('#dat_p').val() == "") {
                var dat = new Date;
@@ -540,16 +526,6 @@ $(document).ready(function() {
                var mmm = ('0' + (dat.getMonth() + 1)).slice(-2);
                var aaa = dat.getFullYear();
                $('#dat_t').val(ddd + "/" + mmm + "/" + aaa);
-          }
-     });
-
-     $('#dtb_t').blur(function() {
-          if ($('#dtb_t').val() == "") {
-               var dat = new Date;
-               var ddd = ('0' + dat.getDate()).slice(-2);
-               var mmm = ('0' + (dat.getMonth() + 1)).slice(-2);
-               var aaa = dat.getFullYear();
-               $('#dtb_t').val(ddd + "/" + mmm + "/" + aaa);
           }
      });
 
@@ -673,8 +649,10 @@ $(document).ready(function() {
      $('#qtd_v').blur(function() {
           var qtd = $('#qtd_v').val();
           var sal = $('#qtd_s').val();
-          qtd = qtd.replace('.', ''); qtd = qtd.replace(',', '.');
-          sal = sal.replace('.', ''); sal = sal.replace(',', '.');
+          qtd = qtd.replace('.', '');
+          qtd = qtd.replace(',', '.');
+          sal = sal.replace('.', '');
+          sal = sal.replace(',', '.');
           if (qtd == "") {
                $('#qtd_v').val($('#qtd_s').val());
           }
@@ -743,7 +721,8 @@ $(document).ready(function() {
           }
      });
 
-     $('#vai_t').change(function() {    // Qtd que vai - Calculo de transferência e Boomerangue com preço de custo
+     $('#vai_t').change(
+function() { // Qtd que vai - Calculo de transferência e Boomerangue com preço de custo
           let pro = $('#pro_t').val();
           let qtd = $('#qtd_t').val();
           let per = $('#vai_t').val();
@@ -774,7 +753,6 @@ $(document).ready(function() {
                if (pro == 1) {
                     let res = parseFloat(qtd, 10) * (1 + parseFloat(per, 10) / 100);
                     res = val / res * 1000;
-                    $('#cus_c').val(res);
                     res = res.toLocaleString("pt-BR", {
                          style: "currency",
                          currency: "BRL"
@@ -790,7 +768,6 @@ $(document).ready(function() {
                     let res = parseFloat(qtd, 10) * (1 - parseFloat(vol, 10) / 100);
                     res = res * med;
                     res = res / (qtd * (1 + parseFloat(vai, 10) / 100)) * 1000;
-                    $('#cus_c').val(res);
                     res = res.toLocaleString("pt-BR", {
                          style: "currency",
                          currency: "BRL"
@@ -830,7 +807,6 @@ $(document).ready(function() {
                if (pro == 1) {
                     let res = parseFloat(qtd, 10) * (1 + parseFloat(per, 10) / 100);
                     res = val / res * 1000;
-                    $('#cus_c').val(res / 1000);
                     res = res.toLocaleString("pt-BR", {
                          style: "currency",
                          currency: "BRL"
@@ -846,7 +822,6 @@ $(document).ready(function() {
                     let res = parseFloat(qtd, 10) * (1 - parseFloat(vol, 10) / 100);
                     res = res * med;
                     res = res / (qtd * (1 + parseFloat(vai, 10) / 100)) * 1000;
-                    $('#cus_c').val(res / 1000);
                     res = res.toLocaleString("pt-BR", {
                          style: "currency",
                          currency: "BRL"
@@ -899,7 +874,7 @@ $(document).ready(function() {
      $qtd_v = (isset($_REQUEST['qtd_v']) == false ? '' : $_REQUEST['qtd_v']);
      $val_v = (isset($_REQUEST['val_v']) == false ? '' : $_REQUEST['val_v']);
      $int_v = (isset($_REQUEST['int_v']) == false ? 0 : $_REQUEST['int_v']);
-     $rec_v = (isset($_REQUEST['rec_v']) == false ? date('d/m/Y', strtotime('+45 days')) : $_REQUEST['rec_v']);
+     $rec_v = (isset($_REQUEST['rec_v']) == false ? '' : $_REQUEST['rec_v']);
      $dat_v = (isset($_REQUEST['dat_v']) == false ? date('d/m/Y') : $_REQUEST['dat_v']);
      $obs_v = (isset($_REQUEST['obs_v']) == false ? '' : str_replace("'", "´", $_REQUEST['obs_v']));
 
@@ -919,7 +894,7 @@ $(document).ready(function() {
      $vai_t = (isset($_REQUEST['vai_t']) == false ? '' : $_REQUEST['vai_t']);
      $vol_t = (isset($_REQUEST['vol_t']) == false ? '' : $_REQUEST['vol_t']);
      $bon_t = (isset($_REQUEST['bon_t']) == false ? '' : $_REQUEST['bon_t']);
-     $dtb_t = (isset($_REQUEST['dtb_t']) == false ? date('d/m/Y', strtotime('+18 days')) : $_REQUEST['dtb_t']);
+     $dtb_t = (isset($_REQUEST['dtb_t']) == false ? '' : $_REQUEST['dtb_t']);
      $dat_t = (isset($_REQUEST['dat_t']) == false ? date('d/m/Y') : $_REQUEST['dat_t']);
      $obs_t = (isset($_REQUEST['obs_t']) == false ? '' : str_replace("'", "´", $_REQUEST['obs_t']));
 
@@ -927,7 +902,7 @@ $(document).ready(function() {
           $nom = ""; $qtd = ""; $val = ""; $dat = date('d/m/Y'); $obs = ""; $car = 0;
           $nom_v = ""; $qtd_v = ""; $val_v = ""; $dat_v = date('d/m/Y'); $obs_v = ""; $rec_v = date('d/m/Y', strtotime('+45 days')); $int_v = 0; 
           $nom_p = ""; $qtd_p = ""; $dat_p = date('d/m/Y'); $obs_p = ""; $loc_p = ""; $int_p = 0; $cpf_p = 0; 
-          $nom_t = ""; $qtd_t = ""; $dat_t = date('d/m/Y'); $obs_t = ""; $des_t = ""; $pro_t = 1; $val_t = ''; $vai_t = ''; $vol_t = ''; $bon_t = ''; $dtb = date('d/m/Y', strtotime('+18 days'));
+          $nom_t = ""; $qtd_t = ""; $dat_t = date('d/m/Y'); $obs_t = ""; $des_t = 0; $pro_t = 1; $val_t = ''; $vai_t = ''; $vol_t = ''; $bon_t = ''; $dtb = date('d/m/Y', strtotime('+18 days'));
      }
 ?>
 
@@ -1056,7 +1031,8 @@ $(document).ready(function() {
                                              <div class="col-md-12">
                                                   <label>Conta de Origem</label>
                                                   <input type="text" class="form-control" maxlength="50" id="nom_t"
-                                                       name="nom_t" value="<?php echo $nom_t; ?>" />
+                                                       name="nom_t" value="<?php echo $nom_t; ?>"
+                                                       placeholder="Origem ..." />
                                              </div>
                                              <br />
                                              <div class="col-md-3"></div>
@@ -1118,8 +1094,9 @@ $(document).ready(function() {
                                         <div class="form-row">
                                              <div class="col-md-12">
                                                   <label>Conta de Destino</label>
-                                                  <input type="text" class="form-control" maxlength="50" id="des_t"
-                                                       name="des_t" value="<?php echo $des_t; ?>" />
+                                                  <select id="des_t" name="des_t" class="form-control">
+                                                       <option value="0">Destinatário ...</option>
+                                                  </select>
                                              </div>
                                              <br />
                                              <div class="lin-3"></div>

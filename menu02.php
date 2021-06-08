@@ -91,6 +91,8 @@ $(document).ready(function() {
      $_SESSION['wrkopereg'] = 0; $_SESSION['wrkcodreg'] = 0; $_SESSION['wrklogemp'] = ''; 
      if (isset($_SESSION['wrkendser']) == false) { $_SESSION['wrkendser'] = getenv("REMOTE_ADDR"); }
 
+     $dad = array();
+     $ret = carrega_das($dad);
 
 ?>
 
@@ -104,18 +106,128 @@ $(document).ready(function() {
      <div class="container">
           <div class="row text-center">
                <div class="col-md-12">
-                    <h2><span><strong> Resumo &nbsp; &nbsp; &nbsp; <i class="fa fa-line-chart fa-1g" aria-hidden="true"></i></strong></span></h2>
+                    <h2><span><strong> Resumo &nbsp; &nbsp; &nbsp; <i class="fa fa-line-chart fa-1g"
+                                        aria-hidden="true"></i></strong></span></h2>
                </div>
           </div>
           <br />
+          <div class="row">
+               <div class="col-md-4 text-center">
+                    <div class="qua-4">
+                         <label>Nº de Contratantes</label>
+                         <p><?php echo number_format($dad['num_a'], 0, ",", "."); ?></p>
+                    </div>
+               </div>
+               <div class="col-md-4 text-center">
+                    <div class="qua-4">
+                         <label>Nº de Usuários</label>
+                         <p><?php echo number_format($dad['num_u'], 0, ",", "."); ?></p>
+                    </div>
+               </div>
+               <div class="col-md-4 text-center">
+                    <div class="qua-4">
+                         <label>Nº de Planos</label>
+                         <p><?php echo number_format($dad['num_p'], 0, ",", "."); ?></p>
+                    </div>
+               </div>
+          </div>
+          <br />
+          <div class="row">
+               <div class="col-md-4"></div>
+               <div class="col-md-8">
+                    <div class="qua-4 text-center">
+                         <label>Recebimentos</label>
+                         <p><?php echo 'R$ ' . number_format($dad['val_r'], 2, ",", "."); ?></p>
+                    </div>
+               </div>
+          </div>
+          <br />
+          <div class="tab-1 table-responsive">
+               <table id="tab-0" class="table table-sm table-striped">
+                    <thead class="thead-dark">
+                         <tr>
+                              <th width="5%">Número</th>
+                              <th>Status</th>
+                              <th>Descrição do Plano</th>
+                              <th>Usuários</th>
+                              <th>Valor</th>
+                              <th width="15%">Inclusão</th>
+                              <th width="15%">Alteração</th>
+                         </tr>
+                    </thead>
+                    <tbody>
+                         <?php $ret = carrega_pla();  ?>
+                    </tbody>
+               </table>
+          </div>
      </div>
-     <br />
+
      <div id="box10">
           <img class="subir" src="img/subir.png" title="Volta a página para o seu topo." />
      </div>
 </body>
 
 <?php
+function carrega_das(&$dad) {
+     $ret = 0;
+     $dad = array();
+     $dad['num_u'] = 0;
+     $dad['num_a'] = 0;
+     $dad['num_p'] = 0;
+     $dad['val_r'] = 0;
+     include_once "dados.php";
+     $com  = "Select Count(*) as usuqtde from tb_usuario where usuempresa > 0";
+     $nro = leitura_reg($com, $reg);
+     foreach ($reg as $lin) { 
+               $dad['num_u'] += $lin['usuqtde'];
+     }
+     $com  = "Select Count(*) as usuqtde from tb_usuario where usutipo = 4";
+     $nro = leitura_reg($com, $reg);
+     foreach ($reg as $lin) { 
+               $dad['num_a'] += $lin['usuqtde'];
+     }
+     $com  = "Select Count(*) as plaqtde from tb_plano where idplano > 0";
+     $nro = leitura_reg($com, $reg);
+     foreach ($reg as $lin) { 
+               $dad['num_p'] += $lin['plaqtde'];
+     }
+     $com  = "Select Sum(titvalor) as titvalor from tb_titulo where idtitulo > 0";
+     $nro = leitura_reg($com, $reg);
+     foreach ($reg as $lin) { 
+               $dad['val_r'] += $lin['titvalor'];
+     }
+
+     return $ret;
+}
+
+function carrega_pla() {
+     include_once "dados.php";
+     $com = "Select * from tb_plano order by idplano";
+     $nro = leitura_reg($com, $reg);
+     foreach ($reg as $lin) {
+          $txt =  '<tr>';
+          $txt .= '<td class="text-center">' . $lin['idplano'] . '</td>';
+          if ($lin['plastatus'] == 0) {$txt .= "<td>" . "Ativo" . "</td>";}
+          if ($lin['plastatus'] == 1) {$txt .= "<td>" . "Bloqueado" . "</td>";}
+          if ($lin['plastatus'] == 2) {$txt .= "<td>" . "Suspenso" . "</td>";}
+          if ($lin['plastatus'] == 3) {$txt .= "<td>" . "Cancelado" . "</td>";}
+          $txt .= '<td class="text-left">' . $lin['pladescricao'] . "</td>";
+          $txt .= '<td class="text-center">' . $lin['planumerotit'] . "</td>";
+          $txt .= '<td class="text-right">' . number_format($lin['plavalor'], 2, ",", ".") . '</td>';
+          if ($lin['datinc'] == null) {
+               $txt .= "<td>" . '' . "</td>";
+          }else{
+               $txt .= "<td>" . date('d/m/Y H:m:s',strtotime($lin['datinc'])) . "</td>";
+          }
+          if ($lin['datalt'] == null) {
+               $txt .= "<td>" . '' . "</td>";
+          }else{
+               $txt .= "<td>" . date('d/m/Y H:m:s',strtotime($lin['datalt'])) . "</td>";
+          }
+          $txt .= "</tr>";
+          echo $txt;
+     }
+}
 
 ?>
 

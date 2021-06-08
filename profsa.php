@@ -324,6 +324,28 @@ function mascara_cpo($cpo, $mas) {	// Formata campos com máscara
      return $ret;
  }
  
+ function mes_ano($dat) {
+     $nom = '';
+     if (strlen($dat) <= 2) {
+          $mes = $dat;
+     }else{
+          $mes = substr($dat, 3, 2);
+     }
+     if ($mes == 1)  { $nom = 'Janeiro'; }
+     if ($mes == 2)  { $nom = 'Fevereiro'; }
+     if ($mes == 3)  { $nom = 'Março'; }
+     if ($mes == 4)  { $nom = 'Abril'; }
+     if ($mes == 5)  { $nom = 'Maio'; }
+     if ($mes == 6)  { $nom = 'Junho'; }
+     if ($mes == 7)  { $nom = 'Julho'; }
+     if ($mes == 8)  { $nom = 'Agosto'; }
+     if ($mes == 9)  { $nom = 'Setembro'; }
+     if ($mes == 10) { $nom = 'Outubro'; }
+     if ($mes == 11) { $nom = 'Novembro'; }
+     if ($mes == 12) { $nom = 'Dezembro'; }
+     return $nom;
+ }
+
 function calcula_idade($nas) {
      $ida = 0;
      $nas = inverte_dat(0, $nas);
@@ -359,10 +381,10 @@ function saldos_cta($cta, &$ent, &$sai, &$vai, &$vol, &$val, &$tot) {
                $vol = $vol + ($lin['movquantidade'] * $lin['movpercvolta'] / 100);
                if ($lin['movdestino'] == $cta) {
                     $sal = $sal + $lin['movquantidade'];
-                    $val = $val + $lin['movquantidade'] * $lin['movcusto'];
+                    $val = $val + $lin['movquantidade'] * $lin['movcusto'] / 1000;
                } else {
                     $sal = $sal - $lin['movquantidade'];
-                    $val = $val - $lin['movquantidade'] * $lin['movcusto'];
+                    $val = $val - $lin['movquantidade'] * $lin['movcusto'] / 1000;
                }
           }
           if ($lin['movstatus'] == 2) {

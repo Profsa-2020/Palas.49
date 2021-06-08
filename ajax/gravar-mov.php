@@ -26,9 +26,9 @@
      
      if ($_REQUEST['opc'] == '2') {
           $ori = retorna_dad('conusuario', 'tb_conta', 'idconta', $_REQUEST['cta_t']); 
-          $des = retorna_dad('conusuario', 'tb_conta', 'idconta', $_REQUEST['cta_d']); 
+          $des = retorna_dad('conusuario', 'tb_conta', 'idconta', $_REQUEST['des_t']); 
           if ($ori != $des) {
-               $tab['men'] = 'Usuário de origem e destino para transferência não podem ser diferetes !';
+               $tab['men'] = 'Usuário de origem e destino para transferência diferem !';
           }
           if (inverte_dat(0, $_REQUEST['dtb_t']) < inverte_dat(0, $_REQUEST['dat_t'])) {
                $tab['men'] = 'Data do bônus não pode ser menor que data da transferência !';
@@ -105,7 +105,7 @@
                $sql .= "'" . inverte_dat(1, $_REQUEST['dat_t']) . "',";
                $sql .= "'" . str_replace(",", ".", str_replace(".", "", $_REQUEST['val_t'])) . "',";
                $sql .= "'" . str_replace(".", "", $_REQUEST['qtd_t']) . "',";
-               $sql .= "'" . $_REQUEST['cta_d'] . "',";
+               $sql .= "'" . $_REQUEST['des_t'] . "',";
                $sql .= "'" . $_REQUEST['pro_t'] . "',";
                if (isset($_REQUEST['vai_t']) == false) {
                     $sql .= "'" . '0' . "',";

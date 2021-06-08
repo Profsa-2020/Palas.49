@@ -110,6 +110,21 @@
     font-weight: 400;
 }
 
+.qua-4 {
+    color: #ffffff;
+    width: 300px;
+    height: auto;
+    margin: 10px;
+    padding: 10px;
+    border-radius: 10px;
+    background-color: #f09022;
+}
+.qua-4 p {
+    font-size: 36px;
+    font-weight: bold;
+    text-align: right;
+}
+
  .tab-1 {
     font-size: 12px;
     padding: 0px 10px;

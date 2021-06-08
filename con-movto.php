@@ -85,6 +85,7 @@ $(document).ready(function() {
      $('.baixa').click(function() {
           let cod = $(this).attr("cod");
           let ope = $(this).attr("ope");
+          $("#sta_m").val(ope);
           if (ope == 1) {
                $('#tel-mov').text("Baixa de Bônus Recebido (Transferência)");
           } else {
@@ -106,9 +107,9 @@ $(document).ready(function() {
      });
 
      $('#gra_m').click(function() {
-          let ope = 0;
+          let opc = $("#sta_m").val();
           $.getJSON("ajax/gravar-bai.php", {
-                    ope: ope })
+                    opc: opc })
                .done(function(data) {
                     if (data.men != "") {
                          alert(data.men);
@@ -311,6 +312,7 @@ $(document).ready(function() {
                                    data-dismiss="modal">Fechar</button>
                          </div>
                     </div>
+                    <input type="hidden" id="sta_m" name="sta_m" value="0" />
                </form>
           </div>
      </div>
@@ -401,7 +403,7 @@ function carrega_mov($ope, $usu, $pro, $dti, $dtf) {
           $txt .= '<td>' . date('d/m/Y',strtotime($reg['movdata'])) . '</td>';
           $txt .= '<td class="text-right">' . number_format($reg['movquantidade'], 0, ",", ".") . '</td>';
           if ($reg['movtipo'] == 2) {
-               $txt .= '<td class="text-right">' . number_format($reg['movcusto'] * 1000, 4, ",", ".") . '</td>';
+               $txt .= '<td class="text-right">' . number_format($reg['movcusto'], 4, ",", ".") . '</td>';
           } else {
                $txt .= '<td class="text-right">' . number_format($reg['movvalor'] / $reg['movquantidade'] * 1000, 4, ",", ".") . '</td>';
           }

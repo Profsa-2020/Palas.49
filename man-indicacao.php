@@ -137,6 +137,7 @@ $(document).ready(function() {
      $com = (isset($_REQUEST['com']) == false ? 0 : $_REQUEST['com']);
      $key = (isset($_REQUEST['key']) == false ? rand(100, 999) : $_REQUEST['key']);
      $nom = (isset($_REQUEST['nom']) == false ? '' : str_replace("'", "´", $_REQUEST['nom']));
+     $ape = (isset($_REQUEST['ape']) == false ? '' : str_replace("'", "´", $_REQUEST['ape']));
      $obs = (isset($_REQUEST['obs']) == false ? '' : str_replace("'", "´", $_REQUEST['obs']));
 
      if ($_SESSION['wrkopereg'] == 1) { 
@@ -145,7 +146,7 @@ $(document).ready(function() {
      if ($_SESSION['wrkopereg'] >= 2) {
           if (isset($_REQUEST['salvar']) == false) { 
                $cha = $_SESSION['wrkcodreg']; 
-               $ret = ler_indicacao($cha, $nom, $sta, $ema, $cel, $tip, $com, $key, $obs); 
+               $ret = ler_indicacao($cha, $nom, $sta, $ema, $cel, $tip, $com, $key, $ape, $obs); 
           }
      }
      if ($_SESSION['wrkopereg'] == 3) { 
@@ -161,7 +162,7 @@ $(document).ready(function() {
                 $ret = incluir_ind();
                 $cod = ultimo_cod();
                 $ret = gravar_log(11,"Inclusão de novo Indicação: " . $nom); 
-                $nom = ''; $tip = 0; $sta = 0; $cel = ''; $key = rand(100, 999); $com = 0; $ema = ""; $obs = ""; $_SESSION['wrkopereg'] = 1; $_SESSION['wrkcodreg'] = 0;
+                $nom = ''; $ape = ''; $tip = 0; $sta = 0; $cel = ''; $key = rand(100, 999); $com = 0; $ema = ""; $obs = ""; $_SESSION['wrkopereg'] = 1; $_SESSION['wrkcodreg'] = 0;
            }
       }
       if ($_SESSION['wrkopereg'] == 2) {
@@ -170,14 +171,14 @@ $(document).ready(function() {
                 $ret = alterar_ind();
                 $cod = ultimo_cod(); 
                 $ret = gravar_log(12,"Alteração de Indicação cadastrado: " . $nom); 
-                $nom = ''; $tip = 0; $sta = 0; $cel = ''; $key = rand(100, 999); $com = 0; $ema = ""; $obs = ""; $_SESSION['wrkopereg'] = 1; $_SESSION['wrkcodreg'] = 0;
+                $nom = ''; $ape = ''; $tip = 0; $sta = 0; $cel = ''; $key = rand(100, 999); $com = 0; $ema = ""; $obs = ""; $_SESSION['wrkopereg'] = 1; $_SESSION['wrkcodreg'] = 0;
            }
       }
       if ($_SESSION['wrkopereg'] == 3) {
            $ret = excluir_ind(); $bot = 'Salvar'; $per = '';
            $cod = ultimo_cod(); 
            $ret = gravar_log(13,"Exclusão de Indicação cadastrado: " . $nom); 
-           $nom = ''; $tip = 0; $sta = 0; $cel = ''; $key = rand(100, 999); $com = 0; $ema = ""; $obs = ""; $_SESSION['wrkopereg'] = 1; $_SESSION['wrkcodreg'] = 0;
+           $nom = ''; $ape = ''; $tip = 0; $sta = 0; $cel = ''; $key = rand(100, 999); $com = 0; $ema = ""; $obs = ""; $_SESSION['wrkopereg'] = 1; $_SESSION['wrkcodreg'] = 0;
           }
 }
 ?>
@@ -206,10 +207,15 @@ $(document).ready(function() {
                          <input type="text" class="form-control text-center" maxlength="6" id="cod" name="cod"
                               value="<?php echo $cod; ?>" disabled />
                     </div>
-                    <div class="col-md-8">
+                    <div class="col-md-6">
                          <label>Nome do Indicado</label>
                          <input type="text" class="form-control" maxlength="50" id="nom" name="nom"
                               value="<?php echo $nom; ?>" required />
+                    </div>
+                    <div class="col-md-2">
+                         <label>Nome Curto</label>
+                         <input type="text" class="form-control" maxlength="25" id="ape" name="ape"
+                              value="<?php echo $ape; ?>" />
                     </div>
                     <div class="col-md-2">
                          <label>Status</label><br />
@@ -272,6 +278,7 @@ $(document).ready(function() {
                               <th width="5%">Número</th>
                               <th>Status</th>
                               <th>Nome do Indicado</th>
+                              <th>Apelido</th>
                               <th>Chave</th>
                               <th>Celular</th>
                               <th>E-Mail</th>
@@ -331,6 +338,7 @@ function carrega_ind() {
           if ($lin['indstatus'] == 2) {$txt .= "<td>" . "Suspenso" . "</td>";}
           if ($lin['indstatus'] == 3) {$txt .= "<td>" . "Cancelado" . "</td>";}
           $txt .= '<td class="text-left">' . $lin['indnome'] . "</td>";
+          $txt .= '<td class="text-left">' . $lin['indapelido'] . "</td>";
           $txt .= '<td class="text-center">' . $lin['indchave'] . "</td>";
           $txt .= '<td class="text-left">' . $lin['indcelular'] . "</td>";
           $txt .= '<td class="text-left">' . $lin['indemail'] . "</td>";
@@ -353,6 +361,7 @@ function carrega_ind() {
 function incluir_ind() {
      $ret = 0;
      include_once "dados.php";
+     if ($_REQUEST['ape'] == "") { $_REQUEST['ape'] = primeiro_nom($_REQUEST['nom']); }
      $sql  = "insert into tb_indicacao (";
      $sql .= "indstatus, ";
      $sql .= "indempresa, ";
@@ -370,7 +379,7 @@ function incluir_ind() {
      $sql .= "'" . $_REQUEST['sta'] . "',";
      $sql .= "'" . $_SESSION['wrkcodemp'] . "',";
      $sql .= "'" . str_replace("'", "´", $_REQUEST['nom']) . "',";
-     $sql .= "'" . primeiro_nom($_REQUEST['nom']) . "',";
+     $sql .= "'" . str_replace("'", "´", $_REQUEST['ape']) . "',";
      $sql .= "'" . $_REQUEST['key'] . "',";
      $sql .= "'" . $_REQUEST['cel'] . "',";
      $sql .= "'" . $_REQUEST['ema'] . "',";
@@ -387,7 +396,7 @@ function incluir_ind() {
      return $ret;
 }
 
-function ler_indicacao($cha, &$nom, &$sta, &$ema, &$cel, &$tip, &$com, &$key, &$obs) {
+function ler_indicacao($cha, &$nom, &$sta, &$ema, &$cel, &$tip, &$com, &$key, &$ape, &$obs) {
      include_once "dados.php";
      $nro = acessa_reg("Select * from tb_indicacao where idindicacao = " . $cha, $reg);            
      if ($nro == 0) {
@@ -395,6 +404,7 @@ function ler_indicacao($cha, &$nom, &$sta, &$ema, &$cel, &$tip, &$com, &$key, &$
      } else {
           $cha = $reg['idindicacao'];
           $nom = $reg['indnome'];
+          $ape = $reg['indapelido'];
           $sta = $reg['indstatus'];
           $ema = $reg['indemail'];
           $cel = $reg['indcelular'];
@@ -412,7 +422,7 @@ function ler_indicacao($cha, &$nom, &$sta, &$ema, &$cel, &$tip, &$com, &$key, &$
      $sql  = "update tb_indicacao set ";
      $sql .= "indstatus = '". $_REQUEST['sta'] . "', ";
      $sql .= "indnome = '". $_REQUEST['nom'] . "', ";
-     $sql .= "indapelido = '". primeiro_nom($_REQUEST['nom']) . "', ";
+     $sql .= "indapelido = '". $_REQUEST['ape'] . "', ";
      $sql .= "indcomissao = '". str_replace(",", ".", str_replace(".", "", $_REQUEST['com'])) . "', ";
      $sql .= "indcelular = '". $_REQUEST['cel'] . "', ";
      $sql .= "indemail = '". $_REQUEST['ema'] . "', ";

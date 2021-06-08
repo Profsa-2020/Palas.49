@@ -87,7 +87,8 @@ $(document).ready(function() {
      $_SESSION['wrkopereg'] = 0; $_SESSION['wrkcodreg'] = 0; $_SESSION['wrklogemp'] = ''; 
      if (isset($_SESSION['wrkendser']) == false) { $_SESSION['wrkendser'] = getenv("REMOTE_ADDR"); }
 
-     $ret = carrega_das($dad);
+     $dad = array();
+     $ret = carrega_das($dad); 
 
 ?>
 
@@ -154,7 +155,11 @@ $(document).ready(function() {
                                    if ($dad['com'][$cpo] == $dad['ven'][$cpo]) { 
                                         $txt .= '<td class="text-right">' . '0,0000' . '</td>';
                                    } else {
-                                        $txt .= '<td class="text-right">' . number_format(($dad['com'][$cpo] - $dad['ven'][$cpo]) / ($dad['ent'][$cpo] - $dad['sai'][$cpo]) * 1000, 4,"," , ".") . '</td>';
+                                        if ($dad['ent'][$cpo] == 0 && $dad['sai'][$cpo] == 0 || $dad['ent'][$cpo] == $dad['sai'][$cpo]) {
+                                             $txt .= '<td class="text-right">' . '0,0000' . '</td>';
+                                        } else {
+                                             $txt .= '<td class="text-right">' . number_format(($dad['com'][$cpo] - $dad['ven'][$cpo]) / ($dad['ent'][$cpo] - $dad['sai'][$cpo]) * 1000, 4,"," , ".") . '</td>';
+                                        }
                                    }
                                    $txt .=  '</tr>';
                                    echo $txt;
@@ -164,37 +169,40 @@ $(document).ready(function() {
                </table>
           </div>
           <hr />
-          <div class="table-responsive">
-               <table class="table table-sm table-striped">
-                    <thead>
-                         <tr>
-                              <th>Nome do Intermediário</th>
-                              <th class="text-center">CPF´s</th>
-                              <th width="20%">Qtde Vendida</th>
-                              <th width="20%">Qtde Utilizada</th>
-                              <th width="20%">Saldo do Intermediário</th>
-                         </tr>
-                    </thead>
-                    <tbody>
-                         <?php 
-                              $nro = count( $dad['int']);
-                              foreach( $dad['int'] as $cpo => $con ) {        
-                                   if ($dad['des'][$cpo] != null) {     
-                                        $txt =  '<tr>';
-                                        $txt .= '<td>' . $dad['des'][$cpo] . '</td>';
-                                        $txt .= '<td class="text-center">' . $dad['cpf'][$cpo] . '</td>';
-                                        $txt .= '<td class="text-center">' . number_format($dad['com'][$cpo], 0,"," , ".") . '</td>';
-                                        $txt .= '<td class="text-center">' . number_format($dad['vnd'][$cpo], 0,"," , ".") . '</td>';
-                                        $txt .= '<td class="text-center">' . number_format($dad['com'][$cpo] - $dad['vnd'][$cpo], 0,"," , ".") . '</td>';
-                                        $txt .=  '</tr>';
-                                        echo $txt;
+          <?php if ($dad['int_m'] == 1) { ?>                              
+               <div class="table-responsive">
+                    <table class="table table-sm table-striped">
+                         <thead>
+                              <tr>
+                                   <th>Nome do Intermediário</th>
+                                   <th class="text-center">CPF´s</th>
+                                   <th width="20%">Qtde Vendida</th>
+                                   <th width="20%">Qtde Utilizada</th>
+                                   <th width="20%">Saldo do Intermediário</th>
+                              </tr>
+                         </thead>
+                         <tbody>
+                              <?php 
+                                   $nro = count($dad['int']);
+                                   foreach( $dad['int'] as $cpo => $con ) {        
+                                        if ($dad['des'][$cpo] != null) {     
+                                             $txt =  '<tr>';
+                                             $txt .= '<td>' . $dad['des'][$cpo] . '</td>';
+                                             $txt .= '<td class="text-center">' . $dad['cpf'][$cpo] . '</td>';
+                                             $txt .= '<td class="text-center">' . number_format($dad['com'][$cpo], 0,"," , ".") . '</td>';
+                                             $txt .= '<td class="text-center">' . number_format($dad['vnd'][$cpo], 0,"," , ".") . '</td>';
+                                             $txt .= '<td class="text-center">' . number_format($dad['com'][$cpo] - $dad['vnd'][$cpo], 0,"," , ".") . '</td>';
+                                             $txt .=  '</tr>';
+                                             echo $txt;
+                                        }
                                    }
-                              }
-                         ?>
-                    </tbody>
-               </table>
-          </div>
-          <hr />
+                              ?>
+                         </tbody>
+                    </table>
+               </div>
+          <?php } ?>                              
+          
+          <br />
 
      </div>
      <br />
@@ -207,6 +215,7 @@ $(document).ready(function() {
 function carrega_das(&$dad) {
      $ret = 0;
      $dad = array();
+     $dad['int_m'] = 0;
      $dad['val_c'] = 0;
      $dad['qtd_c'] = 0;
      $dad['val_v'] = 0;
@@ -265,11 +274,11 @@ function carrega_das(&$dad) {
                     $dad['val'][$reg['movdestino']] = 0;
                     $dad['com'][$reg['movdestino']] = 0;
                     $dad['ven'][$reg['movdestino']] = 0;
-                    $dad['inv'][$reg['movdestino']] = $reg['movquantidade'] * $reg['movcusto'];
+                    $dad['inv'][$reg['movdestino']] = $reg['movquantidade'] * $reg['movcusto'] / 1000;
                } else {
                     $dad['ent'][$reg['movdestino']] += $reg['movquantidade'];
-                    $dad['com'][$reg['movdestino']] += $reg['movquantidade'] * $reg['movcusto'];
-                    $dad['inv'][$reg['movdestino']] += $reg['movquantidade'] * $reg['movcusto'];
+                    $dad['com'][$reg['movdestino']] += $reg['movquantidade'] * $reg['movcusto'] / 1000;
+                    $dad['inv'][$reg['movdestino']] += $reg['movquantidade'] * $reg['movcusto'] / 1000;
                }     
           }
           if ($reg['movstatus'] == 2) {
@@ -291,9 +300,11 @@ function carrega_das(&$dad) {
                $dad['cpf'][$reg['movintermediario']] = 0;
           }
           if ($reg['movstatus'] == 2) {
+               $dad['int_m'] = 1;
                $dad['com'][$reg['movintermediario']] += $reg['movquantidade'];
           }
           if ($reg['movstatus'] == 3) {
+               $dad['int_m'] = 1;
                $dad['vnd'][$reg['movintermediario']] += $reg['movquantidade'];
                $dad['cpf'][$reg['movintermediario']] += $reg['movnumerocpf'];
           }

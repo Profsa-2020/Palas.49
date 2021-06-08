@@ -75,6 +75,17 @@ $(document).ready(function() {
           $('nav').removeClass("fixed-top");
      }
 
+     $('#tip').change(function() {
+          var tip = $('#tip').val();
+          if (tip == 2) {
+               $('#sen').removeAttr('required');
+               $('#sen').attr('disabled', 'disabled');
+          } else {
+               $('#sen').removeAttr('disabled');
+               $('#sen').attr('required', 'required');
+          }
+     });
+
      $('#cep').blur(function() {
           var cep = $('#cep').val();
           var cep = cep.replace(/[^0-9]/g, '');
@@ -99,6 +110,7 @@ $(document).ready(function() {
                     if ($('#est').val() == "") {
                          $('#est').val(data.uf);
                     }
+                    $('#num').focus();
                });
           }
      });
@@ -126,6 +138,7 @@ $(document).ready(function() {
      $per = "";
      $del = "";
      $hab = "";
+     $mos = " required ";
      $bot = "Salvar";
      include_once "dados.php";
      include_once "profsa.php";
@@ -179,6 +192,7 @@ $(document).ready(function() {
      $end = (isset($_REQUEST['end']) == false ? '' : str_replace("'", "´", $_REQUEST['end']));
      $bai = (isset($_REQUEST['bai']) == false ? '' : str_replace("'", "´", $_REQUEST['bai']));
      $obs = (isset($_REQUEST['obs']) == false ? '' : str_replace("'", "´", $_REQUEST['obs']));
+     
      if ($_SESSION['wrkopereg'] == 1) { 
           $cod = ultimo_cod(); $_SESSION['wrknumvol'] = 1;
      }
@@ -199,6 +213,9 @@ $(document).ready(function() {
                }
           }
      }
+
+     $mos = ($tip == 2 ? ' disabled ' : ' required ');
+
      if (isset($_REQUEST['salvar']) == true) {
           $_SESSION['wrknumvol'] = $_SESSION['wrknumvol'] + 1;
           if ($_SESSION['wrkopereg'] == 1) {
@@ -324,7 +341,7 @@ $(document).ready(function() {
                     <div class="col-md-3">
                          <label>Senha</label>
                          <input type="password" class="form-control text-center" maxlength="15" id="sen" name="sen"
-                              value="<?php echo $sen; ?>" required />
+                              value="<?php echo $sen; ?>" <?php echo $mos; ?> />
                     </div>
                     <div class="col-md-3"></div>
                </div>
@@ -520,9 +537,10 @@ function ultimo_cod() {
           echo '<script>alert("Nome do Usuário não pode estar em branco");</script>';
           return 1;
      }
-     if (trim($_REQUEST['sen']) == "") {
-          echo '<script>alert("Senha do Usuário não pode estar em branco");</script>';
-          return 2;
+     if (trim($_REQUEST['tip']) != 2) {
+          if (trim($_REQUEST['sen']) == "") {
+               echo '<script>alert("Senha do Usuário não pode estar em branco");</script>'; return 2;
+          }
      }
      if (trim($_REQUEST['ema']) == "") {
           echo '<script>alert("E-mail do Usuário não pode estar em branco");</script>';
@@ -572,9 +590,10 @@ function ultimo_cod() {
  }    
      
  function incluir_usu() {
-     $ret = 0; $emp = 0; $ace = 999999; $val = date('Y-m-d', strtotime('+365 days'));
+     $ret = 0; $emp = 1; 
+     $ace = 999999; $val = date('Y-m-d', strtotime('+365 days'));
      include_once "dados.php";
-     if ($_SESSION['wrktipusu'] >= 4) { $emp = $_SESSION['wrkcodemp']; }
+     if ($_SESSION['wrktipusu'] >= 4) { $emp = $_SESSION['wrkideusu']; }
      if ($_REQUEST['ape'] == "") { $_REQUEST['ape'] = primeiro_nom($_REQUEST['nom']); }
      if (isset($_REQUEST['ace']) == true) {
           $ace = str_replace(".", "", $_REQUEST['ace']); $ace = str_replace(",", ".", $ace);
@@ -590,7 +609,9 @@ function ultimo_cod() {
      $sql .= "usuemail, ";
      $sql .= "usutelefone, ";
      $sql .= "usucelular, ";
-     $sql .= "ususenha, ";
+     if (isset($_REQUEST['sen']) == true) {
+          $sql .= "ususenha, ";
+     }
      $sql .= "usutipo, ";
      if (isset($_REQUEST['ace']) == true) {
           $sql .= "usuacessos, ";
@@ -624,7 +645,9 @@ function ultimo_cod() {
      $sql .= "'" . $_REQUEST['ema'] . "',";
      $sql .= "'" . $_REQUEST['tel'] . "',";
      $sql .= "'" . $_REQUEST['cel'] . "',";
-     $sql .= "'" . base64_encode($_REQUEST['sen']) . "',";
+     if (isset($_REQUEST['sen']) == true) {
+          $sql .= "'" . base64_encode($_REQUEST['sen']) . "',";
+     }
      $sql .= "'" . $_REQUEST['tip'] . "',";
      if (isset($_REQUEST['ace']) == true) {
           $sql .= "'" . ($ace == "" || $ace == "0" ? '999999' : $ace) . "',";
@@ -656,12 +679,14 @@ function ultimo_cod() {
      $sql .= "'" . $_SESSION['wrkideusu'] . "',";
      $sql .= "'" . date("Y/m/d H:i:s") . "')";
      $ret = comando_tab($sql, $nro, $cha, $men);
+     $_SESSION['wrkchareg'] = $cha;     // Chave do usuário criado
      if ($ret == true) {
           echo '<script>alert("Registro incluído no sistema com Sucesso !");</script>';
-     }else{
+     } else {
           print_r($sql);
           echo '<script>alert("Erro na gravação do registro solicitado !");</script>';
      }
+
      return $ret;
  }
 
@@ -682,7 +707,9 @@ function alterar_usu() {
           $sql .= "usustatus = '". $_REQUEST['sta'] . "', ";
      }
      $sql .= "usutipo = '". $_REQUEST['tip'] . "', ";
-     $sql .= "ususenha = '". base64_encode($_REQUEST['sen']) . "', ";
+     if (isset($_REQUEST['sen']) == true) {
+          $sql .= "ususenha = '". base64_encode($_REQUEST['sen']) . "', ";
+     }
      $sql .= "usuemail = '". $_REQUEST['ema'] . "', ";
      $sql .= "usutelefone = '". $_REQUEST['tel'] . "', ";
      $sql .= "usucelular = '". $_REQUEST['cel'] . "', ";
