@@ -160,38 +160,40 @@ $(document).ready(function() {
                                    <tbody>
                                         <?php 
                                              $tot = 0; $usu = 0; $pro = 0; $lista = array(); $geral = array();
-                                             for ($ind = 0; $ind < count($dad['usu_m']) ; $ind++) {
-                                                  if ($usu != $dad['usu_m'][$ind] || $pro != $dad['pro_m'][$ind]) {
-                                                       if (isset($lista['con'] ) == true) {
-                                                            if (count($lista['con']) > 1) {
-                                                                 echo '<tr>'; $som = 0;
-                                                                 echo '<td>' . $lista['con'] . '</td>';
-                                                                 for ($nro = 0; $nro < count($dad['cod_i']) ; $nro++) {                                                                 
-                                                                      if (isset($lista[$nro]) == true ) {
-                                                                           $som = $som + $lista[$nro];
-                                                                           $tot = $tot + $lista[$nro];
-                                                                           echo '<td class="text-center">' . $lista[$nro] . '</td>';
-                                                                           if (isset($geral[$nro]) == false) {
-                                                                                $geral[$nro] = $lista[$nro];
+                                             if (isset($dad['usu_m'] ) == true) {
+                                                  for ($ind = 0; $ind < count($dad['usu_m']) ; $ind++) {
+                                                       if ($usu != $dad['usu_m'][$ind] || $pro != $dad['pro_m'][$ind]) {
+                                                            if (isset($lista['con'] ) == true) {
+                                                                 if (count($lista['con']) > 1) {
+                                                                      echo '<tr>'; $som = 0;
+                                                                      echo '<td>' . $lista['con'] . '</td>';
+                                                                      for ($nro = 0; $nro < count($dad['cod_i']) ; $nro++) {                                                                 
+                                                                           if (isset($lista[$nro]) == true ) {
+                                                                                $som = $som + $lista[$nro];
+                                                                                $tot = $tot + $lista[$nro];
+                                                                                echo '<td class="text-center">' . $lista[$nro] . '</td>';
+                                                                                if (isset($geral[$nro]) == false) {
+                                                                                     $geral[$nro] = $lista[$nro];
+                                                                                } else {
+                                                                                     $geral[$nro] += $lista[$nro];
+                                                                                }
                                                                            } else {
-                                                                                $geral[$nro] += $lista[$nro];
+                                                                                echo '<td>' . '' . '</td>';
                                                                            }
-                                                                      } else {
-                                                                           echo '<td>' . '' . '</td>';
-                                                                      }
-                                                                 }                                                       
-                                                                 echo '<td class="text-center">' . $som . '</td>';
-                                                                 echo '</tr>';
+                                                                      }                                                       
+                                                                      echo '<td class="text-center">' . $som . '</td>';
+                                                                      echo '</tr>';
+                                                                 }
                                                             }
+                                                            $lista = array();
+                                                            $usu = $dad['usu_m'][$ind];
+                                                            $pro = $dad['pro_m'][$ind];
+                                                       } 
+                                                       $lista['con'] = $dad['des_u'][$ind] . '-' . $dad['des_p'][$ind];
+                                                       $ord = array_search($dad['int_m'][$ind], $dad['cod_i']);
+                                                       if ($ord != false) {
+                                                            $lista[$ord] = $dad['qtd_m'][$ind];
                                                        }
-                                                       $lista = array();
-                                                       $usu = $dad['usu_m'][$ind];
-                                                       $pro = $dad['pro_m'][$ind];
-                                                  } 
-                                                  $lista['con'] = $dad['des_u'][$ind] . '-' . $dad['des_p'][$ind];
-                                                  $ord = array_search($dad['int_m'][$ind], $dad['cod_i']);
-                                                  if ($ord != false) {
-                                                       $lista[$ord] = $dad['qtd_m'][$ind];
                                                   }
                                              }
                                              if (isset($lista['con'] ) == true) {
@@ -250,17 +252,28 @@ function carrega_mov($ano, &$dad) {
           $dad['cod_i'][] = $lin['idintermediario'];
           $dad['des_i'][] = $lin['intdescricao'];
      }
+
      $com  = "Select movusuario, movprograma, movintermediario, Sum(movnumerocpf) as movqtde from tb_movto where movempresa = " . $_SESSION['wrkcodemp'] . " and movdata between '" . $dti . "' and '" . $dtf . "' group by movusuario, movprograma, movintermediario order by movusuario, movprograma";
+
      $nro = leitura_reg($com, $reg);
      foreach ($reg as $lin) { 
-          $des_u = retorna_dad('usunome', 'tb_usuario', 'idsenha', $lin['movusuario']); 
-          $des_p = retorna_dad('prodescricao', 'tb_programa', 'idprograma', $lin['movprograma']); 
-          $dad['des_u'][] = $des_u;
-          $dad['des_p'][] = $des_p;
-          $dad['usu_m'][] = $lin['movusuario'];
-          $dad['pro_m'][] = $lin['movprograma'];
-          $dad['int_m'][] = $lin['movintermediario'];
-          $dad['qtd_m'][] = $lin['movqtde'];
+          $flag = 0;
+          $ger_u = retorna_dad('congerente', 'tb_conta', 'idconta', $lin['movusuario']); 
+          if ($_SESSION['wrktipusu'] <= 3) {
+               if ($ger_u != $_SESSION['wrkideusu']) {
+                    $flag = 1;
+               }
+          }
+          if ($flag == 0) {
+               $des_u = retorna_dad('usunome', 'tb_usuario', 'idsenha', $lin['movusuario']); 
+               $des_p = retorna_dad('prodescricao', 'tb_programa', 'idprograma', $lin['movprograma']); 
+               $dad['des_u'][] = $des_u;
+               $dad['des_p'][] = $des_p;
+               $dad['usu_m'][] = $lin['movusuario'];
+               $dad['pro_m'][] = $lin['movprograma'];
+               $dad['int_m'][] = $lin['movintermediario'];
+               $dad['qtd_m'][] = $lin['movqtde'];
+          }
      }
      return $nro;
 }

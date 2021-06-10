@@ -377,13 +377,13 @@ function saldos_cta($cta, &$ent, &$sai, &$vai, &$vol, &$val, &$med, &$tot) {
           }
           if ($lin['movstatus'] == 1) {
                $sai = $sai + $lin['movquantidade'];
-               $vai = $vai + ($lin['movquantidade'] * $lin['movpercvai'] / 100);
-               $vol = $vol + ($lin['movquantidade'] * $lin['movpercvolta'] / 100);
+               if ($lin['movliquidado'] == 0) {
+                    $vai = $vai + ($lin['movquantidade'] * $lin['movpercvai'] / 100);
+                    $vol = $vol + ($lin['movquantidade'] * $lin['movpercvolta'] / 100);
+               }
                if ($lin['movdestino'] == $cta) {
-                    if ($lin['movliquidado'] == 0) {
-                         $sal = $sal + $lin['movquantidade'];
-                         $val = $val + $lin['movquantidade'] * $lin['movcusto'];
-                    }
+                    $sal = $sal + $lin['movquantidade'];
+                    $val = $val + $lin['movquantidade'] * $lin['movcusto'];
                } else {
                     $sal = $sal - $lin['movquantidade'];
                     $val = $val - $lin['movvalor'];

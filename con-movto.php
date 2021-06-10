@@ -125,9 +125,9 @@ $(document).ready(function() {
      $('#tab-0').DataTable({
           "pageLength": 25,
           "aaSorting": [
-               [2, 'asc'],
-               [3, 'asc'],
-               [1, 'asc']
+               [2, 'desc'],
+               [1, 'asc'],
+               [3, 'asc']
           ],
           "language": {
                "lengthMenu": "Demonstrar _MENU_ linhas por páginas",
@@ -256,6 +256,7 @@ $(document).ready(function() {
                                              <tr>
                                                   <th>Baixar</th>
                                                   <th>Operação</th>
+                                                  <th>Id</th>
                                                   <th>Usuário</th>
                                                   <th>Programa</th>
                                                   <th>Data</th>
@@ -372,8 +373,18 @@ function carrega_mov($ope, $usu, $pro, $dti, $dtf) {
      if ($pro != 0) { $com .=" and movprograma = " . $pro; }
      $com .= " order by idmovto desc";          
      $nro = leitura_reg($com, $lin);
-     foreach ($lin as $reg) {               
+     foreach ($lin as $reg) {       
           $txt =  '<tr>';
+          if ($reg['movstatus'] == 1) {
+               if ($reg['movliquidado'] == 0 && $reg['movbonus'] < date('Y-m-d')) {
+                    $txt =  '<tr class="cor-1">';
+               }
+          }
+          if ($reg['movstatus'] == 2) {
+               if ($reg['movliquidado'] == 0 && $reg['movvecto'] < date('Y-m-d')) {
+                    $txt =  '<tr class="cor-1">';
+               }
+          }
           if ($reg['movstatus'] == 0) {
                $txt .= '<td class="text-center"></td>';
           }
@@ -394,10 +405,11 @@ function carrega_mov($ope, $usu, $pro, $dti, $dtf) {
           if ($reg['movstatus'] == 3) {
                $txt .= '<td class="text-center"></td>';
           }
-          if ($reg['movstatus'] == 0) {$txt .= "<td>" . "Compra (+)" . "</td>";}
+          if ($reg['movstatus'] == 0) {$txt .= "<td>" . ($reg['movaerea'] == 0 ? 'Compra(+)' : 'Bônus (+)') . "</td>";}
           if ($reg['movstatus'] == 1) {$txt .= "<td>" . "Transferência (*)" . "</td>";}
           if ($reg['movstatus'] == 2) {$txt .= "<td>" . "Venda (-)" . "</td>";} 
           if ($reg['movstatus'] == 3) {$txt .= "<td>" . "Passagem (-)" . "</td>";} 
+          $txt .= '<td class="text-center">' . $reg['idmovto'] . '</td>';
           $txt .= '<td>' . $reg['usunome'] . '</td>';
           $txt .= '<td>' . $reg['prodescricao'] . '</td>';
           $txt .= '<td>' . date('d/m/Y',strtotime($reg['movdata'])) . '</td>';

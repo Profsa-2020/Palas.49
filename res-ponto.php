@@ -255,22 +255,31 @@ function carrega_mov($ano, &$dad) {
      $com  = "Select movusuario, movprograma, movstatus, Sum(movquantidade)  as movqtde from tb_movto where movempresa = " . $_SESSION['wrkcodemp'] . " and movdata between '" . $dti . "' and '" . $dtf . "' group by movusuario, movprograma, movstatus order by movusuario, movprograma";
      $nro = leitura_reg($com, $reg);
      foreach ($reg as $lin) { 
-          if ($usu !=  $lin['movusuario'] || $pro !=  $lin['movprograma']) {
-               $ind = $ind + 1;
-               $usu =  $lin['movusuario']; $pro =  $lin['movprograma'];
-               $des_u = retorna_dad('usunome', 'tb_usuario', 'idsenha', $lin['movusuario']); 
-               $des_p = retorna_dad('prodescricao', 'tb_programa', 'idprograma', $lin['movprograma']); 
-               $dad['des_u'][$ind] = $des_u;
-               $dad['des_p'][$ind] = $des_p;
-               $dad['usu_m'][$ind] = $lin['movusuario'];
-               $dad['pro_m'][$ind] = $lin['movprograma'];               
-               $dad['qtd_m'][$ind] = 0;
+          $flag = 0;
+          $ger_u = retorna_dad('congerente', 'tb_conta', 'idconta', $lin['movusuario']); 
+          if ($_SESSION['wrktipusu'] <= 3) {
+               if ($ger_u != $_SESSION['wrkideusu']) {
+                    $flag = 1;
+               }
           }
-          if ($lin['movstatus'] == 0) {
-               $dad['qtd_m'][$ind] += $lin['movqtde'];     
-          }
-          if ($lin['movstatus'] == 1) {
-               $dad['qtd_m'][$ind] -= $lin['movqtde'];     
+          if ($flag == 0) {
+               if ($usu !=  $lin['movusuario'] || $pro !=  $lin['movprograma']) {
+                    $ind = $ind + 1;
+                    $usu =  $lin['movusuario']; $pro =  $lin['movprograma'];
+                    $des_u = retorna_dad('usunome', 'tb_usuario', 'idsenha', $lin['movusuario']); 
+                    $des_p = retorna_dad('prodescricao', 'tb_programa', 'idprograma', $lin['movprograma']); 
+                    $dad['des_u'][$ind] = $des_u;
+                    $dad['des_p'][$ind] = $des_p;
+                    $dad['usu_m'][$ind] = $lin['movusuario'];
+                    $dad['pro_m'][$ind] = $lin['movprograma'];               
+                    $dad['qtd_m'][$ind] = 0;
+               }
+               if ($lin['movstatus'] == 0) {
+                    $dad['qtd_m'][$ind] += $lin['movqtde'];     
+               }
+               if ($lin['movstatus'] == 1) {
+                    $dad['qtd_m'][$ind] -= $lin['movqtde'];     
+               }
           }
      }
      return $nro;

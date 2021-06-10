@@ -19,11 +19,13 @@
     background-color: transparent;
 }
 
- .cor-3 { background-color: red; }
+.cor-1 { color: red; }
 
- .cur-1 { cursor: pointer; }
+.cor-3 { background-color: red; }
 
- .cur-x { cursor: not-allowed;}
+.cur-1 { cursor: pointer; }
+
+.cur-x { cursor: not-allowed;}
 
 .ima-2 {
     animation-duration: 5s;

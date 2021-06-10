@@ -41,7 +41,7 @@
                $tab['txt'] .= 'Data do Recebimento: ' . date('d/m/Y',strtotime($reg['movvecto'])) . '<br />';
           }
           $tab['txt'] .= 'Quantidade: ' . number_format($reg['movquantidade'], 0, ",", ".") . '<br />';
-          $tab['txt'] .= 'Valor: R$ ' . number_format($reg['movvalor'], 2, ",", ".") . '<br />';
+          $tab['txt'] .= 'Valor: R$ ' . number_format($reg['movquantidade'] * $reg['movcusto'] / 1000, 2, ",", ".") . '<br />';
           if ($reg['movstatus'] == 1) {
                $tab['txt'] .= 'Ida: ' . number_format($reg['movpercvai'], 0, ",", ".") . ' % - Quantidade: ' . number_format($reg['movquantidade'] * $reg['movpercvai'] / 100 , 0, ",", ".") . '<br />';
                $tab['txt'] .= 'Volta: ' . number_format($reg['movpercvolta'], 0, ",", ".") . ' % - Quantidade: ' . number_format($reg['movquantidade'] * $reg['movpercvolta'] / 100 , 0, ",", ".") . '<br />';

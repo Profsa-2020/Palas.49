@@ -60,7 +60,7 @@ $(document).ready(function() {
           "pageLength": 25,
           "aaSorting": [
                [1, 'asc'],
-               [0, 'asc']
+               [2, 'asc']
           ],
           "language": {
                "lengthMenu": "Demonstrar _MENU_ linhas por páginas",
@@ -244,8 +244,8 @@ $(document).ready(function() {
                     <thead>
                          <tr>
                               <th width="5%">Código</th>
-                              <th>Titular</th>
                               <th>Gerente</th>
+                              <th>Titular</th>
                               <th>Programa</th>
                               <th>Tipo</th>
                               <th>Número</th>
@@ -308,12 +308,12 @@ function carrega_con() {
      foreach ($reg as $lin) {
           $txt =  '<tr>';
           $txt .= '<td class="text-center">' . $lin['idconta'] . '</td>';
+          $txt .= '<td class="text-left">' . $lin['usugerente'] . "</td>";
           if ($lin['usunome'] == null) {
                $txt .= '<td class="text-left">' . '**********' . "</td>";
           } else {
                $txt .= '<td class="text-left">' . $lin['usunome'] . "</td>";
           }
-          $txt .= '<td class="text-left">' . $lin['usugerente'] . "</td>";
           if ($lin['prodescricao'] == null) {
                $txt .= '<td class="text-left">' . '**********' . "</td>";
           } else {

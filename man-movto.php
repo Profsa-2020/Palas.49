@@ -347,6 +347,9 @@ $(document).ready(function() {
           $('#nom_t').val('');
           $('#dtb_t').val('');
           $('#rec_v').val('');
+          $('#sal_t').val('');
+          $('#cto_t').val('');
+          $('#sal_v').val('');
           $('#des_t').val(0);
           $('#cta_t').val(0);
           $('#cta_d').val(0);
@@ -448,7 +451,6 @@ $(document).ready(function() {
                               alert(data.men);
                          } else {
                               $('#sal_v').text(data.sal);
-                              $('#lib_v').text(data.lib);
                               $('#qtd_s').val(data.sal);
                               $('#tot_s').val(data.tot);
                               $('#val_s').val(data.val);
@@ -1202,13 +1204,9 @@ function() { // Qtd que vai - Calculo de transferência e Boomerangue com preço
                               <input type="text" class="form-control text-right" maxlength="12" id="qtd_v" name="qtd_v"
                                    value="<?php echo $qtd_v; ?>" />
                          </div>
-                         <div class="lit-1 col-md-2 text-center">
-                              <label>Saldo Atual</label><br />
+                         <div class="lit-1 col-md-4 text-center">
+                              <label>Saldo Disponível</label><br />
                               <p id="sal_v">0</p>
-                         </div>
-                         <div class="lit-1 col-md-2 text-center">
-                              <label>Saldo Liberar</label><br />
-                              <p id="lib_v">0</p>
                          </div>
                     </div>
                     <div class="row">

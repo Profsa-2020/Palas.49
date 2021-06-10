@@ -319,7 +319,11 @@ function carrega_usu($usu) {
      $sta = 0;
      include_once "dados.php";    
      echo '<option value="0" selected="selected">Selecione ...</option>';
-     $com = "Select idsenha, usunome from tb_usuario where usustatus = 0 and usuempresa = " . $_SESSION['wrkcodemp'] . " order by usunome, idsenha";
+     if ($_SESSION['wrktipusu'] >= 4) {
+          $com = "Select idsenha, usunome from tb_usuario where usustatus = 0 and usuempresa = " . $_SESSION['wrkcodemp'] . " order by usunome, idsenha";
+     } else {
+          $com = "Select U.idsenha, U.usunome from (tb_usuario U left join tb_conta C on U.idsenha = C.conusuario) where usustatus = 0 and usuempresa = " . $_SESSION['wrkcodemp']  . "  and congerente = " . $_SESSION['wrkideusu'] . " order by U.usunome, U.idsenha";
+     }
      $nro = leitura_reg($com, $reg);
      foreach ($reg as $lin) {
           if ($lin['idsenha'] != $usu) {

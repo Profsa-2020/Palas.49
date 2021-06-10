@@ -256,51 +256,60 @@ function carrega_das(&$dad) {
      $com .= "left join tb_programa P on M.movprograma = P.idprograma) ";
      $com .= "where movempresa = " . $_SESSION['wrkcodemp'] . " order by idmovto";          
      $nro = leitura_reg($com, $lin);
-     foreach ($lin as $reg) {      
-          if (isset($dad['cta'][$reg['movconta']]) == false) {
-               $dad['cta'][$reg['movconta']] = $reg['movconta'];
-               $dad['usu'][$reg['movconta']] = $reg['usunome'];
-               $dad['pro'][$reg['movconta']] = $reg['prodescricao'];
-               $dad['ent'][$reg['movconta']] = 0;
-               $dad['sai'][$reg['movconta']] = 0;
-               $dad['val'][$reg['movconta']] = 0;
-               $dad['com'][$reg['movconta']] = 0;
-               $dad['ven'][$reg['movconta']] = 0;
-               $dad['inv'][$reg['movconta']] = 0;
+     foreach ($lin as $reg) {     
+          $flag = 0;
+          $ger_u = retorna_dad('congerente', 'tb_conta', 'idconta', $reg['movusuario']); 
+          if ($_SESSION['wrktipusu'] <= 3) {
+               if ($ger_u != $_SESSION['wrkideusu']) {
+                    $flag = 1;
+               }
           }
-          if ($reg['movstatus'] == 0) {
-               $dad['ent'][$reg['movconta']] += $reg['movquantidade'];
-               $dad['com'][$reg['movconta']] += $reg['movvalor'];
-               $dad['val'][$reg['movconta']] += $reg['movvalor'];
-               $dad['inv'][$reg['movconta']] += $reg['movvalor'];
-          }
-          if ($reg['movstatus'] == 1) {
-               $dad['sai'][$reg['movconta']] += $reg['movquantidade'];
-               $dad['ven'][$reg['movconta']] += $reg['movvalor'];
-               if (isset($dad['cta'][$reg['movdestino']]) == false) {
-                    $pro = retorna_dad('conprograma', 'tb_conta', 'idconta', $reg['movdestino']); 
-                    $pro = retorna_dad('prodescricao', 'tb_programa', 'idprograma', $pro); 
-                    $usu = retorna_dad('conusuario', 'tb_conta', 'idconta', $reg['movdestino']); 
-                    $usu = retorna_dad('usunome', 'tb_usuario', 'idsenha', $usu); 
-                    $dad['cta'][$reg['movdestino']] = $reg['movdestino'];
-                    $dad['usu'][$reg['movdestino']] = $usu;
-                    $dad['pro'][$reg['movdestino']] = $pro;
-                    $dad['ent'][$reg['movdestino']] = 0;
-                    $dad['sai'][$reg['movdestino']] = 0;
-                    $dad['val'][$reg['movdestino']] = 0;
-                    $dad['com'][$reg['movdestino']] = 0;
-                    $dad['ven'][$reg['movdestino']] = 0;
-                    $dad['inv'][$reg['movdestino']] = $reg['movquantidade'] * $reg['movcusto'] / 1000;
-               } else {
-                    $dad['ent'][$reg['movdestino']] += $reg['movquantidade'];
-                    $dad['com'][$reg['movdestino']] += $reg['movquantidade'] * $reg['movcusto'] / 1000;
-                    $dad['inv'][$reg['movdestino']] += $reg['movquantidade'] * $reg['movcusto'] / 1000;
-               }     
-          }
-          if ($reg['movstatus'] == 2) {
-               $dad['sai'][$reg['movconta']] += $reg['movquantidade'];
-               $dad['ven'][$reg['movconta']] += $reg['movvalor'];
-               $dad['val'][$reg['movconta']] -= $reg['movvalor'];
+          if ($flag == 0) {
+               if (isset($dad['cta'][$reg['movconta']]) == false) {
+                    $dad['cta'][$reg['movconta']] = $reg['movconta'];
+                    $dad['usu'][$reg['movconta']] = $reg['usunome'];
+                    $dad['pro'][$reg['movconta']] = $reg['prodescricao'];
+                    $dad['ent'][$reg['movconta']] = 0;
+                    $dad['sai'][$reg['movconta']] = 0;
+                    $dad['val'][$reg['movconta']] = 0;
+                    $dad['com'][$reg['movconta']] = 0;
+                    $dad['ven'][$reg['movconta']] = 0;
+                    $dad['inv'][$reg['movconta']] = 0;
+               }
+               if ($reg['movstatus'] == 0) {
+                    $dad['ent'][$reg['movconta']] += $reg['movquantidade'];
+                    $dad['com'][$reg['movconta']] += $reg['movvalor'];
+                    $dad['val'][$reg['movconta']] += $reg['movvalor'];
+                    $dad['inv'][$reg['movconta']] += $reg['movvalor'];
+               }
+               if ($reg['movstatus'] == 1) {
+                    $dad['sai'][$reg['movconta']] += $reg['movquantidade'];
+                    $dad['ven'][$reg['movconta']] += $reg['movvalor'];
+                    if (isset($dad['cta'][$reg['movdestino']]) == false) {
+                         $pro = retorna_dad('conprograma', 'tb_conta', 'idconta', $reg['movdestino']); 
+                         $pro = retorna_dad('prodescricao', 'tb_programa', 'idprograma', $pro); 
+                         $usu = retorna_dad('conusuario', 'tb_conta', 'idconta', $reg['movdestino']); 
+                         $usu = retorna_dad('usunome', 'tb_usuario', 'idsenha', $usu); 
+                         $dad['cta'][$reg['movdestino']] = $reg['movdestino'];
+                         $dad['usu'][$reg['movdestino']] = $usu;
+                         $dad['pro'][$reg['movdestino']] = $pro;
+                         $dad['ent'][$reg['movdestino']] = 0;
+                         $dad['sai'][$reg['movdestino']] = 0;
+                         $dad['val'][$reg['movdestino']] = 0;
+                         $dad['com'][$reg['movdestino']] = 0;
+                         $dad['ven'][$reg['movdestino']] = 0;
+                         $dad['inv'][$reg['movdestino']] = $reg['movquantidade'] * $reg['movcusto'] / 1000;
+                    } else {
+                         $dad['ent'][$reg['movdestino']] += $reg['movquantidade'];
+                         $dad['com'][$reg['movdestino']] += $reg['movquantidade'] * $reg['movcusto'] / 1000;
+                         $dad['inv'][$reg['movdestino']] += $reg['movquantidade'] * $reg['movcusto'] / 1000;
+                    }     
+               }
+               if ($reg['movstatus'] == 2) {
+                    $dad['sai'][$reg['movconta']] += $reg['movquantidade'];
+                    $dad['ven'][$reg['movconta']] += $reg['movvalor'];
+                    $dad['val'][$reg['movconta']] -= $reg['movvalor'];
+               }
           }
      }
      $com = "Select M.*, I.intdescricao from (tb_movto M left join tb_intermediario I on M.movintermediario = I.idintermediario) ";
