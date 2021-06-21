@@ -367,33 +367,65 @@ function saldos_cta($cta, &$ent, &$sai, &$vai, &$vol, &$val, &$med, &$tot) {
      $com  = "Select M.*, U.usunome, P.prodescricao from (((tb_movto M left join tb_conta C on M.movconta = C.idconta) ";
      $com .= "left join tb_usuario U on M.movusuario = U.idsenha) ";
      $com .= "left join tb_programa P on M.movprograma = P.idprograma) ";
-     $com .= "where movempresa = " . $_SESSION['wrkcodemp'] . " and (movconta = " . $cta . " or movdestino = " . $cta . ") order by idmovto";
+     $com .= "where movempresa = " . $_SESSION['wrkcodemp'] . " and movconta = " . $cta . " order by idmovto";
      $nro = leitura_reg($com, $reg);
      foreach ($reg as $lin) {          
-          if ($lin['movstatus'] == 0) {
+          if ($lin['movtipo'] == 0) {
                $ent = $ent + $lin['movquantidade'];
                $sal = $sal + $lin['movquantidade'];
                $val = $val + $lin['movvalor'];
           }
-          if ($lin['movstatus'] == 1) {
-               $sai = $sai + $lin['movquantidade'];
-               if ($lin['movliquidado'] == 0) {
-                    $vai = $vai + ($lin['movquantidade'] * $lin['movpercvai'] / 100);
-                    $vol = $vol + ($lin['movquantidade'] * $lin['movpercvolta'] / 100);
-               }
-               if ($lin['movdestino'] == $cta) {
-                    $sal = $sal + $lin['movquantidade'];
-                    $val = $val + $lin['movquantidade'] * $lin['movcusto'];
-               } else {
-                    $sal = $sal - $lin['movquantidade'];
-                    $val = $val - $lin['movvalor'];
-               }
-               $med = $lin['movvalor'] / $lin['movquantidade'] * 1000;
-          }
-          if ($lin['movstatus'] == 2) {
+          if ($lin['movtipo'] == 1) {
                $sai = $sai + $lin['movquantidade'];
                $sal = $sal - $lin['movquantidade'];
                $val = $val - $lin['movvalor'];
+          }
+          if ($lin['movtipo'] == 2) {
+               if ($lin['movliquidado'] == 1) {
+                    $ent = $ent + $lin['movquantidade'];
+                    $sal = $sal + $lin['movquantidade'];
+                    $val = $val + $lin['movvalor'];
+               }
+          }
+          if ($lin['movtipo'] == 3) {
+               if ($lin['movliquidado'] == 1) {
+                    $ent = $ent + $lin['movquantidade'];
+                    $sal = $sal + $lin['movquantidade'];
+                    $val = $val + $lin['movvalor'];
+               }
+          }
+          if ($lin['movtipo'] == 4) {
+               if ($lin['movliquidado'] == 1) {
+                    $ent = $ent + $lin['movquantidade'];
+                    $sal = $sal + $lin['movquantidade'];
+                    $val = $val + $lin['movvalor'];
+               } else {
+                    $vol = $vol + $lin['movquantidade'];
+               }
+          }
+          if ($lin['movtipo'] == 5) {   // Venda
+               $sai = $sai + $lin['movquantidade'];
+               $sal = $sal - $lin['movquantidade'];
+               $val = $val - $lin['movvalor'];
+          }
+          if ($lin['movtipo'] == 7) {   // Venda
+               $sai = $sai + $lin['movquantidade'];
+               $sal = $sal - $lin['movquantidade'];
+               $val = $val - $lin['movvalor'];
+          }
+          if ($lin['movtipo'] == 8) {
+               if ($lin['movliquidado'] == 1) {
+                    $ent = $ent + $lin['movquantidade'];
+                    $sal = $sal + $lin['movquantidade'];
+                    $val = $val + $lin['movvalor'];
+               }
+          }
+          if ($lin['movtipo'] == 9) {
+               if ($lin['movliquidado'] == 1) {
+                    $ent = $ent + $lin['movquantidade'];
+                    $sal = $sal + $lin['movquantidade'];
+                    $val = $val + $lin['movvalor'];
+               }
           }
      }
      $vai = round($vai, 0); $vol = round($vol, 0); $tot = $val;

@@ -57,6 +57,8 @@ $(function() {
      $("#dat_t").mask("00/00/0000");
      $("#rec_v").mask("00/00/0000");
      $("#dtb_t").mask("00/00/0000");
+     $("#dta_c").mask("00/00/0000");
+     $("#dtb_c").mask("00/00/0000");
      $("#qtd").mask("000.000.000", {
           reverse: true
      });
@@ -81,7 +83,16 @@ $(function() {
      $("#vol_t").mask("000", {
           reverse: true
      });
+     $("#bon_c").mask("000", {
+          reverse: true
+     });
      $("#val_t").mask("000.000.000,00", {
+          reverse: true
+     });
+     $("#qtd_c").mask("000.000.000", {
+          reverse: true
+     });
+     $("#val_c").mask("000.000.000,00", {
           reverse: true
      });
      $("#dat").datepicker($.datepicker.regional["pt-BR"]);
@@ -90,6 +101,8 @@ $(function() {
      $("#rec_v").datepicker($.datepicker.regional["pt-BR"]);
      $("#dat_t").datepicker($.datepicker.regional["pt-BR"]);
      $("#dtb_t").datepicker($.datepicker.regional["pt-BR"]);
+     $("#dta_c").datepicker($.datepicker.regional["pt-BR"]);
+     $("#dtb_c").datepicker($.datepicker.regional["pt-BR"]);
 });
 
 $(function() {
@@ -160,6 +173,7 @@ $(document).ready(function() {
      $("#mov_v").hide(); //  $("#mov_v").fadeIn();           $("#mov_v").fadeIn("slow");
      $("#mov_p").hide();
      $("#mov_t").hide();
+     $("#mov_x").hide();
 
      var alt = $(window).height();
      var lar = $(window).width();
@@ -191,6 +205,7 @@ $(document).ready(function() {
           let opc2 = $("#opc_2").prop("checked");
           let opc3 = $("#opc_3").prop("checked");
           let opc4 = $("#opc_4").prop("checked");
+          let opc5 = $("#opc_5").prop("checked");
           if (opc1 == true) {
                nom = $('#nom').val();
                cta = $('#cta').val();
@@ -230,6 +245,17 @@ $(document).ready(function() {
                cpf = $('#cpf_p').val();
                loc = $('#loc_p').val();
           }
+          if (opc5 == true) {
+               nom = $('#usu_c').val();
+               cta = $('#usu_c').val();
+               car = $('#car_c').val();
+               dst = $('#des_c').val();
+               qtd = $('#qtd_c').val();
+               val = $('#val_c').val();
+               dat = $('#dta_c').val();
+               bon = $('#dtb_c').val();
+               vai = $('#bon_c').val();
+          }
           if (nom == '0' || nom == '') {
                alert("Informação de usuário/programa para movimento está em branco !");
                erro = 1;
@@ -238,7 +264,7 @@ $(document).ready(function() {
                alert("Quantidade informada para ser movimento está em branco !");
                erro = 1;
           }
-          if (opc4 == false && (val == '0' || val == '')) {
+          if (opc4 == false && val == '') {
                alert("Valor Total informado para ser movimento está em branco !");
                erro = 1;
           }
@@ -285,6 +311,24 @@ $(document).ready(function() {
                     erro = 1;
                }
           }
+          if (opc5 == true) {
+               if (car == '0' || car == '') {
+                    alert("Informação do cartão de crédito não pode ficar em branco !");
+                    erro = 1;
+               }
+               if (dst == '') {
+                    alert("Conta de Destino da operação não pode ficar em branco !");
+                    erro = 1;
+               }
+               if (bon == '') {
+                    alert("Data para o Bônus da operação não pode ficar em branco !");
+                    erro = 1;
+               }
+               if (vai == '0' || vai == '') {
+                    alert("Percentual de Bônus de destino não pode ficar em branco !");
+                    erro = 1;
+               }
+          }
           if (erro == 1) {
                return false;
           } else {
@@ -305,7 +349,15 @@ $(document).ready(function() {
                          $('#obs').val('');
                          $('#car').val('');
                          $('#dtb_t').val('');
+                         $('#dtb_c').val('');
                          $('#rec_v').val('');
+                         $('#qtd_c').val('');
+                         $('#bon_c').val('');
+                         $('#val_c').val('');
+                         $('#obs_c').val('');
+                         $('#qua_d').val('');
+                         $('#cto_c').val('');
+                         $('#boi_c').val('');
                          $('#cus_c').val(0);
                          $('#tot_s').val(0);
                          $('#med_t').val(0);
@@ -316,6 +368,9 @@ $(document).ready(function() {
                          $('#cta_d').val(0);
                          $('#cta_v').val(0);
                          $('#des_t').val(0);
+                         $('#des_c').val(0);
+                         $('#usu_c').val(0);
+                         $('#car_c').val(0);
                     }
                }, "json");
           }
@@ -346,11 +401,13 @@ $(document).ready(function() {
           $('#pro_p').val('');
           $('#nom_t').val('');
           $('#dtb_t').val('');
+          $('#dtb_c').val('');
           $('#rec_v').val('');
           $('#sal_t').val('');
           $('#cto_t').val('');
           $('#sal_v').val('');
           $('#des_t').val(0);
+          $('#des_c').val(0);
           $('#cta_t').val(0);
           $('#cta_d').val(0);
           $('#cus_c').val(0);
@@ -359,30 +416,48 @@ $(document).ready(function() {
           $('#qtd_m').val(0);
           $('#qtd_s').val(0);
           $('#val_s').val(0);
+          $('#des_c').val(0);
+          $('#usu_c').val(0);
+          $('#car_c').val(0);
+          $('#qtd_c').val('');
+          $('#bon_c').val('');
+          $('#val_c').val('');
+          $('#obs_c').val('');
           let opc = $(this).attr("value");
           if (opc == 1) {
                $("#mov_v").fadeOut();
                $("#mov_p").fadeOut();
                $("#mov_t").fadeOut();
+               $("#mov_x").fadeOut();
                $("#mov_c").fadeIn();
           }
           if (opc == 2) {
                $("#mov_c").fadeOut();
                $("#mov_p").fadeOut();
                $("#mov_v").fadeOut();
+               $("#mov_x").fadeOut();
                $("#mov_t").fadeIn();
           }
           if (opc == 3) {
                $("#mov_c").fadeOut();
                $("#mov_p").fadeOut();
                $("#mov_t").fadeOut();
+               $("#mov_x").fadeOut();
                $("#mov_v").fadeIn();
           }
           if (opc == 4) {
                $("#mov_c").fadeOut();
                $("#mov_v").fadeOut();
                $("#mov_t").fadeOut();
+               $("#mov_x").fadeOut();
                $("#mov_p").fadeIn();
+          }
+          if (opc == 5) {
+               $("#mov_c").fadeOut();
+               $("#mov_v").fadeOut();
+               $("#mov_t").fadeOut();
+               $("#mov_p").fadeOut();
+               $("#mov_x").fadeIn();
           }
      });
 
@@ -481,7 +556,8 @@ $(document).ready(function() {
                     }).fail(function(data) {
                          console.log('Erro: ' + JSON.stringify(data));
                          alert(
-                              "Erro ocorrido no processamento do saldo da conta para passagem");
+                              "Erro ocorrido no processamento do saldo da conta para passagem"
+                         );
                     });
           }
      });
@@ -521,13 +597,23 @@ $(document).ready(function() {
           }
      });
 
-     $('#dat_t').blur(function() {
-          if ($('#dat_t').val() == "") {
+     $('#dta_t').blur(function() {
+          if ($('#dta_t').val() == "") {
                var dat = new Date;
                var ddd = ('0' + dat.getDate()).slice(-2);
                var mmm = ('0' + (dat.getMonth() + 1)).slice(-2);
                var aaa = dat.getFullYear();
-               $('#dat_t').val(ddd + "/" + mmm + "/" + aaa);
+               $('#dta_t').val(ddd + "/" + mmm + "/" + aaa);
+          }
+     });
+
+     $('#dta_c').blur(function() {
+          if ($('#dta_c').val() == "") {
+               var dat = new Date;
+               var ddd = ('0' + dat.getDate()).slice(-2);
+               var mmm = ('0' + (dat.getMonth() + 1)).slice(-2);
+               var aaa = dat.getFullYear();
+               $('#dta_c').val(ddd + "/" + mmm + "/" + aaa);
           }
      });
 
@@ -642,7 +728,8 @@ $(document).ready(function() {
                });
                $('#cus_t').val(cus);
           }
-          qtd = qtd.replace('.', ''); qtd = qtd.replace(',', '.');
+          qtd = qtd.replace('.', '');
+          qtd = qtd.replace(',', '.');
           if (parseFloat(qtd, 10) > parseFloat(sal, 10)) {
                alert("Quantidade informada não pode ser maior que quantidade em saldo !");
                $('#qtd_t').val($('#qtd_s').val());
@@ -726,62 +813,62 @@ $(document).ready(function() {
      });
 
      $('#vai_t').change(
-function() { // Qtd que vai - Calculo de transferência e Boomerangue com preço de custo
-          let pro = $('#pro_t').val();
-          let qtd = $('#qtd_t').val();
-          let per = $('#vai_t').val();
-          let vai = $('#vai_t').val();
-          let vol = $('#vol_t').val();
-          if (per == "" || qtd == "") {
-               $('#boi_t').val('');
-          } else {
-               per = per.replace('.', '');
-               per = per.replace(',', '.');
-               qtd = qtd.replace('.', '');
-               qtd = qtd.replace(',', '.');
+          function() { // Qtd que vai - Calculo de transferência e Boomerangue com preço de custo
+               let pro = $('#pro_t').val();
+               let qtd = $('#qtd_t').val();
+               let per = $('#vai_t').val();
                let vai = $('#vai_t').val();
                let vol = $('#vol_t').val();
-               val = qtd * per / 100;
-               val = val.toLocaleString("pt-BR", {
-                    style: "currency",
-                    currency: "BRL"
-               });
-               val = val.replace('R$', '');
-               val = val.replace(',00', '');
-               $('#boi_t').val(val);
-          }
-          if (per != "" && qtd != "" && vai != "" && vol != "") {
-               let val = $('#val_t').val();
-               val = val.replace('.', '');
-               val = val.replace(',', '.');
-               if (pro == 1) {
-                    let res = parseFloat(qtd, 10) * (1 + parseFloat(per, 10) / 100);
-                    res = val / res * 1000;
-                    $('#cus_c').val(res);
-                    res = res.toLocaleString("pt-BR", {
-                         style: "currency",
-                         currency: "BRL"
-                    });
-                    $('#cus_t').val(res);
+               if (per == "" || qtd == "") {
+                    $('#boi_t').val('');
                } else {
-                    let tot = 0; // Calculo de promoção Bumerange, preço de custo por milhero
-                    let med = $('#med_t').val();
-                    vai = vai.replace('.', '');
-                    vai = vai.replace(',', '.');
-                    vol = vol.replace('.', '');
-                    vol = vol.replace(',', '.');
-                    let res = parseFloat(qtd, 10) * (1 - parseFloat(vol, 10) / 100);
-                    res = res * med;
-                    res = res / (qtd * (1 + parseFloat(vai, 10) / 100)) * 1000;
-                    $('#cus_c').val(res);
-                    res = res.toLocaleString("pt-BR", {
+                    per = per.replace('.', '');
+                    per = per.replace(',', '.');
+                    qtd = qtd.replace('.', '');
+                    qtd = qtd.replace(',', '.');
+                    let vai = $('#vai_t').val();
+                    let vol = $('#vol_t').val();
+                    val = qtd * per / 100;
+                    val = val.toLocaleString("pt-BR", {
                          style: "currency",
                          currency: "BRL"
                     });
-                    $('#cus_t').val(res);
+                    val = val.replace('R$', '');
+                    val = val.replace(',00', '');
+                    $('#boi_t').val(val);
                }
-          }
-     });
+               if (per != "" && qtd != "" && vai != "" && vol != "") {
+                    let val = $('#val_t').val();
+                    val = val.replace('.', '');
+                    val = val.replace(',', '.');
+                    if (pro == 1) {
+                         let res = parseFloat(qtd, 10) * (1 + parseFloat(per, 10) / 100);
+                         res = val / res * 1000;
+                         $('#cus_c').val(res);
+                         res = res.toLocaleString("pt-BR", {
+                              style: "currency",
+                              currency: "BRL"
+                         });
+                         $('#cus_t').val(res);
+                    } else {
+                         let tot = 0; // Calculo de promoção Bumerange, preço de custo por milhero
+                         let med = $('#med_t').val();
+                         vai = vai.replace('.', '');
+                         vai = vai.replace(',', '.');
+                         vol = vol.replace('.', '');
+                         vol = vol.replace(',', '.');
+                         let res = parseFloat(qtd, 10) * (1 - parseFloat(vol, 10) / 100);
+                         res = res * med;
+                         res = res / (qtd * (1 + parseFloat(vai, 10) / 100)) * 1000;
+                         $('#cus_c').val(res);
+                         res = res.toLocaleString("pt-BR", {
+                              style: "currency",
+                              currency: "BRL"
+                         });
+                         $('#cus_t').val(res);
+                    }
+               }
+          });
 
      $('#vol_t').change(function() {
           let val = 0;
@@ -829,13 +916,115 @@ function() { // Qtd que vai - Calculo de transferência e Boomerangue com preço
                     let res = parseFloat(qtd, 10) * (1 - parseFloat(vol, 10) / 100);
                     res = res * med;
                     res = res / (qtd * (1 + parseFloat(vai, 10) / 100)) * 1000;
-                    $('#cus_c').val(res);    // Preço de custo hidden (escondido) para gravar
+                    $('#cus_c').val(res); // Preço de custo hidden (escondido) para gravar
                     res = res.toLocaleString("pt-BR", {
                          style: "currency",
                          currency: "BRL"
                     });
                     $('#cus_t').val(res);
                }
+          }
+     });
+
+     $('#usu_c').change(function() {
+          let usu = $('#usu_c').val();
+          $.getJSON("ajax/carrega-usu.php", {
+                    usu: usu
+               })
+               .done(function(data) {
+                    if (data.men != "") {
+                         alert(data.men);
+                    } else {
+                         $('#qtd_s').val(data.sdo);
+                         $('#qtd_m').val(data.sal);
+                         $('#des_c').html(data.txt);
+                    }
+               }).fail(function(data) {
+                    console.log('Erro: ' + JSON.stringify(data));
+                    alert("Erro ocorrido no carregamento de contas para o usuário" );
+               });
+     });
+
+     $('#qtd_c').blur(function() {
+          var pre = 0;
+          var qtd = $('#qtd_c').val();
+          var bon = $('#bon_c').val();
+          var val = $('#val_c').val();
+          var sal = $('#qtd_m').val();
+          qtd = qtd.replace('.', ''); qtd = qtd.replace(',', '.');          
+          if (qtd != "") {
+               $('#qua_d').val($('#qtd_c').val());
+          }
+          if (qtd != "" && bon != "") {
+               qtd = qtd.replace('.', ''); qtd = qtd.replace(',', '.');
+               bon = bon.replace('.', ''); bon = bon.replace(',', '.');
+               let qua = qtd * bon / 100;
+               qua = qua.toLocaleString("pt-BR", {
+                    style: "currency",
+                    currency: "BRL"
+               });
+               qua = qua.replace('R$', '');
+               qua = qua.replace(',00', '');
+               $('#boi_c').val(qua);
+          }
+          if (qtd != "" && val != "" && bon != "") {
+               qtd = $('#qtd_c').val();
+               qtd = qtd.replace('.', ''); qtd = qtd.replace(',', '.');
+               val = val.replace('.', ''); val = val.replace(',', '.');
+               bon = bon.replace('.', ''); bon = bon.replace(',', '.');
+               pre = 1 + parseFloat(bon, 10) / 100;
+               pre = qtd * pre;
+               pre = val / pre;
+               pre = pre * 1000;
+               $('#med_t').val(pre);
+               $('#cus_c').val(pre);
+               pre = pre.toLocaleString("pt-BR", {
+                    style: "currency",
+                    currency: "BRL"
+               });
+               $('#cto_c').val(pre);
+          }
+     });
+
+     $('#bon_c').blur(function() {
+          var qtd = $('#qtd_c').val();
+          var bon = $('#bon_c').val();
+          var val = $('#val_c').val();
+          if (qtd != "" && bon != "") {
+               qtd = qtd.replace('.', ''); qtd = qtd.replace(',', '.');
+               bon = bon.replace('.', ''); bon = bon.replace(',', '.');
+               let qua = qtd * bon / 100;
+               qua = qua.toLocaleString("pt-BR", {
+                    style: "currency",
+                    currency: "BRL"
+               });
+               qua = qua.replace('R$', '');
+               qua = qua.replace(',00', '');
+               $('#boi_c').val(qua);
+          }
+     });
+
+     $('#val_c').blur(function() {
+          var pre = 0;
+          var qtd = $('#qtd_c').val();
+          var bon = $('#bon_c').val();
+          var val = $('#val_c').val();
+          if (qtd != "" && val != "" && bon != "") {
+               qtd = $('#qtd_c').val();
+               qtd = qtd.replace('.', ''); qtd = qtd.replace(',', '.');
+               val = val.replace('.', ''); val = val.replace(',', '.');
+               bon = bon.replace('.', ''); bon = bon.replace(',', '.');          
+               pre = 1 + parseFloat(bon, 10) / 100;
+               pre = qtd * pre;
+               pre = val / pre;
+               pre = pre * 1000;
+               $('#med_t').val(pre);
+               $('#cus_c').val(pre);
+               pre = pre.toLocaleString("pt-BR", {
+                    style: "currency",
+                    currency: "BRL"
+               });
+               $('#cto_c').val(pre);
           }
      });
 
@@ -906,11 +1095,21 @@ function() { // Qtd que vai - Calculo de transferência e Boomerangue com preço
      $dat_t = (isset($_REQUEST['dat_t']) == false ? date('d/m/Y') : $_REQUEST['dat_t']);
      $obs_t = (isset($_REQUEST['obs_t']) == false ? '' : str_replace("'", "´", $_REQUEST['obs_t']));
 
+     $usu_c = (isset($_REQUEST['usu_c']) == false ? 0 : $_REQUEST['usu_c']);
+     $car_c = (isset($_REQUEST['car_c']) == false ? 0 : $_REQUEST['car_c']);
+     $pro_c = (isset($_REQUEST['pro_c']) == false ? 0 : $_REQUEST['pro_c']);
+     $qtd_c = (isset($_REQUEST['qtd_c']) == false ? '' : $_REQUEST['qtd_c']);
+     $val_c = (isset($_REQUEST['val_c']) == false ? '' : $_REQUEST['val_c']);
+     $bon_c = (isset($_REQUEST['bon_c']) == false ? '' : $_REQUEST['bon_c']);
+     $dta_c = (isset($_REQUEST['dta_c']) == false ? date('d/m/Y') : $_REQUEST['dta_c']);
+     $dtb_c = (isset($_REQUEST['dtb_c']) == false ? '' : $_REQUEST['dtb_c']);
+     $obs_c = (isset($_REQUEST['obs_c']) == false ? '' : str_replace("'", "´", $_REQUEST['obs_c']));
+
      if (isset($_REQUEST['salvar']) == true) {
           $nom = ""; $qtd = ""; $val = ""; $dat = date('d/m/Y'); $obs = ""; $car = 0;
-          $nom_v = ""; $qtd_v = ""; $val_v = ""; $dat_v = date('d/m/Y'); $obs_v = ""; $rec_v = ''; $int_v = 0; 
-          $nom_p = ""; $qtd_p = ""; $dat_p = date('d/m/Y'); $obs_p = ""; $loc_p = ""; $int_p = 0; $cpf_p = 0; 
-          $nom_t = ""; $qtd_t = ""; $dat_t = date('d/m/Y'); $obs_t = ""; $des_t = 0; $pro_t = 1; $val_t = ''; $vai_t = ''; $vol_t = ''; $bon_t = ''; $dtb = '';
+          $nom_v = ""; $qtd_v = ""; $val_v = ""; $dat_v = date('d/m/Y'); $obs_v = ""; $rec_v = ''; $int_v = 0; $dta_c = date('d/m/Y');
+          $nom_p = ""; $qtd_p = ""; $dat_p = date('d/m/Y'); $obs_p = ""; $loc_p = ""; $int_p = 0; $cpf_p = 0; $usu_c = 0; $car_c = 0;  $qtd_c = "";  $val_c = ""; 
+          $nom_t = ""; $qtd_t = ""; $dat_t = date('d/m/Y'); $obs_t = ""; $des_t = 0; $pro_t = 1; $val_t = ''; $vai_t = ''; $vol_t = ''; $bon_t = ''; $dtb = '';  $dtb_c = ""; 
      }
 ?>
 
@@ -926,19 +1125,24 @@ function() { // Qtd que vai - Calculo de transferência e Boomerangue com preço
                <p class="lit-4">Movimentação de Contas &nbsp; &nbsp; &nbsp; </p>
                <br />
                <div class="row text-center">
-                    <div class="col-md-3">
+                    <div class="col-md-1"></div>
+                    <div class="col-md-2">
                          <input type="radio" id="opc_1" class="opc" name="opc" value="1" checked="checked" /><span>
                               Compra </span>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-2">
                          <input type="radio" id="opc_2" class="opc" name="opc" value="2" /><span> Transferência </span>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-2">
                          <input type="radio" id="opc_3" class="opc" name="opc" value="3" /><span> Venda </span>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-2">
                          <input type="radio" id="opc_4" class="opc" name="opc" value="4" /><span> Passagens </span>
                     </div>
+                    <div class="col-md-2">
+                         <input type="radio" id="opc_5" class="opc" name="opc" value="5" /><span> Cartão </span>
+                    </div>
+                    <div class="col-md-1"></div>
                </div>
                <br />
                <!------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
@@ -1093,7 +1297,7 @@ function() { // Qtd que vai - Calculo de transferência e Boomerangue com preço
                                              <div class="col-md-12">
                                                   <label>Observação</label>
                                                   <textarea class="form-control" rows="3" id="obs_t"
-                                                       name="obs_t"><?php echo $obs; ?></textarea>
+                                                       name="obs_t"><?php echo $obs_t; ?></textarea>
                                              </div>
                                         </div>
                                    </td>
@@ -1338,6 +1542,122 @@ function() { // Qtd que vai - Calculo de transferência e Boomerangue com preço
                     </div>
                </div>
                <!------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
+               <div id="mov_x">
+                    <table class="table tab-3">
+                         <tbody>
+                              <tr>
+                                   <td>
+                                        <div class="form-row">
+                                             <div class="col-md-12">
+                                                  <label>Nome do Titular</label>
+                                                  <select id="usu_c" name="usu_c" class="form-control">
+                                                       <?php $ret = carrega_usu($usu_c); ?>
+                                                  </select>
+                                             </div>
+                                             <br />
+                                             <div class="col-md-12">
+                                                  <label>Cartão de Crédito</label>
+                                                  <select id="car_c" name="car_c" class="form-control">
+                                                       <?php $ret = carrega_car($car_c); ?>
+                                                  </select>
+                                             </div>
+                                             <br />
+                                             <div class="col-md-3"></div>
+                                             <div class="col-md-6">
+                                                  <label>Transação</label>
+                                                  <select id="pro_c" name="pro_c" class="form-control" disabled>
+                                                       <option value="1"
+                                                            <?php echo ($pro_c != 1 ? '' : 'selected="selected"'); ?>>
+                                                            Transferência
+                                                       </option>
+                                                  </select>
+                                             </div>
+                                             <div class="col-md-3"></div>
+                                             <br />
+                                             <div class="col-md-3"></div>
+                                             <div class="col-md-6">
+                                                  <label id="tit_c">Pontos a Transferir</label>
+                                                  <input type="text" class="form-control text-right" maxlength="10"
+                                                       id="qtd_c" name="qtd_c" value="<?php echo $qtd_c; ?>" />
+                                             </div>
+                                             <div class="col-md-3"></div>
+                                             <br />
+                                             <div class="col-md-4"></div>
+                                             <div class="col-md-4">
+                                                  <label id="lit_p">Percentual de Bônus</label>
+                                                  <input type="text" class="form-control text-center" maxlength="5"
+                                                       id="bon_c" name="bon_c" value="<?php echo $bon_c; ?>" />
+                                             </div>
+                                             <div class="col-md-4"></div>
+                                             <br />
+                                             <div class="col-md-6">
+                                                  <label>Custo Total</label>
+                                                  <input type="text" class="form-control text-right" maxlength="12"
+                                                       id="val_c" name="val_c" value="<?php echo $val_c; ?>" />
+                                             </div>
+                                             <div class="col-md-6">
+                                                  <label>Data da Operação</label>
+                                                  <input type="text" class="form-control text-center" maxlength="10"
+                                                       id="dta_t" name="dta_c" value="<?php echo $dta_c; ?>" />
+                                             </div>
+                                             <br />
+                                             <div class="col-md-12">
+                                                  <label>Observação</label>
+                                                  <textarea class="form-control" rows="3" id="obs_c"
+                                                       name="obs_c"><?php echo $obs_c; ?></textarea>
+                                             </div>
+                                        </div>
+                                   </td>
+
+                                   <td>
+                                        <div class="form-row">
+                                             <div class="col-md-12">
+                                                  <label>Conta de Destino</label>
+                                                  <select id="des_c" name="des_c" class="form-control">
+                                                       <option value="0">Destinatário ...</option>
+                                                  </select>
+                                             </div>
+                                             <br />
+                                             <div class="lin-3"></div>
+                                             <div class="lin-3"></div>
+                                             <br />
+                                             <div class="col-md-6">
+                                                  <label id="tit_d">Milhas Transferida</label>
+                                                  <input type="text" class="form-control text-center" maxlength="12"
+                                                       id="qua_d" name="qua_d" value="" disabled />
+                                             </div>
+                                             <div class="col-md-6">
+                                                  <label>Custo por Milheiro</label>
+                                                  <input type="text" class="form-control text-center" maxlength="12"
+                                                       id="cto_c" name="cto_c" value="" disabled />
+                                             </div>
+                                             <br />
+                                             <div class="col-md-3"></div>
+                                             <div class="col-md-6">
+                                                  <label id="lit_b">Bônus de Transferência</label>
+                                                  <input type="text" class="form-control text-center" maxlength="12"
+                                                       id="boi_c" name="boi_c" value="" disabled />
+                                             </div>
+                                             <div class="col-md-3"></div>
+                                             <br />
+                                             <div class="col-md-3"></div>
+                                             <div class="col-md-6">
+                                                  <label>Data para o Bônus</label>
+                                                  <input type="text" class="form-control text-center" maxlength="10"
+                                                       id="dtb_c" name="dtb_c" value="<?php echo $dtb_c; ?>" />
+                                             </div>
+                                             <div class="col-md-3"></div>
+                                             <br />
+                                             <div class="col-md-4"></div>
+                                             <div class="col-md-4"></div>
+                                             <div class="col-md-4"></div>
+                                        </div>
+                                   </td>
+                              </tr>
+                         </tbody>
+                    </table>
+               </div>
+               <!------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
                <br />
                <div class="row">
                     <div class="col-12 text-center">
@@ -1383,16 +1703,38 @@ function carrega_int($int_v) {
      return $sta;
 }
 
-function carrega_car($car) {
+function carrega_usu($usu_c) {
      $sta = 0;
      include_once "dados.php";    
-     if ($car == 0) {
+     if ($usu_c == 0) {
+          echo '<option value="0" selected="selected">Selecione o titular ...</option>';
+     }
+     if ($_SESSION['wrktipusu'] >= 4) {
+          $com = "Select idsenha, usunome from tb_usuario where usustatus = 0 and usuempresa = " . $_SESSION['wrkcodemp'] . " order by usunome, idsenha";
+     } else {
+          $com = "Select U.idsenha, U.usunome, C.congerente from (tb_usuario U left join tb_conta C on U.idsenha = C.conusuario) where usustatus = 0 and usuempresa = " . $_SESSION['wrkcodemp'] . " and congerente = " . $_SESSION['wrkideusu'] . " order by usunome, idsenha";
+     }
+     $nro = leitura_reg($com, $reg);
+     foreach ($reg as $lin) {
+          if ($lin['idsenha'] != $usu_c) {
+               echo  '<option value ="' . $lin['idsenha'] . '">' . $lin['usunome'] . '</option>'; 
+          } else {
+               echo  '<option value ="' . $lin['idsenha'] . '" selected="selected">' . $lin['usunome'] . '</option>';
+          }
+     }
+     return $sta;
+}
+
+function carrega_car($car_c) {
+     $sta = 0;
+     include_once "dados.php";    
+     if ($car_c == 0) {
           echo '<option value="0" selected="selected">Selecione o cartão de crédito ...</option>';
      }
      $com = "Select idcartao, cardescricao, carnumero from tb_cartao where carstatus = 0 and carempresa = " . $_SESSION['wrkcodemp'] . " order by cardescricao, idcartao";
      $nro = leitura_reg($com, $reg);
      foreach ($reg as $lin) {
-          if ($lin['idcartao'] != $car) {
+          if ($lin['idcartao'] != $car_c) {
                echo  '<option value ="' . $lin['idcartao'] . '">' . $lin['cardescricao'] . " - " . $lin['carnumero']. '</option>'; 
           } else {
                echo  '<option value ="' . $lin['idcartao'] . '" selected="selected">' . $lin['cardescricao'] . " - " . $lin['carnumero'] . '</option>';

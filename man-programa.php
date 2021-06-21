@@ -59,7 +59,7 @@ $(document).ready(function() {
      $('#tab-0').DataTable({
           "pageLength": 25,
           "aaSorting": [
-               [4, 'asc'],
+               [1, 'asc'],
                [2, 'asc']
           ],
           "language": {
@@ -236,14 +236,14 @@ $(document).ready(function() {
                <table id="tab-0" class="table table-sm table-striped">
                     <thead>
                          <tr>
-                              <th width="5%">Alterar</th>
-                              <th width="5%">Excluir</th>
-                              <th width="5%">Número</th>
-                              <th>Status</th>
+                              <th width="5%">Código</th>
                               <th>Nome do Programa de Fidelidade</th>
                               <th>Tipo de Programa de Fidelidade</th>
                               <th>Inclusão</th>
                               <th>Alteração</th>
+                              <th>Status</th>
+                              <th width="5%">Alterar</th>
+                              <th width="5%">Excluir</th>
                          </tr>
                     </thead>
                     <tbody>
@@ -289,13 +289,7 @@ function carrega_pro() {
      $nro = leitura_reg($com, $reg);
      foreach ($reg as $lin) {
           $txt =  '<tr>';
-          $txt .= '<td class="text-center"><a href="man-programa.php?ope=2&cod=' . $lin['idprograma'] . '" title="Efetua alteração do registro informado na linha"><i class="large material-icons">healing</i></a></td>';
-          $txt .= '<td class="lit-d text-center"><a href="man-programa.php?ope=3&cod=' . $lin['idprograma'] . '" title="Efetua exclusão do registro informado na linha"><i class="cor-1 large material-icons">delete_forever</i></a></td>';
           $txt .= '<td class="text-center">' . $lin['idprograma'] . '</td>';
-          if ($lin['prostatus'] == 0) {$txt .= "<td>" . "Ativo" . "</td>";}
-          if ($lin['prostatus'] == 1) {$txt .= "<td>" . "Bloqueado" . "</td>";}
-          if ($lin['prostatus'] == 2) {$txt .= "<td>" . "Suspenso" . "</td>";}
-          if ($lin['prostatus'] == 3) {$txt .= "<td>" . "Cancelado" . "</td>";}
           $txt .= '<td class="text-left">' . $lin['prodescricao'] . "</td>";
           if ($lin['protipo'] == 0) {$txt .= "<td>" . "Milhas" . "</td>";}
           if ($lin['protipo'] == 1) {$txt .= "<td>" . "Pontos" . "</td>";}
@@ -310,6 +304,12 @@ function carrega_pro() {
           }else{
                $txt .= "<td>" . date('d/m/Y H:m:s',strtotime($lin['datalt'])) . "</td>";
           }
+          if ($lin['prostatus'] == 0) {$txt .= "<td>" . "Ativo" . "</td>";}
+          if ($lin['prostatus'] == 1) {$txt .= "<td>" . "Bloqueado" . "</td>";}
+          if ($lin['prostatus'] == 2) {$txt .= "<td>" . "Suspenso" . "</td>";}
+          if ($lin['prostatus'] == 3) {$txt .= "<td>" . "Cancelado" . "</td>";}
+          $txt .= '<td class="text-center"><a href="man-programa.php?ope=2&cod=' . $lin['idprograma'] . '" title="Efetua alteração do registro informado na linha"><i class="large material-icons">healing</i></a></td>';
+          $txt .= '<td class="lit-d text-center"><a href="man-programa.php?ope=3&cod=' . $lin['idprograma'] . '" title="Efetua exclusão do registro informado na linha"><i class="cor-1 large material-icons">delete_forever</i></a></td>';
           $txt .= "</tr>";
           echo $txt;
      }

@@ -64,8 +64,8 @@ $(document).ready(function() {
      $('#tab-0').DataTable({
           "pageLength": 25,
           "aaSorting": [
-               [4, 'asc'],
-               [2, 'asc']
+               [1, 'asc'],
+               [0, 'asc']
           ],
           "language": {
                "lengthMenu": "Demonstrar _MENU_ linhas por páginas",
@@ -200,7 +200,7 @@ $(document).ready(function() {
                               value="<?php echo $num; ?>" required />
                     </div>
                     <div class="col-md-2">
-                         <label>Vencimento</label><br />
+                         <label>Vencimento da Fatura</label><br />
                          <input type="text" class="form-control" maxlength="2" id="ven" name="ven"
                               value="<?php echo $ven; ?>" />
                     </div>
@@ -238,15 +238,15 @@ $(document).ready(function() {
                <table id="tab-0" class="table table-sm table-striped">
                     <thead>
                          <tr>
-                              <th width="5%">Alterar</th>
-                              <th width="5%">Excluir</th>
                               <th width="5%">Código</th>
-                              <th>Status</th>
-                              <th>Identificaçãoa do cartão</th>
+                              <th>Identificaçãoa do Cartão</th>
                               <th>Últimos dígitos</th>
-                              <th>Vencimento</th>
+                              <th>Venc. da Fatura</th>
                               <th>Inclusão</th>
                               <th>Alteração</th>
+                              <th>Status</th>
+                              <th width="5%">Alterar</th>
+                              <th width="5%">Excluir</th>
                          </tr>
                     </thead>
                     <tbody>
@@ -292,13 +292,7 @@ function carrega_car() {
      $nro = leitura_reg($com, $reg);
      foreach ($reg as $lin) {
           $txt =  '<tr>';
-          $txt .= '<td class="text-center"><a href="man-cartao.php?ope=2&cod=' . $lin['idcartao'] . '" title="Efetua alteração do registro informado na linha"><i class="large material-icons">healing</i></a></td>';
-          $txt .= '<td class="lit-d text-center"><a href="man-cartao.php?ope=3&cod=' . $lin['idcartao'] . '" title="Efetua exclusão do registro informado na linha"><i class="cor-1 large material-icons">delete_forever</i></a></td>';
           $txt .= '<td class="text-center">' . $lin['idcartao'] . '</td>';
-          if ($lin['carstatus'] == 0) {$txt .= "<td>" . "Ativo" . "</td>";}
-          if ($lin['carstatus'] == 1) {$txt .= "<td>" . "Bloqueado" . "</td>";}
-          if ($lin['carstatus'] == 2) {$txt .= "<td>" . "Suspenso" . "</td>";}
-          if ($lin['carstatus'] == 3) {$txt .= "<td>" . "Cancelado" . "</td>";}
           $txt .= '<td class="text-left">' . $lin['cardescricao'] . "</td>";
           $txt .= '<td class="text-left">' . $lin['carnumero'] . "</td>";
           $txt .= '<td class="text-center">' . $lin['carvecto'] . "</td>";
@@ -312,6 +306,12 @@ function carrega_car() {
           }else{
                $txt .= "<td>" . date('d/m/Y H:m:s',strtotime($lin['datalt'])) . "</td>";
           }
+          if ($lin['carstatus'] == 0) {$txt .= "<td>" . "Ativo" . "</td>";}
+          if ($lin['carstatus'] == 1) {$txt .= "<td>" . "Bloqueado" . "</td>";}
+          if ($lin['carstatus'] == 2) {$txt .= "<td>" . "Suspenso" . "</td>";}
+          if ($lin['carstatus'] == 3) {$txt .= "<td>" . "Cancelado" . "</td>";}
+          $txt .= '<td class="text-center"><a href="man-cartao.php?ope=2&cod=' . $lin['idcartao'] . '" title="Efetua alteração do registro informado na linha"><i class="large material-icons">healing</i></a></td>';
+          $txt .= '<td class="lit-d text-center"><a href="man-cartao.php?ope=3&cod=' . $lin['idcartao'] . '" title="Efetua exclusão do registro informado na linha"><i class="cor-1 large material-icons">delete_forever</i></a></td>';
           $txt .= "</tr>";
           echo $txt;
      }

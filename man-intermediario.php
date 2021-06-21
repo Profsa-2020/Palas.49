@@ -59,8 +59,8 @@ $(document).ready(function() {
      $('#tab-0').DataTable({
           "pageLength": 25,
           "aaSorting": [
-               [4, 'asc'],
-               [2, 'asc']
+               [1, 'asc'],
+               [0, 'asc']
           ],
           "language": {
                "lengthMenu": "Demonstrar _MENU_ linhas por páginas",
@@ -222,13 +222,13 @@ $(document).ready(function() {
                <table id="tab-0" class="table table-sm table-striped">
                     <thead>
                          <tr>
-                              <th width="5%">Alterar</th>
-                              <th width="5%">Excluir</th>
-                              <th width="5%">Número</th>
-                              <th>Status</th>
+                              <th width="5%">Código</th>
                               <th>Nome do Intermediário</th>
                               <th>Inclusão</th>
                               <th>Alteração</th>
+                              <th>Status</th>
+                              <th width="5%">Alterar</th>
+                              <th width="5%">Excluir</th>
                          </tr>
                     </thead>
                     <tbody>
@@ -274,13 +274,7 @@ function carrega_int() {
      $nro = leitura_reg($com, $reg);
      foreach ($reg as $lin) {
           $txt =  '<tr>';
-          $txt .= '<td class="text-center"><a href="man-intermediario.php?ope=2&cod=' . $lin['idintermediario'] . '" title="Efetua alteração do registro informado na linha"><i class="large material-icons">healing</i></a></td>';
-          $txt .= '<td class="lit-d text-center"><a href="man-intermediario.php?ope=3&cod=' . $lin['idintermediario'] . '" title="Efetua exclusão do registro informado na linha"><i class="cor-1 large material-icons">delete_forever</i></a></td>';
           $txt .= '<td class="text-center">' . $lin['idintermediario'] . '</td>';
-          if ($lin['intstatus'] == 0) {$txt .= "<td>" . "Ativo" . "</td>";}
-          if ($lin['intstatus'] == 1) {$txt .= "<td>" . "Bloqueado" . "</td>";}
-          if ($lin['intstatus'] == 2) {$txt .= "<td>" . "Suspenso" . "</td>";}
-          if ($lin['intstatus'] == 3) {$txt .= "<td>" . "Cancelado" . "</td>";}
           $txt .= '<td class="text-left">' . $lin['intdescricao'] . "</td>";
           if ($lin['datinc'] == null) {
                $txt .= "<td>" . '' . "</td>";
@@ -292,6 +286,12 @@ function carrega_int() {
           }else{
                $txt .= "<td>" . date('d/m/Y H:m:s',strtotime($lin['datalt'])) . "</td>";
           }
+          if ($lin['intstatus'] == 0) {$txt .= "<td>" . "Ativo" . "</td>";}
+          if ($lin['intstatus'] == 1) {$txt .= "<td>" . "Bloqueado" . "</td>";}
+          if ($lin['intstatus'] == 2) {$txt .= "<td>" . "Suspenso" . "</td>";}
+          if ($lin['intstatus'] == 3) {$txt .= "<td>" . "Cancelado" . "</td>";}
+          $txt .= '<td class="text-center"><a href="man-intermediario.php?ope=2&cod=' . $lin['idintermediario'] . '" title="Efetua alteração do registro informado na linha"><i class="large material-icons">healing</i></a></td>';
+          $txt .= '<td class="lit-d text-center"><a href="man-intermediario.php?ope=3&cod=' . $lin['idintermediario'] . '" title="Efetua exclusão do registro informado na linha"><i class="cor-1 large material-icons">delete_forever</i></a></td>';
           $txt .= "</tr>";
           echo $txt;
      }

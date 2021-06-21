@@ -151,7 +151,7 @@ $(document).ready(function() {
                                              <th width="30%">Nome do Usuário</th>
                                              <?php
                                                   for ($ind = 0; $ind < count($dad['cod_p']) ; $ind++) {
-                                                       echo '<th class="text-center">' . $dad['des_p'][$ind] . '</th>';
+                                                       echo '<th class="text-center">' . $dad['tit_p'][$ind] . '</th>';
                                                   }
                                                   echo '<th class="text-center">' . 'TOTAL' . '</th>';
                                                   ?>
@@ -250,9 +250,9 @@ function carrega_mov($ano, &$dad) {
      $nro = leitura_reg($com, $reg);
      foreach ($reg as $lin) {
           $dad['cod_p'][] = $lin['idprograma'];
-          $dad['des_p'][] = $lin['prodescricao'];
+          $dad['tit_p'][] = $lin['prodescricao'];
      }
-     $com  = "Select movusuario, movprograma, movstatus, Sum(movquantidade)  as movqtde from tb_movto where movempresa = " . $_SESSION['wrkcodemp'] . " and movdata between '" . $dti . "' and '" . $dtf . "' group by movusuario, movprograma, movstatus order by movusuario, movprograma";
+     $com  = "Select movusuario, movprograma, movtipo, movliquidado, Sum(movquantidade)  as movqtde from tb_movto where movempresa = " . $_SESSION['wrkcodemp'] . " and movdata between '" . $dti . "' and '" . $dtf . "' group by movusuario, movprograma, movtipo, movliquidado order by movusuario, movprograma";
      $nro = leitura_reg($com, $reg);
      foreach ($reg as $lin) { 
           $flag = 0;
@@ -274,10 +274,15 @@ function carrega_mov($ano, &$dad) {
                     $dad['pro_m'][$ind] = $lin['movprograma'];               
                     $dad['qtd_m'][$ind] = 0;
                }
-               if ($lin['movstatus'] == 0) {
+               if ($lin['movtipo'] == 0) {
                     $dad['qtd_m'][$ind] += $lin['movqtde'];     
                }
-               if ($lin['movstatus'] == 1) {
+               if ($lin['movtipo'] == 2 || $lin['movtipo'] == 3 || $lin['movtipo'] == 4) {
+                    if ($lin['movliquidado'] == 1) {
+                         $dad['qtd_m'][$ind] += $lin['movqtde'];     
+                    }
+               }
+               if ($lin['movtipo'] == 1) {
                     $dad['qtd_m'][$ind] -= $lin['movqtde'];     
                }
           }

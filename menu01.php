@@ -236,17 +236,15 @@ function carrega_das(&$dad) {
      $com  = "Select * from tb_movto where movempresa = " . $_SESSION['wrkcodemp'];
      $nro = leitura_reg($com, $reg);
      foreach ($reg as $lin) { // 0-Compra 1-Transferência 2-Venda 3-Venda intermediario
-          if ($lin['movstatus'] == 0) {
+          if ($lin['movtipo'] == 0) {
                $dad['qtd_c'] += $lin['movquantidade'];
                $dad['val_c'] += $lin['movvalor'];
           }
-          if ($lin['movstatus'] == 1) {
+          if ($lin['movtipo'] == 1) {
                $dad['qtd_t'] += $lin['movquantidade'];
                $dad['val_t'] += $lin['movquantidade'] * $lin['movcusto'] / 1000;
-               $dad['val_c'] -= $lin['movvalor'];
-               $dad['val_c'] += $lin['movquantidade'] * $lin['movcusto'] / 1000;
           }
-          if ($lin['movstatus'] == 2) {
+          if ($lin['movtipo'] == 5) {
                $dad['qtd_v'] += $lin['movquantidade'];
                $dad['val_v'] += $lin['movvalor'];
           }
@@ -276,39 +274,20 @@ function carrega_das(&$dad) {
                     $dad['ven'][$reg['movconta']] = 0;
                     $dad['inv'][$reg['movconta']] = 0;
                }
-               if ($reg['movstatus'] == 0) {
+               if ($reg['movtipo'] == 0) {
                     $dad['ent'][$reg['movconta']] += $reg['movquantidade'];
                     $dad['com'][$reg['movconta']] += $reg['movvalor'];
                     $dad['val'][$reg['movconta']] += $reg['movvalor'];
-                    $dad['inv'][$reg['movconta']] += $reg['movvalor'];
+                    $dad['inv'][$reg['movconta']] += $reg['movquantidade'] * $reg['movcusto'];
                }
-               if ($reg['movstatus'] == 1) {
+               if ($reg['movtipo'] == 1) {
                     $dad['sai'][$reg['movconta']] += $reg['movquantidade'];
                     $dad['ven'][$reg['movconta']] += $reg['movvalor'];
-                    if (isset($dad['cta'][$reg['movdestino']]) == false) {
-                         $pro = retorna_dad('conprograma', 'tb_conta', 'idconta', $reg['movdestino']); 
-                         $pro = retorna_dad('prodescricao', 'tb_programa', 'idprograma', $pro); 
-                         $usu = retorna_dad('conusuario', 'tb_conta', 'idconta', $reg['movdestino']); 
-                         $usu = retorna_dad('usunome', 'tb_usuario', 'idsenha', $usu); 
-                         $dad['cta'][$reg['movdestino']] = $reg['movdestino'];
-                         $dad['usu'][$reg['movdestino']] = $usu;
-                         $dad['pro'][$reg['movdestino']] = $pro;
-                         $dad['ent'][$reg['movdestino']] = 0;
-                         $dad['sai'][$reg['movdestino']] = 0;
-                         $dad['val'][$reg['movdestino']] = 0;
-                         $dad['com'][$reg['movdestino']] = 0;
-                         $dad['ven'][$reg['movdestino']] = 0;
-                         $dad['inv'][$reg['movdestino']] = $reg['movquantidade'] * $reg['movcusto'] / 1000;
-                    } else {
-                         $dad['ent'][$reg['movdestino']] += $reg['movquantidade'];
-                         $dad['com'][$reg['movdestino']] += $reg['movquantidade'] * $reg['movcusto'] / 1000;
-                         $dad['inv'][$reg['movdestino']] += $reg['movquantidade'] * $reg['movcusto'] / 1000;
-                    }     
                }
-               if ($reg['movstatus'] == 2) {
+               if ($reg['movtipo'] == 5) {
                     $dad['sai'][$reg['movconta']] += $reg['movquantidade'];
                     $dad['ven'][$reg['movconta']] += $reg['movvalor'];
-                    $dad['val'][$reg['movconta']] -= $reg['movvalor'];
+                    $dad['val'][$reg['movconta']] -= $reg['movquantidade'] * $reg['movcusto'];
                }
           }
      }
@@ -324,11 +303,11 @@ function carrega_das(&$dad) {
                $dad['uti'][$reg['movintermediario']] = 0;
                $dad['cpf'][$reg['movintermediario']] = 0;
           }
-          if ($reg['movstatus'] == 2) {
+          if ($reg['movtipo'] == 5) {
                $dad['int_m'] = 1;
                $dad['com'][$reg['movintermediario']] += $reg['movquantidade'];
           }
-          if ($reg['movstatus'] == 3) {
+          if ($reg['movtipo'] == 6) {
                $dad['int_m'] = 1;
                $dad['vnd'][$reg['movintermediario']] += $reg['movquantidade'];
                $dad['cpf'][$reg['movintermediario']] += $reg['movnumerocpf'];

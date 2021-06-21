@@ -192,12 +192,6 @@ $(document).ready(function() {
                               <?php $ret = carrega_usu($usu); ?>
                          </select>
                     </div>
-                    <div class="col-md-2">
-                         <label>Gerente</label>
-                         <select id="ger" name="ger" class="form-control">
-                              <?php $ret = carrega_ger($ger); ?>
-                         </select>
-                    </div>
                     <div class="col-md-3">
                          <label>Programa de fidalidade</label>
                          <select id="pro" name="pro" class="form-control">
@@ -208,6 +202,12 @@ $(document).ready(function() {
                          <label>Número</label>
                          <input type="text" class="form-control" maxlength="15" id="num" name="num"
                               value="<?php echo $num; ?>" required />
+                    </div>
+                    <div class="col-md-2">
+                         <label>Gerente</label>
+                         <select id="ger" name="ger" class="form-control">
+                              <?php $ret = carrega_ger($ger); ?>
+                         </select>
                     </div>
                     <div class="col-md-2">
                          <label>Status</label><br />
@@ -244,11 +244,11 @@ $(document).ready(function() {
                     <thead>
                          <tr>
                               <th width="5%">Código</th>
-                              <th>Gerente</th>
                               <th>Titular</th>
                               <th>Programa</th>
                               <th>Tipo</th>
                               <th>Número</th>
+                              <th>Gerente</th>
                               <th>Inclusão</th>
                               <th>Alteração</th>
                               <th>Status</th>
@@ -303,12 +303,15 @@ function consiste_con() {
 
 function carrega_con() {
      include_once "dados.php";
-     $com = "Select C.*, U.usunome, G.usunome as usugerente, P.prodescricao, P.protipo from (((tb_conta C left join tb_usuario U on C.conusuario = U.idsenha) left join tb_usuario G on C.congerente = G.idsenha) left join tb_programa P on C.conprograma = P.idprograma) where conempresa = " . $_SESSION['wrkcodemp'] . " order by condescricao, idconta";
+     if ($_SESSION['wrktipusu'] >= 4) {
+          $com = "Select C.*, U.usunome, G.usunome as usugerente, P.prodescricao, P.protipo from (((tb_conta C left join tb_usuario U on C.conusuario = U.idsenha) left join tb_usuario G on C.congerente = G.idsenha) left join tb_programa P on C.conprograma = P.idprograma) where conempresa = " . $_SESSION['wrkcodemp'] . " order by condescricao, idconta";
+     } else {
+          $com = "Select C.*, U.usunome, G.usunome as usugerente, P.prodescricao, P.protipo from (((tb_conta C left join tb_usuario U on C.conusuario = U.idsenha) left join tb_usuario G on C.congerente = G.idsenha) left join tb_programa P on C.conprograma = P.idprograma) where conempresa = " . $_SESSION['wrkcodemp'] . " and congerente = " . $_SESSION['wrkideusu'] . " order by condescricao, idconta";
+     }
      $nro = leitura_reg($com, $reg);
      foreach ($reg as $lin) {
           $txt =  '<tr>';
           $txt .= '<td class="text-center">' . $lin['idconta'] . '</td>';
-          $txt .= '<td class="text-left">' . $lin['usugerente'] . "</td>";
           if ($lin['usunome'] == null) {
                $txt .= '<td class="text-left">' . '**********' . "</td>";
           } else {
@@ -322,6 +325,7 @@ function carrega_con() {
           if ($lin['protipo'] == 0) {$txt .= "<td>" . "Milhas" . "</td>";}
           if ($lin['protipo'] == 1) {$txt .= "<td>" . "Pontos" . "</td>";}
           $txt .= '<td class="text-left">' . $lin['connumero'] . "</td>";
+          $txt .= '<td class="text-left">' . $lin['usugerente'] . "</td>";
           if ($lin['datinc'] == null) {
                $txt .= "<td>" . '' . "</td>";
           }else{
@@ -444,7 +448,11 @@ function carrega_usu($usu) {
      if ($usu == 0) {
           echo '<option value="0" selected="selected">Selecione ...</option>';
      }
-     $com = "Select idsenha, usunome from tb_usuario where usustatus = 0 and (usutipo = 2 or usutipo = 4) and usuempresa = " . $_SESSION['wrkcodemp'] . " order by usunome, idsenha";
+     if ($_SESSION['wrktipusu'] >= 4) {
+          $com = "Select idsenha, usunome from tb_usuario where usustatus = 0 and (usutipo = 2 or usutipo = 4) and usuempresa = " . $_SESSION['wrkcodemp'] . " order by usunome, idsenha";
+     } else {
+          $com = "Select U.idsenha, U.usunome from (tb_usuario U left join tb_conta C on U.idsenha = C.conusuario) where U.usustatus = 0  and C.congerente = " . $_SESSION['wrkideusu'] . " and  U.usuempresa = " . $_SESSION['wrkcodemp'] . " order by U.usunome, U.idsenha";
+     }
      $nro = leitura_reg($com, $reg);
      foreach ($reg as $lin) {
           if ($lin['idsenha'] != $usu) {

@@ -373,14 +373,32 @@ function carrega_mov($ano, $usu, $pro, &$dad) {
      $nro = leitura_reg($com, $reg);
      foreach ($reg as $lin) { // 0-Compra 1-Transferência 2-Venda 3-Venda intermediario
           $mes = (int) date('m', strtotime($lin['movdata']));
-          if ($lin['movstatus'] == 0) {
+          if ($lin['movtipo'] == 0) {
                $dad['qua_a'] += $lin['movquantidade'];
                $dad['com_q'] += $lin['movquantidade'];
                $dad['com_v'] += $lin['movvalor'];
                $dad['qtd_c'][$mes] += $lin['movquantidade'];
                $dad['val_c'][$mes] += $lin['movvalor'];
           }
-          if ($lin['movstatus'] == 2) {
+          if ($lin['movtipo'] == 2) {
+               if ($lin['movliquidado'] == 1) {
+                    $dad['qua_a'] += $lin['movquantidade'];
+                    $dad['com_q'] += $lin['movquantidade'];
+                    $dad['com_v'] += $lin['movquantidade'] * $lin['movcusto'] / 1000;
+                    $dad['qtd_c'][$mes] += $lin['movquantidade'];
+                    $dad['val_c'][$mes] += $lin['movquantidade'] * $lin['movcusto'] / 1000;
+               }
+          }
+          if ($lin['movtipo'] == 3 || $lin['movtipo'] == 4) {
+               if ($lin['movliquidado'] == 1) {
+                    $dad['qua_a'] += $lin['movquantidade'];
+                    $dad['com_q'] += $lin['movquantidade'];
+                    $dad['com_v'] += $lin['movquantidade'] * $lin['movcusto'];
+                    $dad['qtd_c'][$mes] += $lin['movquantidade'];
+                    $dad['val_c'][$mes] += $lin['movquantidade'] * $lin['movcusto'];
+               }
+          }
+          if ($lin['movtipo'] == 7) {
                $dad['vlo_v'] += $lin['movvalor'];
                $dad['qua_v'] += $lin['movquantidade'];
                $dad['ven_q'] += $lin['movquantidade'];
@@ -388,26 +406,18 @@ function carrega_mov($ano, $usu, $pro, &$dad) {
                $dad['qtd_v'][$mes] += $lin['movquantidade'];
                $dad['val_v'][$mes] += $lin['movvalor'];
           }
-     }
-
-     if ($usu != 0 && $pro != 0) {
-          $com  = "Select * from tb_movto where movempresa = " . $_SESSION['wrkcodemp'] . " and movdata between '" . $dti . "' and '" . $dtf . "'";
-          $nro = leitura_reg($com, $reg);
-          foreach ($reg as $lin) { // 0-Compra 1-Transferência 2-Venda 3-Venda intermediario
-               $mes = (int) date('m', strtotime($lin['movdata']));
-               $pro_t = retorna_dad('conprograma', 'tb_conta', 'idconta', $lin['movdestino']); 
-               $usu_t = retorna_dad('conusuario', 'tb_conta', 'idconta', $lin['movdestino']); 
-               if ($usu == $usu_t && $pro == $pro_t) {
-                    if ($lin['movstatus'] == 1) {
-                         $dad['qua_a'] += $lin['movquantidade'];
-                         $dad['com_q'] += $lin['movquantidade'];
-                         $dad['com_v'] += $lin['movcusto'] * $lin['movquantidade'] / 1000;
-                         $dad['qtd_c'][$mes] += $lin['movquantidade'];
-                         $dad['val_c'][$mes] += $lin['movcusto'] * $lin['movquantidade'] / 1000;
-                    }
+          if ($lin['movtipo'] == 5 || $lin['movtipo'] == 8) {
+               if ($lin['movliquidado'] == 1) {
+                    $dad['vlo_v'] += $lin['movvalor'];
+                    $dad['qua_v'] += $lin['movquantidade'];
+                    $dad['ven_q'] += $lin['movquantidade'];
+                    $dad['ven_v'] += $lin['movvalor'];
+                    $dad['qtd_v'][$mes] += $lin['movquantidade'];
+                    $dad['val_v'][$mes] += $lin['movvalor'];
                }
           }
      }
+
      $med = $dad['com_v'] / $dad['com_q'];   // Preço médio de compra
      $dad['sdo_q'] = $dad['qua_a'] - $dad['qua_v'];
      $dad['sdo_v'] = ($dad['qua_a'] - $dad['qua_v']) * $med;

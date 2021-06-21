@@ -343,43 +343,73 @@ function carrega_mov($ano, $usu, $pro, &$dad) {
      $nro = 0; $com = ""; $dad = array();  $dad['int'] = array(); $dad['cta'] = array();
      $dti = $ano . "-01-01"; $dtf = $ano . "-12-31";
      $dad['qtd_m'] = 0; $dad['val_m'] = 0;$dad['sal_m'] = 0;$dad['dis_m'] = 0;$dad['cpf_m'] = 0; 
-     if ($usu ==0  && $pro == 0) { return 0; }
-     $com  = "Select * from tb_movto where movempresa = " . $_SESSION['wrkcodemp'] . " and movdata between '" . $dti . "' and '" . $dtf . "'";
+     if ($usu == 0  && $pro == 0) { return 0; }
+     $com  = "Select * from tb_movto where movempresa = " . $_SESSION['wrkcodemp'] . " and movusuario = " . $usu . " and movprograma = " . $pro . " and movdata between '" . $dti . "' and '" . $dtf . "'";
      $nro = leitura_reg($com, $reg);
      foreach ($reg as $lin) { // 0-Compra 1-Transferência 2-Venda 3-Venda intermediario
-          $pro_t = retorna_dad('conprograma', 'tb_conta', 'idconta', $lin['movdestino']); 
-          $usu_t = retorna_dad('conusuario', 'tb_conta', 'idconta', $lin['movdestino']); 
-          if ($lin['movusuario'] == $usu && $lin['movprograma'] == $pro) {
-               if ($lin['movstatus'] == 0) {
+          if ($lin['movtipo'] == 0) {
+               $dad['qtd_m'] += $lin['movquantidade'];
+               $dad['val_m'] += $lin['movvalor'];
+          }
+          if ($lin['movtipo'] == 1) {
+               $dad['qtd_m'] -= $lin['movquantidade'];
+               $dad['val_m'] -= $lin['movvalor'];
+          }
+          if ($lin['movtipo'] == 2) {
+               if ($lin['movliquidado'] == 1) {
+                    $dad['qtd_m'] += $lin['movquantidade'];
+                    $dad['val_m'] += $lin['movquantidade'] * $lin['movcusto'] / 1000;
+               }
+          }
+          if ($lin['movtipo'] == 3) {
+               if ($lin['movliquidado'] == 1) {
                     $dad['qtd_m'] += $lin['movquantidade'];
                     $dad['val_m'] += $lin['movvalor'];
                }
-               if ($lin['movstatus'] == 1) {
-                    $dad['qtd_m'] -= $lin['movquantidade'];
-                    $dad['val_m'] -= $lin['movvalor'];
+          }
+          if ($lin['movtipo'] == 4) {
+               if ($lin['movliquidado'] == 1) {
+                    $dad['qtd_m'] += $lin['movquantidade'];
+                    $dad['val_m'] += $lin['movvalor'];
                }
-               if ($lin['movstatus'] == 0) {
-                    $dad['sal_m'] += $lin['movquantidade'];
+          }
+          if ($lin['movtipo'] == 7) {
+               $dad['qtd_m'] += $lin['movquantidade'];
+               $dad['val_m'] += $lin['movvalor'];
+          }
+          if ($lin['movtipo'] == 8) {
+               if ($lin['movliquidado'] == 1) {
+                    $dad['qtd_m'] += $lin['movquantidade'];
+                    $dad['val_m'] += $lin['movvalor'];
+               }
+          }
+          if ($lin['movtipo'] == 0) {
+               $dad['dis_m'] += $lin['movquantidade'];
+               $dad['cpf_m'] += $lin['movnumerocpf'];
+               $dad['sal_m'] += $lin['movquantidade'];
+          }
+          if ($lin['movtipo'] == 2 || $lin['movtipo'] == 3 || $lin['movtipo'] == 4) {
+               if ($lin['movliquidado'] == 1) {
                     $dad['dis_m'] += $lin['movquantidade'];
                     $dad['cpf_m'] += $lin['movnumerocpf'];
                }
-               if ($lin['movstatus'] == 2) {
-                    $dad['dis_m'] -= $lin['movquantidade'];
-                    $dad['cpf_m'] -= $lin['movnumerocpf'];
-               }
-               if ($lin['movstatus'] == 3) {
-                    $dad['sal_m'] -= $lin['movquantidade'];
-                    $dad['cpf_m'] += $lin['movnumerocpf'];
+          }
+          if ($lin['movtipo'] == 1) {
+               $dad['dis_m'] -= $lin['movquantidade'];
+               $dad['cpf_m'] -= $lin['movnumerocpf'];
+          }
+          if ($lin['movtipo'] == 2 || $lin['movtipo'] == 3 || $lin['movtipo'] == 4) {
+               if ($lin['movliquidado'] == 1) {
+                    $dad['sal_m'] += $lin['movquantidade'];
                }
           }
-          if ($usu == $usu_t && $pro == $pro_t) {
-               $dad['qtd_m'] += $lin['movquantidade'];
-               $dad['val_m'] += $lin['movquantidade'] * $lin['movcusto'] / 1000;
+          if ($lin['movtipo'] == 5) {
+               $dad['dis_m'] -= $lin['movquantidade'];
           }
-          if ($usu == $usu_t && $pro == $pro_t) {
-               $dad['sal_m'] += $lin['movquantidade'];
-               $dad['dis_m'] += $lin['movquantidade'];
-     }
+          if ($lin['movtipo'] == 6) {
+               $dad['sal_m'] -= $lin['movquantidade'];
+               $dad['cpf_m'] += $lin['movnumerocpf'];
+          }
      }
      $com = "Select M.*, I.intdescricao from (tb_movto M left join tb_intermediario I on M.movintermediario = I.idintermediario) ";
      $com .= "where movempresa = " . $_SESSION['wrkcodemp'] . " and movusuario = " . $usu . " and movprograma = " . $pro;          
@@ -390,18 +420,14 @@ function carrega_mov($ano, $usu, $pro, &$dad) {
                $dad['des'][$reg['movintermediario']] = $reg['intdescricao'];
                $dad['vnd'][$reg['movintermediario']] = 0;
                $dad['com'][$reg['movintermediario']] = 0;
-               $dad['uti'][$reg['movintermediario']] = 0;
                $dad['cpf'][$reg['movintermediario']] = 0;
           }
-          if ($reg['movstatus'] == 2) {
+          if ($reg['movtipo'] == 5) {
                $dad['com'][$reg['movintermediario']] += $reg['movquantidade'];
           }
-               if ($reg['movstatus'] == 3) {
+          if ($reg['movtipo'] == 6) {
                $dad['vnd'][$reg['movintermediario']] += $reg['movquantidade'];
                $dad['cpf'][$reg['movintermediario']] += $reg['movnumerocpf'];
-          }
-          if ($reg['movstatus'] == 4) {
-               $dad['uti'][$reg['movintermediario']] += $reg['movquantidade'];
           }
      }
 

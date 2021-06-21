@@ -42,7 +42,7 @@
                          <i class="fa fa-desktop fa-2x" aria-hidden="true"></i><br /> Cadastros
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                         <?php if ($_SESSION['wrktipusu'] >= 4) { ?>
+                         <?php if ($_SESSION['wrktipusu'] >= 3) { ?>
                               <a class="dropdown-item" href="con-usuario.php">Usuários</a>
                          <?php } ?>
                          <a class="dropdown-item" href="man-programa.php?ope=1&cod=0">Programas</a>

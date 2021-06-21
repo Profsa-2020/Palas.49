@@ -59,8 +59,8 @@ $(document).ready(function() {
      $('#tab-0').DataTable({
           "pageLength": 25,
           "aaSorting": [
-               [2, 'asc'],
-               [4, 'asc']
+               [0, 'asc'],
+               [2, 'asc']
           ],
           "language": {
                "lengthMenu": "Demonstrar _MENU_ linhas por páginas",
@@ -102,7 +102,7 @@ $(document).ready(function() {
      $_SESSION['wrknumvol'] = 0;
      $_SESSION['wrknompro'] = __FILE__; 
      date_default_timezone_set("America/Sao_Paulo");     
-     if ($_SESSION['wrktipusu'] <= 3) {
+     if ($_SESSION['wrktipusu'] <= 2) {
           echo '<script>alert("Nível de usuário não permite visualização de log de acesso");</script>';
           echo '<script>history.go(-1);</script>';
      }     
@@ -135,23 +135,20 @@ $(document).ready(function() {
      <div class="container">
           <div class="row">
                <div class="col-md-12">
-                    <br />
                     <div class="tab-1 table-responsive">
                          <table id="tab-0" class="table table-sm table-striped">
                               <thead>
                                    <tr>
-                                        <th width="3%">Alterar</th>
-                                        <th width="3%">Excluir</th>
                                         <th>Contratante</th>
                                         <th width="3%">Código</th>
                                         <th>Nome do Usuário</th>
-                                        <th>Status</th>
-                                        <th>E-Mail</th>
                                         <th>Tipo</th>
-                                        <th>Validade</th>
-                                        <th>Acessos</th>
+                                        <th>E-Mail</th>
                                         <th>Celular</th>
                                         <th>Telefone</th>
+                                        <th>Status</th>
+                                        <th width="3%">Alterar</th>
+                                        <th width="3%">Excluir</th>
                                    </tr>
                               </thead>
                               <tbody>
@@ -181,30 +178,24 @@ function carrega_usu() {
      foreach ($reg as $lin) {
           if ($_SESSION['wrktipusu'] == 5 || $lin['usutipo'] < $_SESSION['wrktipusu'] || $_SESSION['wrkideusu'] == $lin['idsenha']) {
                $txt =  '<tr>';
-               $txt .= '<td class="text-center"><a href="man-usuario.php?ope=2&cod=' . $lin['idsenha'] . '" title="Efetua alteração do registro informado na linha"><i class="large material-icons">healing</i></a></td>';
-               $txt .= '<td class="lit-d text-center"><a href="man-usuario.php?ope=3&cod=' . $lin['idsenha'] . '" title="Efetua exclusão do registro informado na linha"><i class="cor-1 large material-icons">delete_forever</i></a></td>';
                $txt .= "<td>" . $lin['usucontratante'] . "</td>";
                $txt .= '<td class="text-center">' . str_pad($lin['usuempresa'], 3, "0", STR_PAD_LEFT) . "-" . $lin['idsenha'] . '</td>';
                $txt .= "<td>" . $lin['usunome'] . "</td>";
-               if ($lin['usustatus'] == 0) {$txt .= "<td>" . "Ativo" . "</td>";}
-               if ($lin['usustatus'] == 1) {$txt .= "<td>" . "Bloqueado" . "</td>";}
-               if ($lin['usustatus'] == 2) {$txt .= "<td>" . "Suspenso" . "</td>";}
-               if ($lin['usustatus'] == 3) {$txt .= "<td>" . "Cancelado" . "</td>";}
-               $txt .= "<td>" . $lin['usuemail'] . "</td>";
                if ($lin['usutipo'] == 0) {$txt .= "<td>" . "Visitante" . "</td>";}
                if ($lin['usutipo'] == 1) {$txt .= "<td>" . "Vendedor" . "</td>";}
                if ($lin['usutipo'] == 2) {$txt .= "<td>" . "Titular" . "</td>";}
                if ($lin['usutipo'] == 3) {$txt .= "<td>" . "Gerente" . "</td>";}
                if ($lin['usutipo'] == 4) {$txt .= "<td>" . "Administrador" . "</td>";}
                if ($lin['usutipo'] == 5) {$txt .= "<td>" . "Usuário Master" . "</td>";}
-               if ($lin['usuvalidade'] == null) {
-                    $txt .= "<td>" . '' . "</td>";
-               }else{
-                    $txt .= "<td>" . date('d/m/Y',strtotime($lin['usuvalidade'])) . "</td>";
-               }
-               $txt .= '<td class="text-center">' . $lin['usuacessos'] . '</td>';
+               $txt .= "<td>" . $lin['usuemail'] . "</td>";
                $txt .= "<td>" . $lin['usucelular'] . "</td>";
                $txt .= "<td>" . $lin['usutelefone'] . "</td>";
+               if ($lin['usustatus'] == 0) {$txt .= "<td>" . "Ativo" . "</td>";}
+               if ($lin['usustatus'] == 1) {$txt .= "<td>" . "Bloqueado" . "</td>";}
+               if ($lin['usustatus'] == 2) {$txt .= "<td>" . "Suspenso" . "</td>";}
+               if ($lin['usustatus'] == 3) {$txt .= "<td>" . "Cancelado" . "</td>";}
+               $txt .= '<td class="text-center"><a href="man-usuario.php?ope=2&cod=' . $lin['idsenha'] . '" title="Efetua alteração do registro informado na linha"><i class="large material-icons">healing</i></a></td>';
+               $txt .= '<td class="lit-d text-center"><a href="man-usuario.php?ope=3&cod=' . $lin['idsenha'] . '" title="Efetua exclusão do registro informado na linha"><i class="cor-1 large material-icons">delete_forever</i></a></td>';
                $txt .= "</tr>";
                echo $txt;
           }

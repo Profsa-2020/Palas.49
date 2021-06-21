@@ -170,7 +170,7 @@ $(document).ready(function() {
      $_SESSION['wrknompro'] = __FILE__;
      date_default_timezone_set("America/Sao_Paulo");
      $dti = date('d/m/Y', strtotime('-29 days'));
-     $dtf = date('d/m/Y');
+     $dtf = date('d/m/Y', strtotime('+5 days'));
      $usu = (isset($_REQUEST['usu']) == false ? 0 : $_REQUEST['usu']);
      $pro = (isset($_REQUEST['pro']) == false ? 0 : $_REQUEST['pro']);
      $dti = (isset($_REQUEST['dti']) == false ? $dti : $_REQUEST['dti']);
@@ -212,6 +212,9 @@ $(document).ready(function() {
                                              </option>
                                              <option value="4" <?php echo ($ope != 4 ? '' : 'selected="selected"'); ?>>
                                                   Passagem
+                                             </option>
+                                             <option value="5" <?php echo ($ope != 5 ? '' : 'selected="selected"'); ?>>
+                                                  Cartão
                                              </option>
                                         </select>
                                    </div>
@@ -362,59 +365,61 @@ function carrega_mov($ope, $usu, $pro, $dti, $dtf) {
      include_once "dados.php";
      $dti = substr($dti,6,4) . "-" . substr($dti,3,2) . "-" . substr($dti,0,2);
      $dtf = substr($dtf,6,4) . "-" . substr($dtf,3,2) . "-" . substr($dtf,0,2);
-     $com .= "Select M.*, U.usunome, P.prodescricao, I.intdescricao from (((((tb_movto M left join tb_conta C on M.movconta = C.idconta) ";
+     $com .= "Select M.*, U.usunome, P.prodescricao, I.intdescricao, X.cardescricao from (((((tb_movto M left join tb_conta C on M.movconta = C.idconta) ";
      $com .= "left join tb_usuario U on M.movusuario = U.idsenha) ";
      $com .= "left join tb_programa P on M.movprograma = P.idprograma) ";
      $com .= "left join tb_intermediario I on M.movintermediario = I.idintermediario) ";
      $com .= "left join tb_cartao X on M.movcartao = X.idcartao) ";
      $com .= "where movempresa = " . $_SESSION['wrkcodemp'] . " and movdata between '" . $dti . "' and '" . $dtf . "' ";
-     if ($ope != 0) { $com .=" and movtipo = " . $ope; }
+     if ($ope != 0) { $com .=" and movstatus = " . $ope; }
      if ($usu != 0) { $com .=" and movusuario = " . $usu; }
      if ($pro != 0) { $com .=" and movprograma = " . $pro; }
      $com .= " order by idmovto desc";          
      $nro = leitura_reg($com, $lin);
      foreach ($lin as $reg) {       
           $txt =  '<tr>';
-          if ($reg['movstatus'] == 1) {
+          if ($reg['movtipo'] == 2 || $reg['movtipo'] == 3 || $reg['movtipo'] == 4 || $reg['movtipo'] == 8 || $reg['movtipo'] == 9) {
                if ($reg['movliquidado'] == 0 && $reg['movbonus'] < date('Y-m-d')) {
                     $txt =  '<tr class="cor-1">';
                }
           }
-          if ($reg['movstatus'] == 2) {
+          if ($reg['movtipo'] == 5) {
                if ($reg['movliquidado'] == 0 && $reg['movvecto'] < date('Y-m-d')) {
                     $txt =  '<tr class="cor-1">';
                }
           }
-          if ($reg['movstatus'] == 0) {
+          if ($reg['movtipo'] == 0 || $reg['movtipo'] == 1 || $reg['movtipo'] == 6 || $reg['movtipo'] == 7) {
                $txt .= '<td class="text-center"></td>';
           }
-          if ($reg['movstatus'] == 1) {
+          if ($reg['movtipo'] == 2 || $reg['movtipo'] == 3 || $reg['movtipo'] == 4 || $reg['movtipo'] == 8 || $reg['movtipo'] == 9) {
                if ($reg['movliquidado'] == 1) {
                     $txt .= '<td class="text-center"><i class="fa fa-check-square-o fa-2x" aria-hidden="true"></i></td>';
                } else { 
-                    $txt .= '<td class="text-center"><a class="cur-1 baixa" href="#" ope=' . $reg['movstatus']. ' cod=' . $reg['idmovto'] . ' title="Efetua baixa de quantidade ou valor recebido do movimento informado na linha ..."><i class="fa fa-check-square-o fa-2x" aria-hidden="true"></i></a></td>';
+                    $txt .= '<td class="text-center"><a class="cur-1 baixa" href="#" ope=' . $reg['movtipo']. ' cod=' . $reg['idmovto'] . ' title="Efetua baixa de quantidade ou valor recebido do movimento informado na linha ..."><i class="fa fa-check-square-o fa-2x" aria-hidden="true"></i></a></td>';
                }
           }
-          if ($reg['movstatus'] == 2) {
+          if ($reg['movtipo'] == 5) {
                if ($reg['movliquidado'] == 1) {
                     $txt .= '<td class="text-center"><i class="fa fa-money fa-2x" aria-hidden="true"></i></td>';
                } else { 
-                    $txt .= '<td class="text-center"><a class="cur-1 baixa" href="#" ope=' . $reg['movstatus']. ' cod=' . $reg['idmovto'] . ' title="Efetua baixa de quantidade ou valor recebido do movimento informado na linha ..."><i class="fa fa-money fa-2x" aria-hidden="true"></i></a></td>';
+                    $txt .= '<td class="text-center"><a class="cur-1 baixa" href="#" ope=' . $reg['movtipo']. ' cod=' . $reg['idmovto'] . ' title="Efetua baixa de quantidade ou valor recebido do movimento informado na linha ..."><i class="fa fa-money fa-2x" aria-hidden="true"></i></a></td>';
                }
           }
-          if ($reg['movstatus'] == 3) {
-               $txt .= '<td class="text-center"></td>';
-          }
-          if ($reg['movstatus'] == 0) {$txt .= "<td>" . ($reg['movaerea'] == 0 ? 'Compra(+)' : 'Bônus (+)') . "</td>";}
-          if ($reg['movstatus'] == 1) {$txt .= "<td>" . "Transferência (*)" . "</td>";}
-          if ($reg['movstatus'] == 2) {$txt .= "<td>" . "Venda (-)" . "</td>";} 
-          if ($reg['movstatus'] == 3) {$txt .= "<td>" . "Passagem (-)" . "</td>";} 
+          if ($reg['movtipo'] == 0) {$txt .= "<td>" . "Compra(+)" . "</td>";}
+          if ($reg['movtipo'] == 1) {$txt .= "<td>" . "Transfer (-)" . "</td>";}
+          if ($reg['movtipo'] == 2) {$txt .= "<td>" . "Transfer (+)" . "</td>";}
+          if ($reg['movtipo'] == 3) {$txt .= "<td>" . "Bônus (+)" . "</td>";}
+          if ($reg['movtipo'] == 4) {$txt .= "<td>" . "Bônus (+)" . "</td>";}
+          if ($reg['movtipo'] == 5) {$txt .= "<td>" . "Venda (-)" . "</td>";} 
+          if ($reg['movtipo'] == 6) {$txt .= "<td>" . "Passagem (-)" . "</td>";} 
+          if ($reg['movtipo'] == 7) {$txt .= "<td>" . "Cartão (+)" . "</td>";} 
+          if ($reg['movtipo'] == 8) {$txt .= "<td>" . "Bônus [+]" . "</td>";} 
           $txt .= '<td class="text-center">' . $reg['idmovto'] . '</td>';
           $txt .= '<td>' . $reg['usunome'] . '</td>';
           $txt .= '<td>' . $reg['prodescricao'] . '</td>';
           $txt .= '<td>' . date('d/m/Y',strtotime($reg['movdata'])) . '</td>';
           $txt .= '<td class="text-right">' . number_format($reg['movquantidade'], 0, ",", ".") . '</td>';
-          if ($reg['movtipo'] == 2) {
+          if ($reg['movtipo'] == 2 || $reg['movtipo'] == 7 || $reg['movtipo'] == 8) {
                $txt .= '<td class="text-right">' . number_format($reg['movcusto'], 2, ",", ".") . '</td>';
                $txt .= '<td class="text-right">' . number_format($reg['movcusto'] * $reg['movquantidade'] / 1000, 2, ",", ".") . '</td>';
           } else {
@@ -436,6 +441,8 @@ function carrega_mov($ope, $usu, $pro, $dti, $dtf) {
           if ($reg['movpromocao'] == 0) {$txt .= '<td>' . "" . '</td>';}
           if ($reg['movpromocao'] == 1) {$txt .= '<td class="text-center">' . "Comum" . '</td>';}
           if ($reg['movpromocao'] == 2) {$txt .= '<td class="text-center">' . "Bumerangue" . '</td>';}
+          if ($reg['movpromocao'] == 3) {$txt .= '<td class="text-center">' . "Transferência" . '</td>';}
+          if ($reg['movpromocao'] == 4) {$txt .= '<td class="text-center">' . "Transferência" . '</td>';}
           $cod = retorna_dad('conprograma', 'tb_conta', 'idconta', $reg['movdestino']); 
           $des = retorna_dad('prodescricao', 'tb_programa', 'idprograma', $cod); 
           $txt .= '<td>' . $des . '</td>';
