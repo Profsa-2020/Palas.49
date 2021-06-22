@@ -374,13 +374,15 @@ function carrega_mov($ano, $usu, $pro, &$dad) {
                }
           }
           if ($lin['movtipo'] == 7) {
-               $dad['qtd_m'] += $lin['movquantidade'];
-               $dad['val_m'] += $lin['movvalor'];
+               if ($lin['movliquidado'] == 1) {
+                    $dad['qtd_m'] += $lin['movquantidade'];
+                    $dad['val_m'] += $lin['movquantidade'] * $lin['movcusto'] /1000;
+               }
           }
           if ($lin['movtipo'] == 8) {
                if ($lin['movliquidado'] == 1) {
                     $dad['qtd_m'] += $lin['movquantidade'];
-                    $dad['val_m'] += $lin['movvalor'];
+                    $dad['val_m'] += $lin['movquantidade'] * $lin['movcusto'] / 1000;
                }
           }
           if ($lin['movtipo'] == 0) {

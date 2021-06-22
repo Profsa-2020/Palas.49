@@ -31,6 +31,13 @@
     animation-duration: 5s;
 }
 
+.ima-3 {
+    position: fixed;
+    display: none;
+    top: calc(50% - 150px);
+    left: calc(50% - 150px);
+}
+
 .lit-1 p {
     font-size: 16px;
     font-weight: bold;

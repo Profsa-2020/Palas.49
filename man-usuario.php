@@ -138,6 +138,7 @@ $(document).ready(function() {
      $per = "";
      $del = "";
      $hab = "";
+     $lib = "";
      $mos = " required ";
      $bot = "Salvar";
      include_once "dados.php";
@@ -163,6 +164,7 @@ $(document).ready(function() {
      if (isset($_REQUEST['cod']) == true) { $_SESSION['wrkcodreg'] = $_REQUEST['cod']; }
 
      if ($_SESSION['wrktipusu'] <= 4) { $hab = " disabled "; }
+     if ($_SESSION['wrktipusu'] <= 3) { $lib = " disabled "; }
 
      $cod = (isset($_REQUEST['cod']) == false ? 0  : $_REQUEST['cod']);
      $sta = (isset($_REQUEST['sta']) == false ? 0  : $_REQUEST['sta']);
@@ -309,7 +311,7 @@ $(document).ready(function() {
                     </div>
                     <div class="col-md-2">
                          <label>Status</label>
-                         <select name="sta" class="form-control" <?php echo $hab; ?> >
+                         <select name="sta" class="form-control" <?php echo $lib; ?> >
                               <option value="0" <?php echo ($sta != 0 ? '' : 'selected="selected"'); ?>>
                                    Ativo</option>
                               <option value="1" <?php echo ($sta != 1 ? '' : 'selected="selected"'); ?>>

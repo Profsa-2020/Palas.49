@@ -32,7 +32,9 @@
                $tab['sal'] -= $reg['movquantidade'];
           }
           if ($reg['movtipo'] == 7) {
-               $tab['sal'] -= $reg['movquantidade'];
+               if ($reg['movliquidado'] == 1) {
+                    $tab['sal'] -= $reg['movquantidade'];
+               }
           }
           if ($reg['movtipo'] == 8 || $reg['movtipo'] == 9) {
                if ($reg['movliquidado'] == 1) {

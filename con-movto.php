@@ -388,10 +388,10 @@ function carrega_mov($ope, $usu, $pro, $dti, $dtf) {
                     $txt =  '<tr class="cor-1">';
                }
           }
-          if ($reg['movtipo'] == 0 || $reg['movtipo'] == 1 || $reg['movtipo'] == 6 || $reg['movtipo'] == 7) {
+          if ($reg['movtipo'] == 0 || $reg['movtipo'] == 1 || $reg['movtipo'] == 6) {
                $txt .= '<td class="text-center"></td>';
           }
-          if ($reg['movtipo'] == 2 || $reg['movtipo'] == 3 || $reg['movtipo'] == 4 || $reg['movtipo'] == 8 || $reg['movtipo'] == 9) {
+          if ($reg['movtipo'] == 2 || $reg['movtipo'] == 3 || $reg['movtipo'] == 4 || $reg['movtipo'] == 7 || $reg['movtipo'] == 8) {
                if ($reg['movliquidado'] == 1) {
                     $txt .= '<td class="text-center"><i class="fa fa-check-square-o fa-2x" aria-hidden="true"></i></td>';
                } else { 

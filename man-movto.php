@@ -167,6 +167,7 @@ $(function() {
 
 });
 
+
 $(document).ready(function() {
 
      $("#mov_c").show(); // $("#mov_c").fadeOut();          $("#mov_c").fadeOut("fast");
@@ -332,6 +333,7 @@ $(document).ready(function() {
           if (erro == 1) {
                return false;
           } else {
+               $('.ima-3').css("display", "block");   
                $.post("ajax/gravar-mov.php", dad, function(data) {
                     if (data.men != "") {
                          alert(data.men);
@@ -371,6 +373,7 @@ $(document).ready(function() {
                          $('#des_c').val(0);
                          $('#usu_c').val(0);
                          $('#car_c').val(0);
+                         $('.ima-3').css("display", "none");   
                     }
                }, "json");
           }
@@ -1665,6 +1668,9 @@ $(document).ready(function() {
                     </div>
                </div>
                <br />
+
+               <img class="ima-3" src="img/preloader1.gif">
+
                <input type="hidden" id="cta" name="cta" value="0" />
                <input type="hidden" id="cta_t" name="cta_t" value="0" />
                <input type="hidden" id="cta_d" name="cta_d" value="0" />

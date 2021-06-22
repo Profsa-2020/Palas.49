@@ -108,6 +108,7 @@ $(document).ready(function() {
      $sta = (isset($_REQUEST['sta']) == false ? 0 : $_REQUEST['sta']);
      $tip = (isset($_REQUEST['tip']) == false ? 0 : $_REQUEST['tip']);
      $ema = (isset($_REQUEST['ema']) == false ? '' : $_REQUEST['ema']);
+     $sit = (isset($_REQUEST['sit']) == false ? '' : $_REQUEST['sit']);
      $tel = (isset($_REQUEST['tel']) == false ? '' : $_REQUEST['tel']);
      $cel = (isset($_REQUEST['cel']) == false ? '' : $_REQUEST['cel']);
      $hom = (isset($_REQUEST['hom']) == false ? '' : $_REQUEST['hom']);
@@ -120,7 +121,7 @@ $(document).ready(function() {
      if ($_SESSION['wrkopereg'] >= 2) {
           if (isset($_REQUEST['salvar']) == false) { 
                $cha = $_SESSION['wrkcodreg']; 
-               $ret = ler_parametro($cha, $nom, $sta, $tip, $cel, $tel, $ema, $hom, $pro); 
+               $ret = ler_parametro($cha, $nom, $sta, $tip, $cel, $tel, $ema, $hom, $pro, $sit); 
           }
      }
 
@@ -130,7 +131,7 @@ $(document).ready(function() {
                 $ret = incluir_par();
                 $cod = ultimo_cod($nro);
                 $ret = gravar_log(11,"Inclusão de novo Parâmetro: " . $nom); 
-                $nom = ''; $tip = 0; $sta = 0; $cel = ''; $ema = ''; $tel = ''; $hom = ""; $pro = ""; $_SESSION['wrkopereg'] = 1; $_SESSION['wrkcodreg'] = 0;
+                $nom = ''; $tip = 0; $sta = 0; $cel = ''; $ema = ''; $sit = ''; $tel = ''; $hom = ""; $pro = ""; $_SESSION['wrkopereg'] = 1; $_SESSION['wrkcodreg'] = 0;
            }
       }
       if ($_SESSION['wrkopereg'] == 2) {
@@ -138,14 +139,14 @@ $(document).ready(function() {
                 $ret = alterar_par();
                 $cod = ultimo_cod($nro); 
                 $ret = gravar_log(12,"Alteração de Parâmetro cadastrado: " . $nom); 
-                $nom = ''; $tip = 0; $sta = 0; $cel = ''; $ema = ''; $tel = ''; $hom = ""; $pro = ""; $_SESSION['wrkopereg'] = 1; $_SESSION['wrkcodreg'] = 0;
+                $nom = ''; $tip = 0; $sta = 0; $cel = ''; $ema = ''; $sit = ''; $tel = ''; $hom = ""; $pro = ""; $_SESSION['wrkopereg'] = 1; $_SESSION['wrkcodreg'] = 0;
            }
       }
 }
 ?>
 
 <body id="box00">
-     <h1 class="cab-0">Planos - Gerenciamento de Pontos e Milhas - Profsa Informática</h1>
+     <h1 class="cab-0">Parâmetros - Gerenciamento de Pontos e Milhas - Profsa Informática</h1>
      <div class="row">
           <div class="col-md-12">
                <?php 
@@ -215,7 +216,12 @@ $(document).ready(function() {
                          <input type="text" class="form-control" maxlength="15" id="tel" name="tel"
                               value="<?php echo $tel; ?>"  />
                     </div>
-                    <div class="col-md-8">
+                    <div class="col-md-4">
+                         <label>Site</label>
+                         <input type="text" class="form-control" maxlength="50" id="sit" name="sit"
+                              value="<?php echo $sit; ?>" required />
+                    </div>
+                    <div class="col-md-4">
                          <label>E-Mail</label>
                          <input type="email" class="form-control" maxlength="50" id="ema" name="ema"
                               value="<?php echo $ema; ?>" required />
@@ -258,7 +264,7 @@ function ultimo_cod(&$nro) {
      return $cod;
 }
 
-function ler_parametro($cha, &$nom, &$sta, &$tip, &$cel, &$tel, &$ema, &$hom, &$pro) {
+function ler_parametro($cha, &$nom, &$sta, &$tip, &$cel, &$tel, &$ema, &$hom, &$pro, &$sit) {
      include_once "dados.php";
      $nro = acessa_reg("Select * from tb_empresa where idempresa = " . $cha, $reg);            
      if ($nro == 0) {
@@ -271,6 +277,7 @@ function ler_parametro($cha, &$nom, &$sta, &$tip, &$cel, &$tel, &$ema, &$hom, &$
           $cel = $reg['empcelular'];
           $tel = $reg['emptelefone'];
           $ema = $reg['empemail'];
+          $sit = $reg['empsite'];
           $hom = $reg['emptokenhom'];
           $pro = $reg['emptokenpro'];
      }
@@ -285,6 +292,7 @@ function ler_parametro($cha, &$nom, &$sta, &$tip, &$cel, &$tel, &$ema, &$hom, &$
      $sql .= "empnome, ";
      $sql .= "emptipo, ";
      $sql .= "empemail, ";
+     $sql .= "empsite, ";
      $sql .= "emptokenhom, ";
      $sql .= "emptokenpro, ";
      $sql .= "empcelular, ";
@@ -296,6 +304,7 @@ function ler_parametro($cha, &$nom, &$sta, &$tip, &$cel, &$tel, &$ema, &$hom, &$
      $sql .= "'" . str_replace("'", "´", $_REQUEST['nom']) . "',";
      $sql .= "'" . $_REQUEST['tip'] . "',";
      $sql .= "'" . $_REQUEST['ema'] . "',";
+     $sql .= "'" . $_REQUEST['sit'] . "',";
      $sql .= "'" . $_REQUEST['hom'] . "',";
      $sql .= "'" . $_REQUEST['pro'] . "',";
      $sql .= "'" . $_REQUEST['cel'] . "',";
@@ -318,6 +327,7 @@ function alterar_par() {
      $sql .= "empnome = '". $_REQUEST['nom'] . "', ";
      $sql .= "emptipo = '". $_REQUEST['tip'] . "', ";
      $sql .= "empemail = '". $_REQUEST['ema'] . "', ";
+     $sql .= "empsite = '". $_REQUEST['sit'] . "', ";
      $sql .= "emptokenhom = '". $_REQUEST['hom'] . "', ";
      $sql .= "emptokenpro = '". $_REQUEST['pro'] . "', ";
      $sql .= "empcelular = '". $_REQUEST['cel'] . "', ";

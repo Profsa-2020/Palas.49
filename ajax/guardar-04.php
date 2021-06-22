@@ -191,6 +191,7 @@
           $sql .= "titvalor, ";
           $sql .= "titpago, ";
           $sql .= "titcomissao, ";
+          $sql .= "titindicacao, ";
           $sql .= "titobservacao, ";
           $sql .= "keyinc, ";
           $sql .= "datinc ";
@@ -206,6 +207,7 @@
           $sql .= "'" . $_SESSION['wrkdadven']['val_v'] . "',";
           $sql .= "'" . '0' . "',";
           $sql .= "'" . '0' . "',";
+          $sql .= "'" . $_SESSION['wrkdadven']['cod_i'] . "',";
           $sql .= "'" . 'Adesão do cliente efetuada via página de venda em: ' . date('d/m/Y H:i:s') . "',";
           $sql .= "'" . '0' . "',";
           $sql .= "'" . date("Y/m/d H:i:s") . "')";

@@ -33,6 +33,24 @@
 
 <script>
 $(document).ready(function() {
+
+     if (localStorage.xpto_01 == undefined) {
+          localStorage.setItem('xpto_01', '');
+     } else {
+          let email = localStorage.xpto_01;
+          $('#ema').val(email);
+     }
+
+     $('#lem').change(function() {
+          var ema = $('#ema').val();
+          let opc = $("#lem").prop("checked");
+          if (opc == true) {
+               localStorage.setItem('xpto_01', ema);
+          } else {
+               localStorage.removeItem('xpto_01');
+          }
+     });
+
      $('#frmLogin').submit(function() {
           var ema = $('#ema').val();
           var sen = $('#sen').val();
@@ -63,7 +81,6 @@ $(document).ready(function() {
                });
           return false;
      });
-
 });
 </script>
 

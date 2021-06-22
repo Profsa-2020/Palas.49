@@ -253,8 +253,8 @@ function carrega_tit($sta, $dti, $dtf) {
      $nro = leitura_reg($com, $lin);
      foreach ($lin as $reg) {               
           $txt =  '<tr>';
-          $txt .= '<td class="text-center"><a href="con-titulo.php?ope=2&cod=' . $reg['idtitulo'] . '" title="Efetua alteração do registro informado na linha"><i class="large material-icons">healing</i></a></td>';
-          $txt .= '<td class="lit-d text-center"><a href="con-titulo.php?ope=3&cod=' . $reg['idtitulo'] . '" title="Efetua exclusão do registro informado na linha"><i class="cor-1 large material-icons">delete_forever</i></a></td>';
+          $txt .= '<td class="text-center"><a href="man-titulo.php?ope=2&cod=' . $reg['idtitulo'] . '" title="Efetua alteração do registro informado na linha"><i class="large material-icons">healing</i></a></td>';
+          $txt .= '<td class="lit-d text-center"><a href="man-titulo.php?ope=3&cod=' . $reg['idtitulo'] . '" title="Efetua exclusão do registro informado na linha"><i class="cor-1 large material-icons">delete_forever</i></a></td>';
           $txt .= '<td class="text-center">' . $reg['idtitulo'] . '</td>';
           if ($reg['titstatus'] == 0) {$txt .= "<td>" . "" . "</td>";}
           if ($reg['titstatus'] == 1) {$txt .= "<td>" . "Pago" . "</td>";}

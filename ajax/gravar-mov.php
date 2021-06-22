@@ -480,7 +480,7 @@
           $sql .= "'" . '0' . "',";
           $sql .= "'" . '3' . "',";     // Tipo de promoção - Transferência
           $sql .= "'" . '0' . "',";
-          $sql .= "'" . str_replace(",", ".", str_replace(".", "", $_REQUEST['bon_c'])) . "',";
+          $sql .= "'" . '0' . "',";     // $_REQUEST['bon_c']
           $sql .= "'" . $pre . "',";
           $sql .= "'" . inverte_dat(1, $_REQUEST['dtb_c']) . "',";
           $sql .= "'" . $_REQUEST['car_c'] . "',";

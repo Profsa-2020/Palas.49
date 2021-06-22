@@ -408,12 +408,14 @@ function saldos_cta($cta, &$ent, &$sai, &$vai, &$vol, &$val, &$med, &$tot) {
                $sal = $sal - $lin['movquantidade'];
                $val = $val - $lin['movvalor'];
           }
-          if ($lin['movtipo'] == 7) {   // Venda
-               $sai = $sai + $lin['movquantidade'];
-               $sal = $sal - $lin['movquantidade'];
-               $val = $val - $lin['movvalor'];
+          if ($lin['movtipo'] == 7) {   // Venda com cartão
+               if ($lin['movliquidado'] == 1) {
+                    $sai = $sai + $lin['movquantidade'];
+                    $sal = $sal - $lin['movquantidade'];
+                    $val = $val - $lin['movvalor'];
+               }
           }
-          if ($lin['movtipo'] == 8) {
+          if ($lin['movtipo'] == 8) {   // Venda com cartão
                if ($lin['movliquidado'] == 1) {
                     $ent = $ent + $lin['movquantidade'];
                     $sal = $sal + $lin['movquantidade'];

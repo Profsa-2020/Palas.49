@@ -124,6 +124,13 @@ $(document).ready(function() {
      if (isset($_SESSION['wrkdadven']['ses_e'] ) == false) {
           $ret = sessao_pag();
      }
+     $_SESSION['wrkdadven']['cod_i']  = 0; $_SESSION['wrkdadven']['nom_i']  = ""; $_SESSION['wrkdadven']['key_i']  = "";
+     $_SESSION['wrkdadven']['key_i'] = (isset($_REQUEST['chave']) == false ? '' : $_REQUEST['chave']);
+     $_SESSION['wrkdadven']['cha_i'] = (isset($_REQUEST['indicado']) == false ? '' : $_REQUEST['indicado']);
+     if ($_SESSION['wrkdadven']['cha_i'] != '') {
+          $_SESSION['wrkdadven']['cod_i']  = retorna_dad('idindicacao', 'tb_indicacao', 'indapelido', $_SESSION['wrkdadven']['cha_i']);
+          $_SESSION['wrkdadven']['nom_i']  = retorna_dad('indnome', 'tb_indicacao', 'indapelido', $_SESSION['wrkdadven']['cha_i']);
+     }
 ?>
 
 <body id="box00" class="fun-a">
@@ -192,6 +199,12 @@ $(document).ready(function() {
                          </div>
                     </div>
                </form>
+               <br />
+               <div class="row">
+                         <div class="cor-1 col-12 text-center">
+                              <strong><?php echo $_SESSION['wrkdadven']['nom_i']; ?></strong>
+                         </div>
+                    </div>
                <br />
           </div>
      </div>

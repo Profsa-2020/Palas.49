@@ -107,6 +107,7 @@ $(document).ready(function() {
      $ret = 0; 
      $per = "";
      $del = "";
+     $cam = "";
      $bot = "Salvar";
      include_once "dados.php";
      include_once "profsa.php";
@@ -154,33 +155,37 @@ $(document).ready(function() {
           $del = "cor-3";
           $per = ' onclick="return confirm(\'Confirma exclusão de Indicação informado em tela ?\')" ';
      }
+     if ($ape != "") {        
+          $cam = retorna_dad('empsite', 'tb_empresa', 'idempresa', 1);   
+          $cam = '<a href="' . $cam . '/' . 'venda-1.php?indicado=' . $ape . '" target="_blank">' . $cam . '/' . 'venda-1.php?indicado=' . $ape . '</a>'; 
+     }
 
- if (isset($_REQUEST['salvar']) == true) {
-      if ($_SESSION['wrkopereg'] == 1) {
-           $sta = consiste_ind();
-           if ($sta == 0) {
-                $ret = incluir_ind();
-                $cod = ultimo_cod();
-                $ret = gravar_log(11,"Inclusão de novo Indicação: " . $nom); 
-                $nom = ''; $ape = ''; $tip = 0; $sta = 0; $cel = ''; $key = rand(100, 999); $com = 0; $ema = ""; $obs = ""; $_SESSION['wrkopereg'] = 1; $_SESSION['wrkcodreg'] = 0;
-           }
-      }
-      if ($_SESSION['wrkopereg'] == 2) {
-           $sta = consiste_ind();
-           if ($sta == 0) {
-                $ret = alterar_ind();
-                $cod = ultimo_cod(); 
-                $ret = gravar_log(12,"Alteração de Indicação cadastrado: " . $nom); 
-                $nom = ''; $ape = ''; $tip = 0; $sta = 0; $cel = ''; $key = rand(100, 999); $com = 0; $ema = ""; $obs = ""; $_SESSION['wrkopereg'] = 1; $_SESSION['wrkcodreg'] = 0;
-           }
-      }
-      if ($_SESSION['wrkopereg'] == 3) {
-           $ret = excluir_ind(); $bot = 'Salvar'; $per = '';
-           $cod = ultimo_cod(); 
-           $ret = gravar_log(13,"Exclusão de Indicação cadastrado: " . $nom); 
-           $nom = ''; $ape = ''; $tip = 0; $sta = 0; $cel = ''; $key = rand(100, 999); $com = 0; $ema = ""; $obs = ""; $_SESSION['wrkopereg'] = 1; $_SESSION['wrkcodreg'] = 0;
+     if (isset($_REQUEST['salvar']) == true) {
+          if ($_SESSION['wrkopereg'] == 1) {
+               $sta = consiste_ind();
+               if ($sta == 0) {
+                    $ret = incluir_ind();
+                    $cod = ultimo_cod();
+                    $ret = gravar_log(11,"Inclusão de novo Indicação: " . $nom); 
+                    $nom = ''; $ape = ''; $tip = 0; $sta = 0; $cel = ''; $key = rand(100, 999); $com = 0; $ema = ""; $cam = ""; $obs = ""; $_SESSION['wrkopereg'] = 1; $_SESSION['wrkcodreg'] = 0;
+               }
           }
-}
+          if ($_SESSION['wrkopereg'] == 2) {
+               $sta = consiste_ind();
+               if ($sta == 0) {
+                    $ret = alterar_ind();
+                    $cod = ultimo_cod(); 
+                    $ret = gravar_log(12,"Alteração de Indicação cadastrado: " . $nom); 
+                    $nom = ''; $ape = ''; $tip = 0; $sta = 0; $cel = ''; $key = rand(100, 999); $com = 0; $ema = ""; $cam = ""; $obs = ""; $_SESSION['wrkopereg'] = 1; $_SESSION['wrkcodreg'] = 0;
+               }
+          }
+          if ($_SESSION['wrkopereg'] == 3) {
+               $ret = excluir_ind(); $bot = 'Salvar'; $per = '';
+               $cod = ultimo_cod(); 
+               $ret = gravar_log(13,"Exclusão de Indicação cadastrado: " . $nom); 
+               $nom = ''; $ape = ''; $tip = 0; $sta = 0; $cel = ''; $key = rand(100, 999); $com = 0; $ema = ""; $cam = ""; $obs = ""; $_SESSION['wrkopereg'] = 1; $_SESSION['wrkcodreg'] = 0;
+          }
+     }
 ?>
 
 <body id="box00">
@@ -259,6 +264,12 @@ $(document).ready(function() {
                </div>
                <br />
                <div class="row">
+                    <div class="col-md-12 text-center">
+                         <strong><?php echo $cam; ?></strong>
+                    </div>
+               </div>
+               <br />
+               <div class="row">
                     <div class="col-12 text-center">
                          <button type="submit" id="env" name="salvar" <?php echo $per; ?>
                               class="bot-1 <?php echo $del; ?>"><?php echo $bot; ?></button>
@@ -321,6 +332,10 @@ function consiste_ind() {
           echo '<script>alert("Nome do Indicado não pode estar em branco");</script>';
           return 1;
      }
+     if (strpos($_REQUEST['ape'], " ") > 0) {
+          echo '<script>alert("Nome curto informado não pode conter espaços em branco");</script>';
+          return 1;
+     }
      return $sta;
  }
 
@@ -379,7 +394,7 @@ function incluir_ind() {
      $sql .= "'" . $_REQUEST['sta'] . "',";
      $sql .= "'" . $_SESSION['wrkcodemp'] . "',";
      $sql .= "'" . str_replace("'", "´", $_REQUEST['nom']) . "',";
-     $sql .= "'" . str_replace("'", "´", $_REQUEST['ape']) . "',";
+     $sql .= "'" . limpa_cpo($_REQUEST['ape']) . "',";
      $sql .= "'" . $_REQUEST['key'] . "',";
      $sql .= "'" . $_REQUEST['cel'] . "',";
      $sql .= "'" . $_REQUEST['ema'] . "',";
@@ -422,7 +437,7 @@ function ler_indicacao($cha, &$nom, &$sta, &$ema, &$cel, &$tip, &$com, &$key, &$
      $sql  = "update tb_indicacao set ";
      $sql .= "indstatus = '". $_REQUEST['sta'] . "', ";
      $sql .= "indnome = '". $_REQUEST['nom'] . "', ";
-     $sql .= "indapelido = '". $_REQUEST['ape'] . "', ";
+     $sql .= "indapelido = '". limpa_cpo($_REQUEST['ape']) . "', ";
      $sql .= "indcomissao = '". str_replace(",", ".", str_replace(".", "", $_REQUEST['com'])) . "', ";
      $sql .= "indcelular = '". $_REQUEST['cel'] . "', ";
      $sql .= "indemail = '". $_REQUEST['ema'] . "', ";
