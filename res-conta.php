@@ -412,6 +412,12 @@ function carrega_mov($ano, $usu, $pro, &$dad) {
                $dad['sal_m'] -= $lin['movquantidade'];
                $dad['cpf_m'] += $lin['movnumerocpf'];
           }
+          if ($lin['movtipo'] == 7 || $lin['movtipo'] == 8) {
+               if ($lin['movliquidado'] == 1) {
+                    $dad['dis_m'] += $lin['movquantidade'];
+                    $dad['sal_m'] += $lin['movquantidade'];
+               }
+          }
      }
      $com = "Select M.*, I.intdescricao from (tb_movto M left join tb_intermediario I on M.movintermediario = I.idintermediario) ";
      $com .= "where movempresa = " . $_SESSION['wrkcodemp'] . " and movusuario = " . $usu . " and movprograma = " . $pro;          

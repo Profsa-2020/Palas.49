@@ -248,6 +248,12 @@ function carrega_das(&$dad) {
                $dad['qtd_v'] += $lin['movquantidade'];
                $dad['val_v'] += $lin['movvalor'];
           }
+          if ($lin['movtipo'] == 7 || $lin['movtipo'] == 8) {
+               if ($lin['movliquidado'] == 1) {
+                    $dad['qtd_c'] += $lin['movquantidade'];
+                    $dad['val_c'] += $lin['movquantidade'] * $lin['movcusto'] / 1000;
+               }
+          }
      }
      $com = "Select M.*, U.usunome, P.prodescricao from (((tb_movto M left join tb_conta C on M.movconta = C.idconta) ";
      $com .= "left join tb_usuario U on M.movusuario = U.idsenha) ";
@@ -288,6 +294,12 @@ function carrega_das(&$dad) {
                     $dad['sai'][$reg['movconta']] += $reg['movquantidade'];
                     $dad['ven'][$reg['movconta']] += $reg['movvalor'];
                     $dad['val'][$reg['movconta']] -= $reg['movquantidade'] * $reg['movcusto'];
+               }
+               if ($reg['movtipo'] == 7 || $reg['movtipo'] == 8) {
+                    if ($reg['movliquidado'] == 1) {
+                         $dad['ent'][$reg['movconta']] += $reg['movquantidade'];
+                         $dad['com'][$reg['movconta']] += $reg['movquantidade'] * $reg['movcusto'] / 1000;
+                    }
                }
           }
      }

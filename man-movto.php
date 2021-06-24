@@ -410,7 +410,6 @@ $(document).ready(function() {
           $('#cto_t').val('');
           $('#sal_v').val('');
           $('#des_t').val(0);
-          $('#des_c').val(0);
           $('#cta_t').val(0);
           $('#cta_d').val(0);
           $('#cus_c').val(0);
@@ -1601,7 +1600,7 @@ $(document).ready(function() {
                                              <div class="col-md-6">
                                                   <label>Data da Operação</label>
                                                   <input type="text" class="form-control text-center" maxlength="10"
-                                                       id="dta_t" name="dta_c" value="<?php echo $dta_c; ?>" />
+                                                       id="dta_c" name="dta_c" value="<?php echo $dta_c; ?>" />
                                              </div>
                                              <br />
                                              <div class="col-md-12">

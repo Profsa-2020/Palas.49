@@ -34,8 +34,8 @@
 .ima-3 {
     position: fixed;
     display: none;
-    top: calc(50% - 150px);
-    left: calc(50% - 150px);
+    top: calc(50% - 32px);
+    left: calc(50% - 32px);
 }
 
 .lit-1 p {

@@ -396,12 +396,26 @@ function ler_titulo(&$cha, &$sta, &$emi, &$ven, &$bai, &$par, &$pla, &$ind, &$ad
           echo '<script>alert("Valor do título informado não pode estar em branco");</script>';
           return 1;
      }
+     if (valida_dat($_REQUEST['emi']) != 0) {
+          echo '<script>alert("Data de entrada informada no usuário não é valida");</script>';
+          return 1;
+     }
+     if (valida_dat($_REQUEST['ven']) != 0) {
+          echo '<script>alert("Data de vencimento informada no usuário não é valida");</script>';
+          return 1;
+     }
+     if (strlen($_REQUEST['obs']) > 750) {
+          echo '<script>alert("Observação do título não pode ter mais de 750 caracteres");</script>';
+          $sta = 1;
+     }       
      return $sta;
  }
 
  function alterar_tit() {
      $ret = 0;
      include_once "dados.php";
+     if ($_REQUEST['emi'] == "") { $_REQUEST['emi'] = date('d/m/Y'); }
+     if ($_REQUEST['ven'] == "") { $_REQUEST['ven'] = $_REQUEST['emi']; }
      $sql  = "update tb_titulo set ";
      $sql .= "titstatus = '". $_REQUEST['sta'] . "', ";
      $sql .= "titplano = '". $_REQUEST['pla'] . "', ";

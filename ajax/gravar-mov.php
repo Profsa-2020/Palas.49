@@ -443,6 +443,8 @@
           $ret = 0; $err = ""; 
           $pre = $_REQUEST['med_t'];
           include_once "../dados.php";
+          $dat = inverte_dat(0, $_REQUEST['dtb_c']);
+          $dat = date('d-m-Y', strtotime('+2 days', strtotime($dat)));
           $usu = retorna_dad('conusuario', 'tb_conta', 'idconta', $_REQUEST['des_c']); 
           $pro = retorna_dad('conprograma', 'tb_conta', 'idconta', $_REQUEST['des_c']); 
           $sql  = "insert into tb_movto (";
@@ -471,7 +473,7 @@
           $sql .= "'" . $_SESSION['wrkcodemp'] . "',";
           $sql .= "'" . "0" . "',";
           $sql .= "'" . "7" . "',";
-          $sql .= "'" . "0" . "',";
+          $sql .= "'" . $_REQUEST['des_c'] . "',";
           $sql .= "'" . $usu . "',";
           $sql .= "'" . $pro . "',";
           $sql .= "'" . inverte_dat(1, $_REQUEST['dta_c']) . "',";
@@ -482,7 +484,7 @@
           $sql .= "'" . '0' . "',";
           $sql .= "'" . '0' . "',";     // $_REQUEST['bon_c']
           $sql .= "'" . $pre . "',";
-          $sql .= "'" . inverte_dat(1, $_REQUEST['dtb_c']) . "',";
+          $sql .= "'" . $dat . "',";
           $sql .= "'" . $_REQUEST['car_c'] . "',";
           $sql .= "'" . $_REQUEST['obs_c'] . "',";
           $sql .= "'" . $_SESSION['wrkideusu'] . "',";
@@ -526,7 +528,7 @@
           $sql .= "'" . $_SESSION['wrkcodemp'] . "',";
           $sql .= "'" . "0" . "',";
           $sql .= "'" . "8" . "',";
-          $sql .= "'" . "0" . "',";
+          $sql .= "'" . $_REQUEST['des_c'] . "',";
           $sql .= "'" . $_REQUEST['usu_c'] . "',";
           $sql .= "'" . $pro . "',";
           $sql .= "'" . inverte_dat(1, $_REQUEST['dta_c']) . "',";
