@@ -117,7 +117,7 @@
           $sql .= "'" . str_replace(".", "", $_REQUEST['qtd']) . "',";
           $sql .= "'" . $_REQUEST['obs'] . "',";
           $sql .= "'" . $_SESSION['wrkideusu'] . "',";
-          $sql .= "'" . date("Y/m/d H:i:s") . "')";
+          $sql .= "'" . date("Y-m-d H:i:s") . "')";
           $ret = comando_tab($sql, $nro, $ult, $men);
           if ($ret == false) {
                $err = $sql;
@@ -177,7 +177,7 @@
           $sql .= "'" . inverte_dat(1, $_REQUEST['dtb_t']) . "',";
           $sql .= "'" . $_REQUEST['obs_t'] . "',";
           $sql .= "'" . $_SESSION['wrkideusu'] . "',";
-          $sql .= "'" . date("Y/m/d H:i:s") . "')";
+          $sql .= "'" . date("Y-m-d H:i:s") . "')";
           $ret = comando_tab($sql, $nro, $ult, $men);
           if ($ret == false) {
                $err = $sql;
@@ -188,8 +188,8 @@
      function gravar_tra_2(&$err) {     // Entrada no destino quantidade total
           $ret = 0; $err = "";
           include_once "../dados.php";
-          $dat = inverte_dat(0, $_REQUEST['dtb_t']);
-          $dat = date('d-m-Y', strtotime('+2 days', strtotime($dat)));
+          $dat = inverte_dat(0, $_REQUEST['dat_t']);
+          $dat = date('Y-m-d', strtotime('+2 days', strtotime($dat)));
           $usu = retorna_dad('conusuario', 'tb_conta', 'idconta', $_REQUEST['des_t']); 
           $pro = retorna_dad('conprograma', 'tb_conta', 'idconta', $_REQUEST['des_t']); 
           $sql  = "insert into tb_movto (";
@@ -220,7 +220,7 @@
           $sql .= "'" . $_REQUEST['des_t'] . "',";
           $sql .= "'" . $usu . "',";
           $sql .= "'" . $pro . "',";
-          $sql .= "'" . inverte_dat(1, $_REQUEST['dtb_t']) . "',";
+          $sql .= "'" . inverte_dat(1, $_REQUEST['dat_t']) . "',";
           $sql .= "'" . str_replace(",", ".", str_replace(".", "", $_REQUEST['val_t'])) . "',";
           $sql .= "'" . str_replace(".", "", $_REQUEST['qtd_t']) . "',";
           $sql .= "'" . '0' . "',";     // $_REQUEST['cta_t']
@@ -236,10 +236,10 @@
                $sql .= "'" . str_replace(",", ".", str_replace(".", "", $_REQUEST['vol_t'])) . "',";
           }
           $sql .= "'" . $_REQUEST['cus_c'] . "',";
-          $sql .= "'" . inverte_dat(1, $dat) . "',";
+          $sql .= "'" . $dat . "',";
           $sql .= "'" . $_REQUEST['obs_t'] . "',";
           $sql .= "'" . $_SESSION['wrkideusu'] . "',";
-          $sql .= "'" . date("Y/m/d H:i:s") . "')";
+          $sql .= "'" . date("Y-m-d H:i:s") . "')";
           $ret = comando_tab($sql, $nro, $ult, $men);
           if ($ret == false) {
                $err = $sql;
@@ -293,7 +293,7 @@
           $sql .= "'" . inverte_dat(1, $_REQUEST['dtb_t']) . "',";
           $sql .= "'" . $_REQUEST['obs_t'] . "',";
           $sql .= "'" . $_SESSION['wrkideusu'] . "',";
-          $sql .= "'" . date("Y/m/d H:i:s") . "')";
+          $sql .= "'" . date("Y-m-d H:i:s") . "')";
           $ret = comando_tab($sql, $nro, $ult, $men);
           if ($ret == false) {
                $err = $sql;
@@ -347,7 +347,7 @@
           $sql .= "'" . inverte_dat(1, $_REQUEST['dtb_t']) . "',";
           $sql .= "'" . $_REQUEST['obs_t'] . "',";
           $sql .= "'" . $_SESSION['wrkideusu'] . "',";
-          $sql .= "'" . date("Y/m/d H:i:s") . "')";
+          $sql .= "'" . date("Y-m-d H:i:s") . "')";
           $ret = comando_tab($sql, $nro, $ult, $men);
           if ($ret == false) {
                $err = $sql;
@@ -389,7 +389,7 @@
           $sql .= "'" . str_replace(".", "", $_REQUEST['qtd_v']) . "',";
           $sql .= "'" . $_REQUEST['obs_v'] . "',";
           $sql .= "'" . $_SESSION['wrkideusu'] . "',";
-          $sql .= "'" . date("Y/m/d H:i:s") . "')";
+          $sql .= "'" . date("Y-m-d H:i:s") . "')";
           $ret = comando_tab($sql, $nro, $ult, $men);
           if ($ret == false) {
                $err = $sql;
@@ -431,7 +431,7 @@
           $sql .= "'" . str_replace(".", "", $_REQUEST['qtd_p']) . "',";
           $sql .= "'" . $_REQUEST['obs_p'] . "',";
           $sql .= "'" . $_SESSION['wrkideusu'] . "',";
-          $sql .= "'" . date("Y/m/d H:i:s") . "')";
+          $sql .= "'" . date("Y-m-d H:i:s") . "')";
           $ret = comando_tab($sql, $nro, $ult, $men);
           if ($ret == false) {
                $err = $sql;
@@ -443,8 +443,8 @@
           $ret = 0; $err = ""; 
           $pre = $_REQUEST['med_t'];
           include_once "../dados.php";
-          $dat = inverte_dat(0, $_REQUEST['dtb_c']);
-          $dat = date('d-m-Y', strtotime('+2 days', strtotime($dat)));
+          $dat = inverte_dat(0, $_REQUEST['dta_c']);
+          $dat = date('Y-m-d', strtotime('+2 days', strtotime($dat)));
           $usu = retorna_dad('conusuario', 'tb_conta', 'idconta', $_REQUEST['des_c']); 
           $pro = retorna_dad('conprograma', 'tb_conta', 'idconta', $_REQUEST['des_c']); 
           $sql  = "insert into tb_movto (";
@@ -488,7 +488,7 @@
           $sql .= "'" . $_REQUEST['car_c'] . "',";
           $sql .= "'" . $_REQUEST['obs_c'] . "',";
           $sql .= "'" . $_SESSION['wrkideusu'] . "',";
-          $sql .= "'" . date("Y/m/d H:i:s") . "')";
+          $sql .= "'" . date("Y-m-d H:i:s") . "')";
           $ret = comando_tab($sql, $nro, $ult, $men);
           if ($ret == false) {
                $err = $sql;
@@ -531,7 +531,7 @@
           $sql .= "'" . $_REQUEST['des_c'] . "',";
           $sql .= "'" . $_REQUEST['usu_c'] . "',";
           $sql .= "'" . $pro . "',";
-          $sql .= "'" . inverte_dat(1, $_REQUEST['dta_c']) . "',";
+          $sql .= "'" . inverte_dat(1, $_REQUEST['dta_c']) . "',";    // Data informada
           $sql .= "'" . ($qtd * $pre) . "',";
           $sql .= "'" . $qtd . "',";
           $sql .= "'" . '0' . "',";
@@ -539,11 +539,11 @@
           $sql .= "'" . '0' . "',";
           $sql .= "'" . str_replace(",", ".", str_replace(".", "", $_REQUEST['bon_c'])) . "',";
           $sql .= "'" . $pre . "',";
-          $sql .= "'" . inverte_dat(1, $_REQUEST['dtb_c']) . "',";
+          $sql .= "'" . inverte_dat(1, $_REQUEST['dtb_c']) . "',";    // Data do bônus
           $sql .= "'" . $_REQUEST['car_c'] . "',";
           $sql .= "'" . $_REQUEST['obs_c'] . "',";
           $sql .= "'" . $_SESSION['wrkideusu'] . "',";
-          $sql .= "'" . date("Y/m/d H:i:s") . "')";
+          $sql .= "'" . date("Y-m-d H:i:s") . "')";
           $ret = comando_tab($sql, $nro, $ult, $men);
           if ($ret == false) {
                $err = $sql;
