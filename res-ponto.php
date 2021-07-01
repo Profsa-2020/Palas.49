@@ -164,7 +164,8 @@ $(document).ready(function() {
                                                   for ($ind = 0; $ind < count($dad['usu_m']) ; $ind++) {
                                                        if ($usu != $dad['usu_m'][$ind] || $pro != $dad['pro_m'][$ind]) {
                                                             if (isset($lista['con'] ) == true) {
-                                                                 if (count($lista['con']) >= 1) {
+                                                                 $mai = array_sum($lista);
+                                                                 if (count($lista['con']) >= 1 &&$mai > 0) {
                                                                       echo '<tr>'; $som = 0;
                                                                       echo '<td>' . $lista['con'] . '</td>';
                                                                       for ($nro = 0; $nro < count($dad['cod_p']) ; $nro++) {                                                                 
@@ -197,24 +198,27 @@ $(document).ready(function() {
                                                   }
                                              }
                                              if (isset($lista['con'] ) == true) {
-                                                  echo '<tr>'; $som = 0;
-                                                  echo '<td>' . $lista['con'] . '</td>';
-                                                  for ($nro = 0; $nro < count($dad['cod_p']) ; $nro++) {                                                                 
-                                                       if (isset($lista[$nro]) == true ) {
-                                                            $som = $som + $lista[$nro];
-                                                            $tot = $tot + $lista[$nro];
-                                                            echo '<td class="text-center">' . number_format($lista[$nro], 0, ",", ".") . '</td>';
-                                                            if (isset($geral[$nro]) == false) {
-                                                                 $geral[$nro] = $lista[$nro];
+                                                  $mai = array_sum($lista);
+                                                  if ($mai > 0) {
+                                                       echo '<tr>'; $som = 0;
+                                                       echo '<td>' . $lista['con'] . '</td>';
+                                                       for ($nro = 0; $nro < count($dad['cod_p']) ; $nro++) {                                                                 
+                                                            if (isset($lista[$nro]) == true ) {
+                                                                 $som = $som + $lista[$nro];
+                                                                 $tot = $tot + $lista[$nro];
+                                                                 echo '<td class="text-center">' . number_format($lista[$nro], 0, ",", ".") . '</td>';
+                                                                 if (isset($geral[$nro]) == false) {
+                                                                      $geral[$nro] = $lista[$nro];
+                                                                 } else {
+                                                                      $geral[$nro] += $lista[$nro];
+                                                                 }
                                                             } else {
-                                                                 $geral[$nro] += $lista[$nro];
+                                                                 echo '<td>' . '' . '</td>';
                                                             }
-                                                       } else {
-                                                            echo '<td>' . '' . '</td>';
-                                                       }
-                                                  }                                                       
-                                                  echo '<td class="text-center">' . number_format($som, 0, ",", ".") . '</td>';
-                                                  echo '</tr>';
+                                                       }                                                       
+                                                       echo '<td class="text-center">' . number_format($som, 0, ",", ".") . '</td>';
+                                                       echo '</tr>';
+                                                  }
                                              }
                                              echo '<tr>'; 
                                              echo '<td class="text-right"><strong>' . 'TOTAL GERAL:' . '</strong></td>';

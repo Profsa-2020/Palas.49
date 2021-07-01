@@ -362,6 +362,16 @@ function calcula_idade($nas) {
      return $ida;
 }
 
+function usuario_ger($ger, $usu) {
+     $ret = 0;
+     include_once "dados.php";
+     $nro = acessa_reg("Select idconta from tb_conta where conempresa = " . $_SESSION['wrkcodemp'] . " and congerente = " . $ger . " and conusuario = " . $usu , $reg);            
+     if ($nro >= 1) {
+          $ret = 1;
+     } 
+     return $ret;
+}
+
 function saldos_cta($cta, &$ent, &$sai, &$vai, &$vol, &$val, &$med, &$tot) {
      $sal = 0; $ent = 0; $sai = 0; $vai = 0; $vol = 0; $val =  0; $med = 0;
      $com  = "Select M.*, U.usunome, P.prodescricao from (((tb_movto M left join tb_conta C on M.movconta = C.idconta) ";

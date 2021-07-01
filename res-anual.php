@@ -316,7 +316,7 @@ $(document).ready(function() {
 
 <?php 
 function carrega_usu($usu) {
-     $sta = 0;
+     $sta = 0; $ant = 0;
      include_once "dados.php";    
      echo '<option value="0" selected="selected">Selecione ...</option>';
      if ($_SESSION['wrktipusu'] >= 4) {
@@ -326,10 +326,13 @@ function carrega_usu($usu) {
      }
      $nro = leitura_reg($com, $reg);
      foreach ($reg as $lin) {
-          if ($lin['idsenha'] != $usu) {
-               echo  '<option value ="' . $lin['idsenha'] . '">' . $lin['usunome'] . '</option>'; 
-          } else {
-               echo  '<option value ="' . $lin['idsenha'] . '" selected="selected">' . $lin['usunome'] . '</option>';
+          if ($ant != $lin['idsenha']) {
+               $ant = $lin['idsenha'];
+               if ($lin['idsenha'] != $usu) {
+                    echo  '<option value ="' . $lin['idsenha'] . '">' . $lin['usunome'] . '</option>'; 
+               } else {
+                    echo  '<option value ="' . $lin['idsenha'] . '" selected="selected">' . $lin['usunome'] . '</option>';
+               }
           }
      }
      return $sta;
@@ -417,7 +420,7 @@ function carrega_mov($ano, $usu, $pro, &$dad) {
           }
      }
 
-     $med = $dad['com_v'] / $dad['com_q'];   // Preço médio de compra
+     $med = $dad['com_v'] / ($dad['com_q'] == 0 ? 1 :$dad['com_q']);   // Preço médio de compra
      $dad['sdo_q'] = $dad['qua_a'] - $dad['qua_v'];
      $dad['sdo_v'] = ($dad['qua_a'] - $dad['qua_v']) * $med;
      $dad['cus_m'] = $med * $dad['ven_q'];

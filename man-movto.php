@@ -517,7 +517,6 @@ $(document).ready(function() {
      });
 
      $('#nom_v').blur(function() {
-          // debugger;   // Para o programa - pausa - brek point
           let cta = $('#cta_v').val();
           if (cta != 0) {
                $.getJSON("ajax/carrega-sdo.php", {
@@ -797,14 +796,14 @@ $(document).ready(function() {
           let val = $('#val_t').val();
           let qtd = $('#qtd_t').val();
           let vai = $('#vai_t').val();
-          let vol = $('#vol_t').val();
           $('#qtd_d').val(qtd);
-          if (qtd != "" && val != "" && vai == "" && vol == "") {
-               qtd = qtd.replace('.', '');
-               qtd = qtd.replace(',', '.');
-               val = val.replace('.', '');
-               val = val.replace(',', '.');
-               pre = val / qtd * 1000;
+          if (pro == "1" && qtd != "" && val != "" && vai != "") {
+               qtd = qtd.replace('.', ''); qtd = qtd.replace(',', '.');
+               val = val.replace('.', '');  val = val.replace(',', '.');
+               let pre = 1 + parseFloat(vai, 10) / 100;
+               pre = qtd * pre;
+               pre = val / pre;
+               pre = pre * 1000;
                $('#cus_c').val(pre);
                pre = pre.toLocaleString("pt-BR", {
                     style: "currency",
@@ -841,17 +840,20 @@ $(document).ready(function() {
                }
                if (per != "" && qtd != "" && vai != "" && vol != "") {
                     let val = $('#val_t').val();
-                    val = val.replace('.', '');
-                    val = val.replace(',', '.');
-                    if (pro == 1) {
-                         let res = parseFloat(qtd, 10) * (1 + parseFloat(per, 10) / 100);
-                         res = val / res * 1000;
-                         $('#cus_c').val(res);
-                         res = res.toLocaleString("pt-BR", {
-                              style: "currency",
-                              currency: "BRL"
-                         });
-                         $('#cus_t').val(res);
+                    val = val.replace('.', ''); val = val.replace(',', '.');
+                    if (pro == "1") {
+                         if (val != "") {
+                              pre = 1 + parseFloat(per, 10) / 100;
+                              pre = qtd * pre;
+                              pre = val / pre;
+                              pre = pre * 1000;
+                              $('#cus_c').val(pre);
+                              pre = pre.toLocaleString("pt-BR", {
+                                   style: "currency",
+                                   currency: "BRL"
+                              });
+                              $('#cus_t').val(pre);
+                         }
                     } else {
                          let tot = 0; // Calculo de promoção Bumerange, preço de custo por milhero
                          let med = $('#med_t').val();
@@ -899,7 +901,7 @@ $(document).ready(function() {
                let val = $('#val_t').val();
                val = val.replace('.', '');
                val = val.replace(',', '.');
-               if (pro == 1) {
+               if (pro == "1") {
                     let res = parseFloat(qtd, 10) * (1 + parseFloat(per, 10) / 100);
                     res = val / res * 1000;
                     $('#cus_c').val(res);

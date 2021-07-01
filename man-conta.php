@@ -443,7 +443,7 @@ function ler_conta(&$cha, &$usu, &$sta, &$pro, &$num, &$ger) {
 }
 
 function carrega_usu($usu) {
-     $sta = 0;
+     $sta = 0; $ant = 0;
      include_once "dados.php";    
      if ($usu == 0) {
           echo '<option value="0" selected="selected">Selecione ...</option>';
@@ -455,10 +455,13 @@ function carrega_usu($usu) {
      }
      $nro = leitura_reg($com, $reg);
      foreach ($reg as $lin) {
-          if ($lin['idsenha'] != $usu) {
-               echo  '<option value ="' . $lin['idsenha'] . '">' . $lin['usunome'] . '</option>'; 
-          } else {
-               echo  '<option value ="' . $lin['idsenha'] . '" selected="selected">' . $lin['usunome'] . '</option>';
+          if ($ant != $lin['idsenha']) {
+               $ant = $lin['idsenha'];
+               if ($lin['idsenha'] != $usu) {
+                    echo  '<option value ="' . $lin['idsenha'] . '">' . $lin['usunome'] . '</option>'; 
+               } else {
+                    echo  '<option value ="' . $lin['idsenha'] . '" selected="selected">' . $lin['usunome'] . '</option>';
+               }
           }
      }
      return $sta;
