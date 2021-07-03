@@ -700,6 +700,7 @@ $(document).ready(function() {
           let pro = $('#pro_t').val();
           $('#boi_t').val('');
           $('#bov_t').val('');
+          $('#val_t').val('');
           if (pro == 1) {
                $('#vai_t').val('');
                $('#vol_t').val('');
@@ -838,10 +839,11 @@ $(document).ready(function() {
                     val = val.replace(',00', '');
                     $('#boi_t').val(val);
                }
-               if (per != "" && qtd != "" && vai != "" && vol != "") {
-                    let val = $('#val_t').val();
-                    val = val.replace('.', ''); val = val.replace(',', '.');
-                    if (pro == "1") {
+
+               if (pro == "1") {
+                    if (per != "" && qtd != "" && vai != "") {
+                         let val = $('#val_t').val();
+                         val = val.replace('.', ''); val = val.replace(',', '.');
                          if (val != "") {
                               pre = 1 + parseFloat(per, 10) / 100;
                               pre = qtd * pre;
@@ -854,13 +856,14 @@ $(document).ready(function() {
                               });
                               $('#cus_t').val(pre);
                          }
-                    } else {
+                    }
+               }
+               if (pro == "2") {
+                    if (per != "" && qtd != "" && vai != "" && vol != "") {
                          let tot = 0; // Calculo de promoção Bumerange, preço de custo por milhero
                          let med = $('#med_t').val();
-                         vai = vai.replace('.', '');
-                         vai = vai.replace(',', '.');
-                         vol = vol.replace('.', '');
-                         vol = vol.replace(',', '.');
+                         vai = vai.replace('.', ''); vai = vai.replace(',', '.');
+                         vol = vol.replace('.', ''); vol = vol.replace(',', '.');
                          let res = parseFloat(qtd, 10) * (1 - parseFloat(vol, 10) / 100);
                          res = res * med;
                          res = res / (qtd * (1 + parseFloat(vai, 10) / 100)) * 1000;
@@ -1711,7 +1714,7 @@ function carrega_int($int_v) {
 }
 
 function carrega_usu($usu_c) {
-     $sta = 0;
+     $sta = 0; $ant = 0;
      include_once "dados.php";    
      if ($usu_c == 0) {
           echo '<option value="0" selected="selected">Selecione o titular ...</option>';
@@ -1723,10 +1726,13 @@ function carrega_usu($usu_c) {
      }
      $nro = leitura_reg($com, $reg);
      foreach ($reg as $lin) {
-          if ($lin['idsenha'] != $usu_c) {
-               echo  '<option value ="' . $lin['idsenha'] . '">' . $lin['usunome'] . '</option>'; 
-          } else {
-               echo  '<option value ="' . $lin['idsenha'] . '" selected="selected">' . $lin['usunome'] . '</option>';
+          if ($ant != $lin['idsenha']) {
+               $ant = $lin['idsenha'];
+               if ($lin['idsenha'] != $usu_c) {
+                    echo  '<option value ="' . $lin['idsenha'] . '">' . $lin['usunome'] . '</option>'; 
+               } else {
+                    echo  '<option value ="' . $lin['idsenha'] . '" selected="selected">' . $lin['usunome'] . '</option>';
+               }
           }
      }
      return $sta;

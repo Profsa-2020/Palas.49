@@ -384,88 +384,94 @@ function carrega_mov($ope, $usu, $pro, $dti, $dtf) {
      $com .= " order by idmovto desc";          
      $nro = leitura_reg($com, $lin);
      foreach ($lin as $reg) {       
-          $txt =  '<tr>';
-          if ($reg['movtipo'] == 2 || $reg['movtipo'] == 3 || $reg['movtipo'] == 4 || $reg['movtipo'] == 8 || $reg['movtipo'] == 9) {
-               if ($reg['movliquidado'] == 0 && $reg['movbonus'] < date('Y-m-d')) {
-                    $txt =  '<tr class="cor-1">';
+          $exi = 1;
+          if ($_SESSION['wrktipusu'] == 3) {
+               $exi = usuario_ger($_SESSION['wrkideusu'], $reg['movusuario']);
+          }
+          if ($exi == 1) {
+               $txt =  '<tr>';
+               if ($reg['movtipo'] == 2 || $reg['movtipo'] == 3 || $reg['movtipo'] == 4 || $reg['movtipo'] == 8 || $reg['movtipo'] == 9) {
+                    if ($reg['movliquidado'] == 0 && $reg['movbonus'] < date('Y-m-d')) {
+                         $txt =  '<tr class="cor-1">';
+                    }
                }
-          }
-          if ($reg['movtipo'] == 5) {
-               if ($reg['movliquidado'] == 0 && $reg['movvecto'] < date('Y-m-d')) {
-                    $txt =  '<tr class="cor-1">';
+               if ($reg['movtipo'] == 5) {
+                    if ($reg['movliquidado'] == 0 && $reg['movvecto'] < date('Y-m-d')) {
+                         $txt =  '<tr class="cor-1">';
+                    }
                }
-          }
-          if ($reg['movtipo'] == 0 || $reg['movtipo'] == 1 || $reg['movtipo'] == 6) {
-               $txt .= '<td class="text-center"></td>';
-          }
-          if ($reg['movtipo'] == 2 || $reg['movtipo'] == 3 || $reg['movtipo'] == 4 || $reg['movtipo'] == 7 || $reg['movtipo'] == 8) {
-               if ($reg['movliquidado'] == 1) {
-                    $txt .= '<td class="text-center"><i class="fa fa-check-square-o fa-2x" aria-hidden="true"></i></td>';
-               } else { 
-                    $txt .= '<td class="text-center"><a class="cur-1 baixa" href="#" ope=' . $reg['movtipo']. ' cod=' . $reg['idmovto'] . ' title="Efetua baixa de quantidade ou valor recebido do movimento informado na linha ..."><i class="fa fa-check-square-o fa-2x" aria-hidden="true"></i></a></td>';
+               if ($reg['movtipo'] == 0 || $reg['movtipo'] == 1 || $reg['movtipo'] == 6) {
+                    $txt .= '<td class="text-center"></td>';
                }
-          }
-          if ($reg['movtipo'] == 5) {
-               if ($reg['movliquidado'] == 1) {
-                    $txt .= '<td class="text-center"><i class="fa fa-money fa-2x" aria-hidden="true"></i></td>';
-               } else { 
-                    $txt .= '<td class="text-center"><a class="cur-1 baixa" href="#" ope=' . $reg['movtipo']. ' cod=' . $reg['idmovto'] . ' title="Efetua baixa de quantidade ou valor recebido do movimento informado na linha ..."><i class="fa fa-money fa-2x" aria-hidden="true"></i></a></td>';
+               if ($reg['movtipo'] == 2 || $reg['movtipo'] == 3 || $reg['movtipo'] == 4 || $reg['movtipo'] == 7 || $reg['movtipo'] == 8) {
+                    if ($reg['movliquidado'] == 1) {
+                         $txt .= '<td class="text-center"><i class="fa fa-check-square-o fa-2x" aria-hidden="true"></i></td>';
+                    } else { 
+                         $txt .= '<td class="text-center"><a class="cur-1 baixa" href="#" ope=' . $reg['movtipo']. ' cod=' . $reg['idmovto'] . ' title="Efetua baixa de quantidade ou valor recebido do movimento informado na linha ..."><i class="fa fa-check-square-o fa-2x" aria-hidden="true"></i></a></td>';
+                    }
                }
-          }
-          if ($reg['movtipo'] == 0) {$txt .= "<td>" . "Compra(+)" . "</td>";}
-          if ($reg['movtipo'] == 1) {$txt .= "<td>" . "Transfer (-)" . "</td>";}
-          if ($reg['movtipo'] == 2) {$txt .= "<td>" . "Transfer (+)" . "</td>";}
-          if ($reg['movtipo'] == 3) {$txt .= "<td>" . "Bônus (+)" . "</td>";}
-          if ($reg['movtipo'] == 4) {$txt .= "<td>" . "Bônus (+)" . "</td>";}
-          if ($reg['movtipo'] == 5) {$txt .= "<td>" . "Venda (-)" . "</td>";} 
-          if ($reg['movtipo'] == 6) {$txt .= "<td>" . "Passagem (-)" . "</td>";} 
-          if ($reg['movtipo'] == 7) {$txt .= "<td>" . "Cartão (+)" . "</td>";} 
-          if ($reg['movtipo'] == 8) {$txt .= "<td>" . "Bônus [+]" . "</td>";} 
-          $txt .= '<td class="text-center">' . $reg['idmovto'] . '</td>';
-          $txt .= '<td>' . $reg['usunome'] . '</td>';
-          $txt .= '<td>' . $reg['prodescricao'] . '</td>';
-          $txt .= '<td>' . date('d/m/Y',strtotime($reg['movdata'])) . '</td>';
-          $txt .= '<td class="text-right">' . number_format($reg['movquantidade'], 0, ",", ".") . '</td>';
-          if ($reg['movtipo'] == 2 || $reg['movtipo'] == 7 || $reg['movtipo'] == 8) {
-               $txt .= '<td class="text-right">' . number_format($reg['movcusto'], 2, ",", ".") . '</td>';
-               $txt .= '<td class="text-right">' . number_format($reg['movcusto'] * $reg['movquantidade'] / 1000, 2, ",", ".") . '</td>';
-          } else {
-               $txt .= '<td class="text-right">' . number_format($reg['movvalor'] / $reg['movquantidade'] * 1000, 2, ",", ".") . '</td>';
-               $txt .= '<td class="text-right">' . number_format($reg['movvalor'], 2, ",", ".") . '</td>';
-          }
-          $txt .= '<td>' . $reg['intdescricao'] . '</td>';
-          if ($reg['movvecto'] == null) {
-               if ($reg['movbonus'] == null) {
+               if ($reg['movtipo'] == 5) {
+                    if ($reg['movliquidado'] == 1) {
+                         $txt .= '<td class="text-center"><i class="fa fa-money fa-2x" aria-hidden="true"></i></td>';
+                    } else { 
+                         $txt .= '<td class="text-center"><a class="cur-1 baixa" href="#" ope=' . $reg['movtipo']. ' cod=' . $reg['idmovto'] . ' title="Efetua baixa de quantidade ou valor recebido do movimento informado na linha ..."><i class="fa fa-money fa-2x" aria-hidden="true"></i></a></td>';
+                    }
+               }
+               if ($reg['movtipo'] == 0) {$txt .= "<td>" . "Compra(+)" . "</td>";}
+               if ($reg['movtipo'] == 1) {$txt .= "<td>" . "Transfer (-)" . "</td>";}
+               if ($reg['movtipo'] == 2) {$txt .= "<td>" . "Transfer (+)" . "</td>";}
+               if ($reg['movtipo'] == 3) {$txt .= "<td>" . "Bônus (+)" . "</td>";}
+               if ($reg['movtipo'] == 4) {$txt .= "<td>" . "Bônus (+)" . "</td>";}
+               if ($reg['movtipo'] == 5) {$txt .= "<td>" . "Venda (-)" . "</td>";} 
+               if ($reg['movtipo'] == 6) {$txt .= "<td>" . "Passagem (-)" . "</td>";} 
+               if ($reg['movtipo'] == 7) {$txt .= "<td>" . "Cartão (+)" . "</td>";} 
+               if ($reg['movtipo'] == 8) {$txt .= "<td>" . "Bônus [+]" . "</td>";} 
+               $txt .= '<td class="text-center">' . $reg['idmovto'] . '</td>';
+               $txt .= '<td>' . $reg['usunome'] . '</td>';
+               $txt .= '<td>' . $reg['prodescricao'] . '</td>';
+               $txt .= '<td>' . date('d/m/Y',strtotime($reg['movdata'])) . '</td>';
+               $txt .= '<td class="text-right">' . number_format($reg['movquantidade'], 0, ",", ".") . '</td>';
+               if ($reg['movtipo'] == 2 || $reg['movtipo'] == 7 || $reg['movtipo'] == 8) {
+                    $txt .= '<td class="text-right">' . number_format($reg['movcusto'], 2, ",", ".") . '</td>';
+                    $txt .= '<td class="text-right">' . number_format($reg['movcusto'] * $reg['movquantidade'] / 1000, 2, ",", ".") . '</td>';
+               } else {
+                    $txt .= '<td class="text-right">' . number_format($reg['movvalor'] / $reg['movquantidade'] * 1000, 2, ",", ".") . '</td>';
+                    $txt .= '<td class="text-right">' . number_format($reg['movvalor'], 2, ",", ".") . '</td>';
+               }
+               $txt .= '<td>' . $reg['intdescricao'] . '</td>';
+               if ($reg['movvecto'] == null) {
+                    if ($reg['movbonus'] == null) {
+                         $txt .= '<td>' . '' . '</td>';
+                    } else {
+                         $txt .= '<td>' . date('d/m/Y',strtotime($reg['movbonus'])) . '</td>';
+                    }
+               } else {
+                    $txt .= '<td>' . date('d/m/Y',strtotime($reg['movvecto'])) . '</td>';
+               }
+               $txt .= '<td>' . $reg['movlocalizador'] . '</td>';
+               $txt .= '<td class="text-center">' . $reg['movnumerocpf'] . '</td>';
+               if ($reg['movpromocao'] == 0) {$txt .= '<td>' . "" . '</td>';}
+               if ($reg['movpromocao'] == 1) {$txt .= '<td class="text-center">' . "Transferência" . '</td>';}
+               if ($reg['movpromocao'] == 2) {$txt .= '<td class="text-center">' . "Bumerangue" . '</td>';}
+               if ($reg['movpromocao'] == 3) {$txt .= '<td class="text-center">' . "Transferência" . '</td>';}
+               if ($reg['movpromocao'] == 4) {$txt .= '<td class="text-center">' . "Transferência" . '</td>';}
+               $cod = retorna_dad('conprograma', 'tb_conta', 'idconta', $reg['movdestino']); 
+               $des = retorna_dad('prodescricao', 'tb_programa', 'idprograma', $cod); 
+               $txt .= '<td>' . $des . '</td>';
+               if ($reg['movpercvai'] == '0') {
                     $txt .= '<td>' . '' . '</td>';
                } else {
-                    $txt .= '<td>' . date('d/m/Y',strtotime($reg['movbonus'])) . '</td>';
+                    $txt .= '<td class="text-center">' . number_format($reg['movpercvai'], 0, ",", ".") . '%' . '</td>';
                }
-          } else {
-               $txt .= '<td>' . date('d/m/Y',strtotime($reg['movvecto'])) . '</td>';
+               if ($reg['movpercvolta'] == '0') {
+                    $txt .= '<td>' . '' . '</td>';
+               } else {
+                    $txt .= '<td class="text-center">' . number_format($reg['movpercvolta'], 0, ",", ".") . '%' . '</td>';
+               }
+               $txt .= '<td>' . $reg['movobservacao'] . '</td>';
+               $txt .= '</tr>';
+               echo $txt;
           }
-          $txt .= '<td>' . $reg['movlocalizador'] . '</td>';
-          $txt .= '<td class="text-center">' . $reg['movnumerocpf'] . '</td>';
-          if ($reg['movpromocao'] == 0) {$txt .= '<td>' . "" . '</td>';}
-          if ($reg['movpromocao'] == 1) {$txt .= '<td class="text-center">' . "Comum" . '</td>';}
-          if ($reg['movpromocao'] == 2) {$txt .= '<td class="text-center">' . "Bumerangue" . '</td>';}
-          if ($reg['movpromocao'] == 3) {$txt .= '<td class="text-center">' . "Transferência" . '</td>';}
-          if ($reg['movpromocao'] == 4) {$txt .= '<td class="text-center">' . "Transferência" . '</td>';}
-          $cod = retorna_dad('conprograma', 'tb_conta', 'idconta', $reg['movdestino']); 
-          $des = retorna_dad('prodescricao', 'tb_programa', 'idprograma', $cod); 
-          $txt .= '<td>' . $des . '</td>';
-          if ($reg['movpercvai'] == '0') {
-               $txt .= '<td>' . '' . '</td>';
-          } else {
-               $txt .= '<td class="text-center">' . number_format($reg['movpercvai'], 0, ",", ".") . '%' . '</td>';
-          }
-          if ($reg['movpercvolta'] == '0') {
-               $txt .= '<td>' . '' . '</td>';
-          } else {
-               $txt .= '<td class="text-center">' . number_format($reg['movpercvolta'], 0, ",", ".") . '%' . '</td>';
-          }
-          $txt .= '<td>' . $reg['movobservacao'] . '</td>';
-          $txt .= '</tr>';
-          echo $txt;
      }
      return $nro;
 }
