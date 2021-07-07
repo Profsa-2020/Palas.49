@@ -23,9 +23,17 @@
 
 .cor-3 { background-color: red; }
 
+.cor-4 label, .cor-4 i { color: #ffffff; }
+
 .cur-1 { cursor: pointer; }
 
 .cur-x { cursor: not-allowed;}
+
+.cor-b { color: #244751; }
+
+.cor-c { color: #4d7abe; }
+
+.cor-d { color: #ffffff; background-color: #244751; }
 
 .ima-2 {
     animation-duration: 5s;
@@ -36,6 +44,9 @@
     display: none;
     top: calc(50% - 32px);
     left: calc(50% - 32px);
+}
+.let-b, .let-b select { 
+    font-size: 12px;
 }
 
 .lit-1 p {
@@ -132,6 +143,50 @@
     font-size: 36px;
     font-weight: bold;
     text-align: right;
+}
+
+.qua-b {
+    width: 95%;
+    margin: 5px;
+    padding: 10px;
+    border-radius: 10px;
+    background-color: #dfdfdf;
+}
+
+.qua-c {
+    color: #ffffff;
+    border-radius: 10px;
+    background-color: #f09021;
+}
+
+.qua-d {
+    color: #ffffff;
+    border-radius: 10px;
+    background-color: #d9701a;
+}
+
+.qua-e { 
+    height: 85px;
+    padding: 10px;
+    background-color: #244751; 
+}
+
+.qua-f {
+    height: 85px;
+    color: #ffffff;
+    background-color: #6e0101;
+}
+
+.qua-g {
+    color: #ffffff;
+    border-radius: 10px;
+    background-color: #3ba401;
+}
+
+.qua-h {
+    color: #ffffff;
+    border-radius: 10px;
+    background-color: #2e8101;
 }
 
  .tab-1 {

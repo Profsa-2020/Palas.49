@@ -47,6 +47,25 @@ $(document).ready(function() {
           $('nav').removeClass("fixed-top");
      }
 
+     $('#usu').change(function() {
+          $('#tab-0 tbody').empty();
+     });
+
+     $('#pro').change(function() {
+          $('#tab-0 tbody').empty();
+     });
+
+     $('#usu').change(function() {
+          $('#tab-0 tbody').empty();
+          let usu = $('#usu').val();
+          $.get("ajax/carrega-pro.php", {
+                    usu: usu
+               })
+               .done(function(data) {
+                    $('#pro').empty().html(data);
+               });
+     });
+
      $(window).scroll(function() {
           if ($(this).scrollTop() > 100) {
                $(".subir").fadeIn(500);
@@ -87,8 +106,11 @@ $(document).ready(function() {
      $_SESSION['wrkopereg'] = 0; $_SESSION['wrkcodreg'] = 0; $_SESSION['wrklogemp'] = ''; 
      if (isset($_SESSION['wrkendser']) == false) { $_SESSION['wrkendser'] = getenv("REMOTE_ADDR"); }
 
+     $usu = (isset($_REQUEST['usu']) == false ? 0 : $_REQUEST['usu']);
+     $pro = (isset($_REQUEST['pro']) == false ? 0 : $_REQUEST['pro']);
+
      $dad = array();
-     $ret = carrega_das($dad); 
+     $ret = carrega_das($usu, $pro, $dad); 
 
 ?>
 
@@ -99,119 +121,140 @@ $(document).ready(function() {
                <?php include_once "cabecalho-1.php"; ?>
           </div>
      </div>
+     <br />
      <div class="container">
           <div class="row text-center">
-               <div class="col-md-12">
-                    <h2><span><strong><i class="fa fa-tachometer fa-1g" aria-hidden="true"></i>
-                                   DashBoard</strong></span></h2>
+               <div class="col-md-3">
+                    <h3><span class="cor-b"><strong>DashBoard</strong></span></h3>
+               </div>
+               <div class="col-md-6">
+                    <span class="qua-b"><span class="cor-1">AVISO: </span>Módulo Venda Direta de Passagens em breve
+                         !</span>
+               </div>
+               <div class="col-md-3">
+                    <span class="qua-b"><i class="cor-c fa fa-question-circle fa-1g" aria-hidden="true"></i> Ajuda /
+                         Video Aulas</span>
                </div>
           </div>
           <br />
           <div class="row text-center">
-               <div class="col-md-2 bg-primary text-white">
-                    <p>Qtde Comprada</p>
-                    <span><strong><?php echo number_format($dad['qtd_c'], 0,"," ,"."); ?></strong></span>
+               <div class="col-md-3">
+                    <div class="qua-c">
+                         <p>Milhas Negociadas (Mês Corrente)</p>
+                         <h3><?php echo number_format($dad['qtd_m'], 0,"," ,"."); ?></h3>
+                    </div>
                </div>
-               <div class="col-md-2 bg-primary text-white">
-                    <p>Valor Comprado</p>
-                    <span><strong><?php echo "R$ " . number_format($dad['val_c'], 2,"," ,"."); ?></strong></span>
+               <div class="col-md-3">
+                    <div class="qua-c">
+                         <p>Total de Venda (Mês Corrente)</p>
+                         <h3><?php echo 'R$ ' . number_format($dad['val_m'], 2,"," ,"."); ?></h3>
+                    </div>
                </div>
-               <div class="col-md-2 bg-primary text-white">
-                    <p>Qtde Tranferida</p>
-                    <span><strong><?php echo number_format($dad['qtd_t'], 0,"," ,"."); ?></strong></span>
+               <div class="col-md-3">
+                    <div class="qua-d">
+                         <p>Milhas Negociadas (Geral Ano)</p>
+                         <h3><?php echo number_format($dad['qtd_a'], 0,"," ,"."); ?></h3>
+                    </div>
                </div>
-               <div class="col-md-2 bg-primary text-white">
-                    <p>Valor Tranferido</p>
-                    <span><strong><?php echo "R$ " . number_format($dad['val_t'], 2,"," ,"."); ?></strong></span>
-               </div>
-               <div class="col-md-2 bg-primary text-white">
-                    <p>Qtde Vendida</p>
-                    <span><strong><?php echo number_format($dad['qtd_v'], 0,"," , "."); ?></strong></span>
-               </div>
-               <div class="col-md-2 bg-primary text-white">
-                    <p>Valor Vendido</p>
-                    <span><strong><?php echo "R$ " . number_format($dad['val_v'], 2,"," , "."); ?></strong></span>
+               <div class="col-md-3">
+                    <div class="qua-d">
+                         <p>Total de Venda (Geral Ano)</p>
+                         <h3><?php echo 'R$ ' . number_format($dad['val_a'], 2,"," ,"."); ?></h3>
+                    </div>
                </div>
           </div>
-          <br /><br />
-          <div class="table-responsive">
-               <table class="table table-sm table-striped">
-                    <thead>
-                         <tr>
-                              <th>Usuário</th>
-                              <th>Programa</th>
-                              <th>Qtde Entrada</th>
-                              <th>Valor Entrada</th>
-                              <th>Valor Investido</th>
-                              <th>Qtde Saída</th>
-                              <th>Valor Saída</th>
-                              <th>Preço Médio</th>
-                         </tr>
-                    </thead>
-                    <tbody>
-                         <?php 
-                              $nro = count($dad['cta']);
-                              foreach( $dad['cta'] as $cpo => $con ) {                                   
-                                   $txt =  '<tr>';
-                                   $txt .= '<td>' . $dad['usu'][$cpo] . '</td>';
-                                   $txt .= '<td>' . $dad['pro'][$cpo] . '</td>';
-                                   $txt .= '<td class="text-right">' . number_format($dad['ent'][$cpo], 0,"," , ".") . '</td>';
-                                   $txt .= '<td class="text-right">' . number_format($dad['com'][$cpo], 2,"," , ".") . '</td>';
-                                   $txt .= '<td class="text-right">' . number_format($dad['inv'][$cpo], 2,"," , ".") . '</td>';
-                                   $txt .= '<td class="text-right">' . number_format($dad['sai'][$cpo], 0,"," , ".") . '</td>';
-                                   $txt .= '<td class="text-right">' . number_format($dad['ven'][$cpo], 2,"," , ".") . '</td>';
-                                   if ($dad['com'][$cpo] == $dad['ven'][$cpo]) { 
-                                        $txt .= '<td class="text-right">' . '0,0000' . '</td>';
-                                   } else {
-                                        if ($dad['ent'][$cpo] == 0 && $dad['sai'][$cpo] == 0 || $dad['ent'][$cpo] == $dad['sai'][$cpo]) {
-                                             $txt .= '<td class="text-right">' . '0,0000' . '</td>';
-                                        } else {
-                                             $txt .= '<td class="text-right">' . number_format(($dad['com'][$cpo] - $dad['ven'][$cpo]) / ($dad['ent'][$cpo] - $dad['sai'][$cpo]) * 1000, 2,"," , ".") . '</td>';
+          <br />
+          <form id="frmTelCon" name="frmTelCon" action="menu01.php" method="POST">
+               <div class="row let-b cor-4">
+                    <div class="qua-e col-md-4">
+                         <label>Filtrar por titular da conta</label>
+                         <select id="usu" name="usu" class="form-control">
+                              <?php $ret = carrega_usu($usu); ?>
+                         </select>
+                    </div>
+                    <div class="qua-e col-md-4">
+                         <label>Filtrar por programa de fidelidade</label>
+                         <select id="pro" name="pro" class="form-control">
+                              <option value="0" selected="selected">Selecione ...</option>
+                         </select>
+                    </div>
+                    <div class="qua-e col-md-1 text-center">
+                         <br />
+                         <button type="submit" id="con" name="consulta" class="bot-2"
+                              title="Carrega movimento conforme periodo solicitado pelo usuário."><i
+                                   class="fa fa-search fa-3x" aria-hidden="true"></i></button>
+                    </div>
+                    <div class="col-md-3 text-center">
+                         <div class="qua-f">
+                              <p>Próximos Recebimentos</p>
+                              <h3><?php echo 'R$ ' . number_format($dad['pro_r'], 2,"," ,"."); ?></h3>
+                         </div>
+                    </div>
+               </div>
+          </form>
+
+
+          <div class="container-fluid">
+               <div class="row">
+                    <div class="col-md-9">
+                         <div class="tab-1 table-responsive">
+                              <table id="tab-0" class="table table-sm">
+                                   <thead>
+                                        <tr>
+                                             <th>Titular da Conta</th>
+                                             <th>Programa</th>
+                                             <th>Saldo Disponível</th>
+                                             <th>Custo Médio</th>
+                                             <th>Preço Médio</th>
+                                             <th class="text-center">CPFs Usados</th>
+                                        </tr>
+                                   </thead>
+                                   <tbody>
+                                        <?php 
+                                        if (isset($dad['usu_l']) == true)  {    
+                                             foreach($dad['usu_l'] as $ind => $cpo ) {
+                                                  echo '<tr>';
+                                                  echo '<td><strong>' . retorna_dad('usunome', 'tb_usuario', 'idsenha', $dad['usu_l'][$ind]) . '</strong></td>';
+                                                  echo '<td><strong>' . retorna_dad('prodescricao', 'tb_programa', 'idprograma', $dad['pro_l'][$ind]) . '</strong></td>';
+                                                  echo '<td class="text-right"><strong>' . number_format($dad['sal_l'][$ind], 0, ",", ".") . '</strong></td>';
+                                                  echo '<td class="text-right"><strong>' . number_format($dad['com_l'][$ind], 2, ",", ".")  . '</strong></td>';
+                                                  echo '<td class="text-right"><strong>' . number_format($dad['ven_l'][$ind], 2, ",", ".")  . '</strong></td>';
+                                                  echo '<td class="text-center"><strong>' . number_format($dad['cpf_l'][$ind], 0, ",", ".")  . '</strong></td>';
+                                                  echo '</tr>';
+                                             }                                             
                                         }
-                                   }
-                                   $txt .=  '</tr>';
-                                   echo $txt;
-                              }
-                         ?>
-                    </tbody>
-               </table>
+                                        ?>
+                                   </tbody>
+                              </table>
+                         </div>
+                    </div>
+                    <div class="col-md-3 text-center">
+                         <div class="tab-1 table-responsive">
+                              <table id="tab-0" class="table table-sm">
+                                   <thead>
+                                        <tr>
+                                             <th class="text-center">Valor</th>
+                                             <th class="text-center">Data</th>
+                                        </tr>
+                                   </thead>
+                                   <tbody>
+                                        <?php 
+                                        if (isset($dad['dat_r']) == true)  {    
+                                             foreach($dad['dat_r'] as $ind => $cpo ) {
+                                                  echo '<tr>';
+                                                  echo '<td><strong>' . number_format($dad['val_r'][$ind], 2, ",", ".")  . '</strong></td>';
+                                                  echo '<td><strong>' . date('d/m/Y',strtotime($dad['dat_r'][$ind]))  . '</strong></td>';
+                                                  echo '</tr>';
+                                             }                                             
+                                        }
+                                        ?>
+                                   </tbody>
+                              </table>
+                         </div>
+                    </div>
+               </div>
           </div>
           <hr />
-          <?php if ($dad['int_m'] == 1) { ?>                              
-               <div class="table-responsive">
-                    <table class="table table-sm table-striped">
-                         <thead>
-                              <tr>
-                                   <th>Nome do Intermediário</th>
-                                   <th class="text-center">CPF´s</th>
-                                   <th width="20%">Qtde Vendida</th>
-                                   <th width="20%">Qtde Utilizada</th>
-                                   <th width="20%">Saldo do Intermediário</th>
-                              </tr>
-                         </thead>
-                         <tbody>
-                              <?php 
-                                   $nro = count($dad['int']);
-                                   foreach( $dad['int'] as $cpo => $con ) {        
-                                        if ($dad['des'][$cpo] != null) {     
-                                             $txt =  '<tr>';
-                                             $txt .= '<td>' . $dad['des'][$cpo] . '</td>';
-                                             $txt .= '<td class="text-center">' . $dad['cpf'][$cpo] . '</td>';
-                                             $txt .= '<td class="text-center">' . number_format($dad['com'][$cpo], 0,"," , ".") . '</td>';
-                                             $txt .= '<td class="text-center">' . number_format($dad['vnd'][$cpo], 0,"," , ".") . '</td>';
-                                             $txt .= '<td class="text-center">' . number_format($dad['com'][$cpo] - $dad['vnd'][$cpo], 0,"," , ".") . '</td>';
-                                             $txt .=  '</tr>';
-                                             echo $txt;
-                                        }
-                                   }
-                              ?>
-                         </tbody>
-                    </table>
-               </div>
-          <?php } ?>                              
-          
-          <br />
-
      </div>
      <br />
      <div id="box10">
@@ -220,113 +263,142 @@ $(document).ready(function() {
 </body>
 
 <?php
-function carrega_das(&$dad) {
-     $ret = 0;
+function carrega_das($usu, $pro, &$dad) {
+     $ret = 0; $sal = 0; $cpf = 0; $usu_a = 0; $pro_a = 0; $qtd_c = 0; $val_c = 0;$qtd_v = 0; $val_v = 0;
      $dad = array();
-     $dad['int_m'] = 0;
-     $dad['val_c'] = 0;
-     $dad['qtd_c'] = 0;
-     $dad['val_t'] = 0;
-     $dad['qtd_t'] = 0;
-     $dad['val_v'] = 0;
-     $dad['qtd_v'] = 0;
-     $dad['int'] = array();
-     $dad['cta'] = array();
+     $dad['qtd_m'] = 0;
+     $dad['val_m'] = 0;
+     $dad['qtd_a'] = 0;
+     $dad['val_a'] = 0;
+     $dad['pro_r'] = 0;
      include_once "dados.php";
-     $com  = "Select * from tb_movto where movempresa = " . $_SESSION['wrkcodemp'];
+     $dti = date('Y') . "-01-01";
+     $dtf = date('Y') . "-12-31";
+     $com  = "Select * from tb_movto where movempresa = " . $_SESSION['wrkcodemp'] . " and movdata between '" . $dti . "' and '" . $dtf . "' ";
      $nro = leitura_reg($com, $reg);
-     foreach ($reg as $lin) { // 0-Compra 1-Transferência 2-Venda 3-Venda intermediario
+     foreach ($reg as $lin) { 
+          if ($lin['movtipo'] == 5) {
+               $dad['qtd_a'] += $lin['movquantidade'];
+               $dad['val_a'] += $lin['movvalor'];
+               if (date('m',strtotime($lin['movdata'])) == date('m')) {
+                    $dad['qtd_m'] += $lin['movquantidade'];
+                    $dad['val_m'] += $lin['movvalor'];     
+               }
+          }
+     }
+     $com  = "Select * from tb_movto where movempresa = " . $_SESSION['wrkcodemp'] . " and movvecto > '" . date('Y-m-d') . "'";
+     $nro = leitura_reg($com, $reg);
+     foreach ($reg as $lin) { 
+          if ($lin['movtipo'] == 5) {
+               if ($lin['movliquidado'] == 0) {
+                    $dad['pro_r'] += $lin['movvalor'];
+                    $dad['dat_r'][] = $lin['movvecto'];
+                    $dad['val_r'][] = $lin['movvalor'];
+               }
+          }
+     }     
+     $com = "Select * from tb_movto where movempresa = " . $_SESSION['wrkcodemp'];
+     if ($usu != 0) { $com .= " and movusuario = " . $usu; }
+     if ($pro != 0) { $com .= " and movprograma = " . $pro; };
+     $com .= " order by movusuario, movprograma";
+     $nro = leitura_reg($com, $reg);
+     foreach ($reg as $lin) { 
+          if ($usu_a == 0) {
+               $usu_a = $lin['movusuario']; $pro_a = $lin['movprograma'];
+          }
+          if ($usu_a != $lin['movusuario'] || $pro_a != $lin['movprograma']) {
+               $dad['usu_l'][] = $usu_a;
+               $dad['pro_l'][] = $pro_a;
+               $dad['sal_l'][] = $sal; $sal = 0;
+               $dad['cpf_l'][] = $cpf; $cpf = 0;
+               $dad['com_l'][] = $val_c / ($qtd_c == 0 ? 1 : $qtd_c) * 1000; $qtd_c = 0; $val_c = 0;
+               $dad['ven_l'][] = $val_v / ($qtd_v == 0 ? 1 : $qtd_v) * 1000; $qtd_v = 0; $val_v = 0;
+               $usu_a = $lin['movusuario']; $pro_a = $lin['movprograma'];
+          }
           if ($lin['movtipo'] == 0) {
-               $dad['qtd_c'] += $lin['movquantidade'];
-               $dad['val_c'] += $lin['movvalor'];
+               $sal = $sal + $lin['movquantidade'];
+               $qtd_c = $qtd_c + $lin['movquantidade'];
+               $val_c = $val_c + $lin['movvalor'];
           }
           if ($lin['movtipo'] == 1) {
-               $dad['qtd_t'] += $lin['movquantidade'];
-               $dad['val_t'] += $lin['movquantidade'] * $lin['movcusto'] / 1000;
+               $sal = $sal - $lin['movquantidade'];
           }
-          if ($lin['movtipo'] == 5) {
-               $dad['qtd_v'] += $lin['movquantidade'];
-               $dad['val_v'] += $lin['movvalor'];
-          }
-          if ($lin['movtipo'] == 7 || $lin['movtipo'] == 8) {
+          if ($lin['movtipo'] == 2) {
                if ($lin['movliquidado'] == 1) {
-                    $dad['qtd_c'] += $lin['movquantidade'];
-                    $dad['val_c'] += $lin['movquantidade'] * $lin['movcusto'] / 1000;
+                    $sal = $sal + $lin['movquantidade'];
+                    $qtd_c = $qtd_c + $lin['movquantidade'];
+                    $val_c = $val_c + $lin['movquantidade'] * $lin['movcusto'] / 1000;     
+               }
+          }
+          if ($lin['movtipo'] == 3) {
+               if ($lin['movliquidado'] == 1) {
+                    $sal = $sal + $lin['movquantidade'];
+                    $qtd_c = $qtd_c + $lin['movquantidade'];
+                    $val_c = $val_c + $lin['movquantidade'] * $lin['movcusto'];     
+               }
+          }
+          if ($lin['movtipo'] == 4) {
+               if ($lin['movliquidado'] == 1) {
+                    $sal = $sal + $lin['movquantidade'];
+                    $qtd_c = $qtd_c + $lin['movquantidade'];
+                    $val_c = $val_c + $lin['movquantidade'] * $lin['movcusto'];     
+               }
+          }
+          if ($lin['movtipo'] == 5) {   // Venda
+               $sal = $sal - $lin['movquantidade'];
+               $qtd_v = $qtd_v + $lin['movquantidade'];
+               $val_v = $val_v + $lin['movvalor'];
+          }
+          if ($lin['movtipo'] == 6) {   // CPF´s
+               $cpf = $cpf + $lin['movnumerocpf'];
+          }
+          if ($lin['movtipo'] == 7) {   // Venda com cartão
+               if ($lin['movliquidado'] == 1) {
+                    $sal = $sal + $lin['movquantidade'];
+                    $qtd_c = $qtd_c + $lin['movquantidade'];
+                    $val_c = $val_c + $lin['movquantidade'] * $lin['movcusto'] / 1000;     
+               }
+          }
+          if ($lin['movtipo'] == 8) {   // Venda com cartão
+               if ($lin['movliquidado'] == 1) {
+                    $sal = $sal + $lin['movquantidade'];
+                    $qtd_c = $qtd_c + $lin['movquantidade'];
+                    $val_c = $val_c + $lin['movquantidade'] * $lin['movcusto'] / 1000;     
                }
           }
      }
-     $com = "Select M.*, U.usunome, P.prodescricao from (((tb_movto M left join tb_conta C on M.movconta = C.idconta) ";
-     $com .= "left join tb_usuario U on M.movusuario = U.idsenha) ";
-     $com .= "left join tb_programa P on M.movprograma = P.idprograma) ";
-     $com .= "where movempresa = " . $_SESSION['wrkcodemp'] . " order by idmovto";          
-     $nro = leitura_reg($com, $lin);
-     foreach ($lin as $reg) {     
-          $flag = 0;
-          $ger_u = retorna_dad('congerente', 'tb_conta', 'idconta', $reg['movusuario']); 
-          if ($_SESSION['wrktipusu'] <= 3) {
-               if ($ger_u != $_SESSION['wrkideusu']) {
-                    $flag = 1;
-               }
-          }
-          if ($flag == 0) {
-               if (isset($dad['cta'][$reg['movconta']]) == false) {
-                    $dad['cta'][$reg['movconta']] = $reg['movconta'];
-                    $dad['usu'][$reg['movconta']] = $reg['usunome'];
-                    $dad['pro'][$reg['movconta']] = $reg['prodescricao'];
-                    $dad['ent'][$reg['movconta']] = 0;
-                    $dad['sai'][$reg['movconta']] = 0;
-                    $dad['val'][$reg['movconta']] = 0;
-                    $dad['com'][$reg['movconta']] = 0;
-                    $dad['ven'][$reg['movconta']] = 0;
-                    $dad['inv'][$reg['movconta']] = 0;
-               }
-               if ($reg['movtipo'] == 0) {
-                    $dad['ent'][$reg['movconta']] += $reg['movquantidade'];
-                    $dad['com'][$reg['movconta']] += $reg['movvalor'];
-                    $dad['val'][$reg['movconta']] += $reg['movvalor'];
-                    $dad['inv'][$reg['movconta']] += $reg['movquantidade'] * $reg['movcusto'];
-               }
-               if ($reg['movtipo'] == 1) {
-                    $dad['sai'][$reg['movconta']] += $reg['movquantidade'];
-                    $dad['ven'][$reg['movconta']] += $reg['movvalor'];
-               }
-               if ($reg['movtipo'] == 5) {
-                    $dad['sai'][$reg['movconta']] += $reg['movquantidade'];
-                    $dad['ven'][$reg['movconta']] += $reg['movvalor'];
-                    $dad['val'][$reg['movconta']] -= $reg['movquantidade'] * $reg['movcusto'];
-               }
-               if ($reg['movtipo'] == 7 || $reg['movtipo'] == 8) {
-                    if ($reg['movliquidado'] == 1) {
-                         $dad['ent'][$reg['movconta']] += $reg['movquantidade'];
-                         $dad['com'][$reg['movconta']] += $reg['movquantidade'] * $reg['movcusto'] / 1000;
-                    }
-               }
-          }
-     }
-     $com = "Select M.*, I.intdescricao from (tb_movto M left join tb_intermediario I on M.movintermediario = I.idintermediario) ";
-     $com .= "where movempresa = " . $_SESSION['wrkcodemp'] . " order by idmovto";          
-     $nro = leitura_reg($com, $lin);
-     foreach ($lin as $reg) {      
-          if (isset($dad['int'][$reg['movintermediario']]) == false) {
-               $dad['int'][$reg['movintermediario']] = $reg['movintermediario'];
-               $dad['des'][$reg['movintermediario']] = $reg['intdescricao'];
-               $dad['com'][$reg['movintermediario']] = 0;
-               $dad['vnd'][$reg['movintermediario']] = 0;
-               $dad['uti'][$reg['movintermediario']] = 0;
-               $dad['cpf'][$reg['movintermediario']] = 0;
-          }
-          if ($reg['movtipo'] == 5) {
-               $dad['int_m'] = 1;
-               $dad['com'][$reg['movintermediario']] += $reg['movquantidade'];
-          }
-          if ($reg['movtipo'] == 6) {
-               $dad['int_m'] = 1;
-               $dad['vnd'][$reg['movintermediario']] += $reg['movquantidade'];
-               $dad['cpf'][$reg['movintermediario']] += $reg['movnumerocpf'];
-          }
-     }
+     $dad['usu_l'][] = $usu_a;
+     $dad['pro_l'][] = $pro_a;
+     $dad['sal_l'][] = $sal; $sal = 0;
+     $dad['cpf_l'][] = $cpf; $cpf = 0;
+     $dad['com_l'][] = $val_c / ($qtd_c == 0 ? 1 : $qtd_c) * 1000; 
+     $dad['ven_l'][] = $val_v / ($qtd_v == 0 ? 1 : $qtd_v) * 1000; 
      return $ret;
 }
+
+function carrega_usu($usu) {
+     $sta = 0; $ant = 0;
+     include_once "dados.php";    
+     echo '<option value="0" selected="selected">Selecione ...</option>';
+     if ($_SESSION['wrktipusu'] >= 4) {
+          $com = "Select idsenha, usunome from tb_usuario where usustatus = 0 and usuempresa = " . $_SESSION['wrkcodemp'] . " order by usunome, idsenha";
+     } else {
+          $com = "Select U.idsenha, U.usunome from (tb_usuario U left join tb_conta C on U.idsenha = C.conusuario) where usustatus = 0 and usuempresa = " . $_SESSION['wrkcodemp']  . "  and congerente = " . $_SESSION['wrkideusu'] . " order by U.usunome, U.idsenha";
+     }
+     $nro = leitura_reg($com, $reg);
+     foreach ($reg as $lin) {
+          if ($ant != $lin['idsenha']) {
+               $ant = $lin['idsenha'];
+               if ($lin['idsenha'] != $usu) {
+                    echo  '<option value ="' . $lin['idsenha'] . '">' . $lin['usunome'] . '</option>'; 
+               } else {
+                    echo  '<option value ="' . $lin['idsenha'] . '" selected="selected">' . $lin['usunome'] . '</option>';
+               }
+          }
+     }
+     return $sta;
+}
+
 
 ?>
 

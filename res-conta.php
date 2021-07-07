@@ -49,14 +49,14 @@
 </head>
 
 <script>
-
 $(document).ready(function() {
 
      let usu = $('#usu').val();
      let pro = $('#pro').val();
      if (usu != 0) {
           $.get("ajax/carrega-pro.php", {
-                    usu: usu, pro: pro
+                    usu: usu,
+                    pro: pro
                })
                .done(function(data) {
                     $('#pro').empty().html(data);
@@ -176,101 +176,52 @@ $(document).ready(function() {
                               <br />
                          </form>
                          <br /><br />
-                         <div class="row">
-                              <div class="col-md-3"></div>
-                              <div class="col-md-6 text-center bg-primary text-white">
-                                   <h3>R E S U M O</h3>
-                              </div>
-                              <div class="col-md-3"></div>
-                         </div>
-                         <div class="row">
-                              <div class="col-md-3"></div>
+                         <div class="row text-center">
                               <div class="col-md-3">
-                                   <span>Quantidade Acumulada: </span>
+                                   <div class="qua-c">
+                                        <p>Total Acumulado na Conta</p>
+                                        <h3><?php echo number_format($dad['qtd_m'], 0,"," ,"."); ?></h3>
+                                        <p>R$ <?php echo number_format($dad['val_m'], 2,"," ,"."); ?></p>
+                                   </div>
                               </div>
-                              <div class="col-md-3 text-center">
-                                   <span><?php echo number_format($dad['qtd_m'], 0,"," ,"."); ?></span>
-                              </div>
-                              <div class="col-md-3"></div>
-                         </div>
-                         <div class="row">
-                              <div class="col-md-3"></div>
                               <div class="col-md-3">
-                                   <span>Valor Investido: </span>
+                                   <div class="qua-d">
+                                        <p>Saldo Atual na Conta</p>
+                                        <h3><?php echo number_format($dad['sal_m'], 0,"," ,"."); ?></h3>
+                                        <br />
+                                   </div>
                               </div>
-                              <div class="col-md-3 text-center">
-                                   <span><?php echo 'R$ ' . number_format($dad['val_m'], 2,"," ,"."); ?></span>
-                              </div>
-                              <div class="col-md-3"></div>
-                         </div>
-                         <div class="row">
-                              <div class="col-md-3"></div>
                               <div class="col-md-3">
-                                   <span>Preço Médio: </span>
+                                   <div class="qua-g">
+                                        <p>Saldo Disponível para Venda</p>
+                                        <h3><?php echo number_format($dad['dis_m'], 0,"," ,"."); ?></h3>
+                                        <br />
+                                   </div>
                               </div>
-                              <div class="col-md-3 text-center">
-                                   <span><?php 
-                                   if ($dad['qtd_m'] != 0) {
-                                        echo 'R$ ' . number_format($dad['val_m'] / $dad['qtd_m'] * 1000, 2,"," ,"."); 
-                                   }
-                                   ?></span>
-                              </div>
-                              <div class="col-md-3"></div>
-                         </div>
-                         <br />
-
-                         <div class="row">
-                              <div class="col-md-3"></div>
-                              <div class="col-md-6 text-center bg-primary text-white">
-                                   <h5>Saldo de Milhas e CPF´s</h5>
-                              </div>
-                              <div class="col-md-3"></div>
-                         </div>
-                         <div class="row">
-                              <div class="col-md-3"></div>
                               <div class="col-md-3">
-                                   <span>Saldo atual na conta: </span>
+                                   <div class="qua-h">
+                                        <p>Custo Médio por Milheiro</p>
+                                        <h3><?php echo 'R$ ' . number_format($dad['val_m'] / ($dad['qtd_m'] == 0 ? 1 : $dad['qtd_m']) * 1000, 2,"," ,"."); ?>
+                                        </h3>
+                                        <br />
+                                   </div>
                               </div>
-                              <div class="col-md-3 text-center">
-                                   <span><?php echo number_format($dad['sal_m'], 0,"," ,"."); ?></span>
-                              </div>
-                              <div class="col-md-3"></div>
                          </div>
-                         <div class="row">
-                              <div class="col-md-3"></div>
-                              <div class="col-md-3">
-                                   <span>Meu saldo (disponível p/ venda): </span>
-                              </div>
-                              <div class="col-md-3 text-center">
-                                   <span><?php echo number_format($dad['dis_m'], 0,"," ,"."); ?></span>
-                              </div>
-                              <div class="col-md-3"></div>
-                         </div>
-                         <div class="row">
-                              <div class="col-md-3"></div>
-                              <div class="col-md-3">
-                                   <span>CPF´s utilizados: </span>
-                              </div>
-                              <div class="col-md-3 text-center">
-                                   <span><?php echo number_format($dad['cpf_m'], 0,"," ,"."); ?></span>
-                              </div>
-                              <div class="col-md-3"></div>
-                         </div>
-
-                         <br />
-                         <div class="table-responsive">
-                              <table class="table table-sm table-striped">
-                                   <thead class="thead-dark">
-                                        <tr>
-                                             <th width="25%">Nome do Intermediário</th>
-                                             <th class="text-center">CPF´s</th>
-                                             <th width="15%">Qtde Comprada</th>
-                                             <th width="15%">Qtde Utilizada</th>
-                                             <th width="20%">Saldo do Intermediário</th>
-                                        </tr>
-                                   </thead>
-                                   <tbody>
-                                        <?php 
+                         <div class="row text-center">
+                              <div class="col-md-9">
+                                   <div class="tab-1 table-responsive">
+                                        <table id="tab-0" class="table table-sm table-striped">
+                                             <thead class="cor-d">
+                                                  <tr>
+                                                       <th width="25%">Intermediário</th>
+                                                       <th class="text-center">CPFs Utilizados</th>
+                                                       <th width="15%">Milhas Comprada</th>
+                                                       <th width="15%">Milhas Utilizadas</th>
+                                                       <th width="20%">Saldo do Intermediário</th>
+                                                  </tr>
+                                             </thead>
+                                             <tbody>
+                                                  <?php 
                                              $nro = count($dad['int']);
                                              if (isset($dad['des']) == true) {
                                                   foreach( $dad['int'] as $cpo => $con ) {        
@@ -287,11 +238,18 @@ $(document).ready(function() {
                                                   }
                                              }
                                         ?>
-                                   </tbody>
-                              </table>
+                                             </tbody>
+                                        </table>
+                                   </div>
+                              </div>
+                              <div class="col-md-3 text-center">
+                                   <div class="qua-f">
+                                        <p>Total de CPFs Utilizados</p>
+                                        <h3><?php echo number_format($dad['cpf_m'], 0,"," ,"."); ?></h3>
+                                   </div>
+                              </div>
                          </div>
-                         <hr />
-
+                         <br />
                     </div>
                </div>
           </div>
@@ -345,7 +303,7 @@ function carrega_mov($ano, $usu, $pro, &$dad) {
      include_once "dados.php";
      $nro = 0; $com = ""; $dad = array();  $dad['int'] = array(); $dad['cta'] = array();
      $dti = $ano . "-01-01"; $dtf = $ano . "-12-31";
-     $dad['qtd_m'] = 0; $dad['val_m'] = 0;$dad['sal_m'] = 0;$dad['dis_m'] = 0;$dad['cpf_m'] = 0; 
+     $dad['qtd_m'] = 0; $dad['val_m'] = 0; $dad['sal_m'] = 0; $dad['dis_m'] = 0; $dad['cpf_m'] = 0; 
      if ($usu == 0  && $pro == 0) { return 0; }
      $com  = "Select * from tb_movto where movempresa = " . $_SESSION['wrkcodemp'] . " and movusuario = " . $usu . " and movprograma = " . $pro . " and movdata between '" . $dti . "' and '" . $dtf . "'";
      $nro = leitura_reg($com, $reg);
