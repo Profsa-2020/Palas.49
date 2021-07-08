@@ -120,17 +120,27 @@ $(document).ready(function() {
      $_SESSION['wrknomide'] = get_current_user();
      $_SESSION['wrknumdoc'] = getmypid();
      if (isset($_SESSION['wrkdadven']) == false) { $_SESSION['wrkdadven'] = array(); }
-     if (isset($_SESSION['wrkendser']) == false) { $_SESSION['wrkendser'] = getenv("REMOTE_ADDR");; }
-     if (isset($_SESSION['wrkdadven']['ses_e'] ) == false) {
-          $ret = sessao_pag();
-     }
+     if (isset($_SESSION['wrkendser']) == false) { $_SESSION['wrkendser'] = getenv("REMOTE_ADDR"); }
+
      $_SESSION['wrkdadven']['cod_i']  = 0; $_SESSION['wrkdadven']['nom_i']  = ""; $_SESSION['wrkdadven']['key_i']  = "";
      $_SESSION['wrkdadven']['key_i'] = (isset($_REQUEST['chave']) == false ? '' : $_REQUEST['chave']);
      $_SESSION['wrkdadven']['cha_i'] = (isset($_REQUEST['indicado']) == false ? '' : $_REQUEST['indicado']);
      if ($_SESSION['wrkdadven']['cha_i'] != '') {
-          $_SESSION['wrkdadven']['cod_i']  = retorna_dad('idindicacao', 'tb_indicacao', 'indapelido', $_SESSION['wrkdadven']['cha_i']);
-          $_SESSION['wrkdadven']['nom_i']  = retorna_dad('indnome', 'tb_indicacao', 'indapelido', $_SESSION['wrkdadven']['cha_i']);
+          $_SESSION['wrkdadven']['cod_i']  = retorna_dad('idindicacao', 'tb_indicacao', 'indchave', $_SESSION['wrkdadven']['cha_i']);
+          if ($_SESSION['wrkdadven']['cod_i'] == "") {
+               $_SESSION['wrkdadven']['cod_i']  = retorna_dad('idindicacao', 'tb_indicacao', 'indapelido', $_SESSION['wrkdadven']['cha_i']);
+               $_SESSION['wrkdadven']['nom_i']  = retorna_dad('indnome', 'tb_indicacao', 'indapelido', $_SESSION['wrkdadven']['cha_i']);
+          } else {
+               $_SESSION['wrkdadven']['nom_i']  = retorna_dad('indnome', 'tb_indicacao', 'idindicacao', $_SESSION['wrkdadven']['cod_i']);
+          }
+          if ($_SESSION['wrkdadven']['nom_i'] == "") {
+               $_SESSION['wrkdadven']['cod_i'] = "0";
+               $_SESSION['wrkdadven']['cha_i'] = "0";
+               $_SESSION['wrkdadven']['nom_i'] = '##############################';
+          }
      }
+     $_SESSION['wrkopcpro'] = retorna_dad('emptipo', 'tb_empresa', 'idempresa', 1);   
+
 ?>
 
 <body id="box00" class="fun-a">
@@ -202,62 +212,18 @@ $(document).ready(function() {
                <br />
                <div class="row">
                          <div class="cor-1 col-12 text-center">
-                              <strong><?php echo $_SESSION['wrkdadven']['nom_i']; ?></strong>
+                              <strong>
+                              <?php 
+                                   if ($_SESSION['wrkdadven']['cha_i'] != "") {
+                                        echo 'Indicação: ' . $_SESSION['wrkdadven']['nom_i']; 
+                                   }
+                              ?>
+                              </strong>
                          </div>
                     </div>
                <br />
           </div>
      </div>
 </body>
-
-<?php
-function sessao_pag() {
-     $sta = 0; $_SESSION['wrkdadven']['err_e'] = ""; $_SESSION['wrkdadven']['ses_e'] = "";
-     $_SESSION['wrkdadven']['tip_e'] = retorna_dad('emptipo', 'tb_empresa', 'idempresa', 1); 
-     $_SESSION['wrkdadven']['ema_e'] = retorna_dad('empemail', 'tb_empresa', 'idempresa', 1); 
-     if ($_SESSION['wrkdadven']['ema_e'] == "") {
-          echo '<script>alert("E-Mail informado na empresa para PagSeguro em branco !");</script>';
-          return 1;
-     }
-     if ($_SESSION['wrkdadven']['tip_e'] == 1) {  // 0-Homologação 1-Produção
-          $_SESSION['wrkdadven']['tok_e'] = retorna_dad('emptokenpro', 'tb_empresa', 'idempresa', 1); 
-          $url = "https://ws.pagseguro.uol.com.br/v2/sessions?" . 'email=' . $_SESSION['wrkdadven']['ema_e'] . '&token=' . $_SESSION['wrkdadven']['tok_e'];
-     } else {
-          $_SESSION['wrkdadven']['tok_e'] = retorna_dad('emptokenhom', 'tb_empresa', 'idempresa', 1); 
-          $url = "https://ws.sandbox.pagseguro.uol.com.br/v2/sessions?" . 'email=' . $_SESSION['wrkdadven']['ema_e'] . '&token=' . $_SESSION['wrkdadven']['tok_e'];
-     }
-
-     $cur  = curl_init($url);
-     curl_setopt($cur, CURLOPT_HTTPHEADER, array("Content-Type: application/x-www-form-urlencode; charset=UTF-8"));
-     curl_setopt($cur, CURLOPT_POST, 1);
-     if ($_SESSION['wrkdadven']['tip_e'] == 1) {
-          curl_setopt($cur, CURLOPT_SSL_VERIFYPEER, true);
-     } else {
-          curl_setopt($cur, CURLOPT_SSL_VERIFYPEER, false);
-     }
-     curl_setopt($cur, CURLOPT_RETURNTRANSFER, true);
-     
-     $ret = curl_exec($cur);
-     curl_close($cur);
-     if ($ret == false) { 
-          echo '<script>alert("Acesso a PagSeguro para identificação não foi autorizado");</script>';
-          return 2;
-     }
-     if ($ret == 'Unauthorized') { 
-          echo '<script>alert("Informações para logar no PagSeguro não estão corretas");</script>';
-          return 3;
-     }
-     $xml = simplexml_load_string($ret);
-     if (isset($xml->error) == true) {
-          $sta = 4;
-          $_SESSION['wrkdadven']['err_e'] = (string) $xml->error->code;
-          echo '<script>alert("' . $_SESSION['wrkdadven']['err_e'] . '");</script>';
-     }else{
-          $_SESSION['wrkdadven']['ses_e'] = (string) $xml->id;
-     }
-     return $sta;
-}
-
-?>
 
 </html>

@@ -230,12 +230,12 @@ $(document).ready(function() {
                <div class="row">
                     <div class="col-md-6">
                          <label>Token de Produção</label>
-                         <input type="text" class="form-control" maxlength="50" id="pro" name="pro"
+                         <input type="text" class="form-control" maxlength="100" id="pro" name="pro"
                               value="<?php echo $pro; ?>"  required />
                     </div>
                     <div class="col-md-6">
                          <label>Token de Homologação</label>
-                         <input type="text" class="form-control" maxlength="50" id="hom" name="hom"
+                         <input type="text" class="form-control" maxlength="100" id="hom" name="hom"
                               value="<?php echo $hom; ?>"  required />
                     </div>
                </div>

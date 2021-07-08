@@ -71,6 +71,41 @@
     font-weight: 300;
 }
 
+.lit-c {
+    color: #ffffff;
+    background-color: #f09021;
+}
+
+.lit-d {
+    color: #ffffff;
+    background-color: #d9701a;
+}
+
+.lit-e { 
+    color: #ffffff;
+    background-color: #244751 !important; 
+}
+
+.lit-f {
+    color: #ffffff;
+    background-color: #6e0101;
+}
+
+.lit-g {
+    color: #ffffff;
+    background-color: #3ba401;
+}
+
+.lit-h {
+    color: #ffffff;
+    background-color: #2e8101 !important;
+}
+
+.lit-i {
+    color: #000000;
+    background-color: #dfdede !important;
+}
+
 .login {
     width: 100%;
     height: 100vh;

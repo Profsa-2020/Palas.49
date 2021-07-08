@@ -6,6 +6,7 @@
      include_once "../profsa.php";
      date_default_timezone_set("America/Sao_Paulo");
      if (isset($_SESSION['wrkcodreg']) == false) { $_SESSION['wrkcodreg'] = 0; }
+     if (isset($_SESSION['wrkendser']) == false) { $_SESSION['wrkendser'] = getenv("REMOTE_ADDR"); }
      if (strlen($_REQUEST['nom']) <= 5) {
           $tab['men'] = "Nome no cartão não pode conter menos de 5 caracteres !";
      }
@@ -27,6 +28,7 @@
           }
      }
      if ($tab['men'] == "") {
+          $ret = enviar_pgt($tab);
           $ret = enviar_ema();
           $ret = gravar_usu();
           $ret = gravar_tit();
@@ -165,7 +167,7 @@
           } else {
                $sql  = "update tb_usuario set ";
                $sql .= "usuempresa = '". $_SESSION['wrkcodreg'] . "', ";
-               $sql .= "keyalt = '" . $_SESSION['wrkideusu'] . "', ";
+               $sql .= "keyalt = '" . $_SESSION['wrkcodreg'] . "', ";
                $sql .= "datalt = '" . date("Y/m/d H:i:s") . "' ";
                $sql .= "where idsenha = " . $_SESSION['wrkcodreg'];
                $ret = comando_tab($sql, $nro, $cha, $men);
@@ -200,7 +202,7 @@
           $sql .= "'" . '0' . "',";
           $sql .= "'" . date('m') . "',";
           $sql .= "'" . $_SESSION['wrkdadven']['pla_v'] . "',";
-          $sql .= "'" . '0' . "',";
+          $sql .= "'" . $_SESSION['wrkdadven']['cod_i'] . "',";
           $sql .= "'" . $_SESSION['wrkcodreg'] . "',";
           $sql .= "'" . date('Y-m-d') . "',";
           $sql .= "'" . date('Y-m-d', strtotime('+30 days')) . "',";     
@@ -217,5 +219,89 @@
           }     
           return $ret;
      }
+     function enviar_pgt(&$tab) {
+          $ret = 0; $tab = array();
+          include_once "../dados.php";
 
+          $pag['plan'] = $_SESSION['wrkdadven']['tok_v'];
+          $pag['reference'] = 'Ref_' . str_pad($_SESSION['wrkdadven']['pla_v'], 3, "0", STR_PAD_LEFT) . "_" . str_pad(limpa_nro($_SESSION['wrkdadven']['cel_c']), 11, "0", STR_PAD_LEFT) . "_" . limpa_nro($_SESSION['wrkdadven']['cpf_c']);
+          $pag['sender']['name'] = limpa_cpo($_SESSION['wrkdadven']['nom_c']);
+          if ($_SESSION['wrkopcpro']  == 1) {
+               $pag['sender']['email'] = $_SESSION['wrkdadven']['ema_c'];
+          } else {
+               $pag['sender']['email'] = "c02184259526725058601@sandbox.pagseguro.com.br";
+          }
+          $pag['sender']['ip'] = $_SESSION['wrkendser'];
+          $pag['sender']['hash'] =  $_REQUEST['has'];
+          $pag['sender']['phone']['areaCode'] =  substr(limpa_nro($_SESSION['wrkdadven']['cel_c']),0, 2);
+          $pag['sender']['phone']['number'] =  substr(limpa_nro($_SESSION['wrkdadven']['cel_c']), 3, 9);
+          $pag['sender']['address']['street'] = limpa_cpo($_SESSION['wrkdadven']['end_e']);
+          $pag['sender']['address']['number'] = limpa_nro($_SESSION['wrkdadven']['num_e']);          
+          $pag['sender']['address']['complement'] = limpa_cpo($_SESSION['wrkdadven']['com_e']);
+          $pag['sender']['address']['district'] = limpa_cpo($_SESSION['wrkdadven']['bai_e']);
+          $pag['sender']['address']['city'] = limpa_cpo($_SESSION['wrkdadven']['cid_e']);
+          $pag['sender']['address']['state'] = $_SESSION['wrkdadven']['est_e'];
+          $pag['sender']['address']['country'] = 'BRA';
+          $pag['sender']['address']['postalCode'] = limpa_nro($_SESSION['wrkdadven']['cep_e']);
+          $pag['sender']['documents'] =  array(0=> array('type'	=> "CPF",	'value'	=> limpa_nro($_SESSION['wrkdadven']['cpf_c'])));
+          $pag['paymentMethod']['type'] = 'CREDITCARD';
+          $pag['paymentMethod']['creditCard']['token'] = $_REQUEST['tok'];
+          $pag['paymentMethod']['creditCard']['holder']['name'] = limpa_cpo($_SESSION['wrkdadven']['nom_c']);
+          $pag['paymentMethod']['creditCard']['holder']['birthDate'] = $_SESSION['wrkdadven']['nas_c'];
+          $pag['paymentMethod']['creditCard']['holder']['documents'] =  array(0=> array('type'	=> "CPF",	'value'	=> limpa_nro($_SESSION['wrkdadven']['cpf_c'])));
+          $pag['paymentMethod']['creditCard']['holder']['phone']['areaCode'] =  substr(limpa_nro($_SESSION['wrkdadven']['cel_c']),0 ,2);
+          $pag['paymentMethod']['creditCard']['holder']['phone']['number'] =  substr(limpa_nro($_SESSION['wrkdadven']['cel_c']), 3, 9);
+          $pag['paymentMethod']['creditCard']['holder']['billingAddress']['street'] = limpa_cpo($_SESSION['wrkdadven']['end_e']);
+          $pag['paymentMethod']['creditCard']['holder']['billingAddress']['number'] = limpa_cpo($_SESSION['wrkdadven']['num_e']);
+          $pag['paymentMethod']['creditCard']['holder']['billingAddress']['complement'] = limpa_cpo($_SESSION['wrkdadven']['com_e']);
+          $pag['paymentMethod']['creditCard']['holder']['billingAddress']['district'] = limpa_cpo($_SESSION['wrkdadven']['bai_e']);
+          $pag['paymentMethod']['creditCard']['holder']['billingAddress']['city'] = limpa_cpo($_SESSION['wrkdadven']['cid_e']);
+          $pag['paymentMethod']['creditCard']['holder']['billingAddress']['state'] = $_SESSION['wrkdadven']['est_e'];
+          $pag['paymentMethod']['creditCard']['holder']['billingAddress']['country'] = 'BRA';
+          $pag['paymentMethod']['creditCard']['holder']['billingAddress']['postalCode'] = limpa_nro($_SESSION['wrkdadven']['cep_e']);
+
+          $env = json_encode($pag);
+          
+          if ($_SESSION['wrkopcpro']  == 1) {
+               $url = "https://ws.pagseguro.uol.com.br/pre-approvals" ;
+          } else {
+               $url = "https://ws.sandbox.pagseguro.uol.com.br/pre-approvals";
+          }
+          $url = $url . '?email=' . $_SESSION['wrkdadven']['ema_e'];
+          $url = $url . '&token=' . $_SESSION['wrkdadven']['tok_e'];
+
+          $cur = curl_init($url);
+          curl_setopt($cur, CURLOPT_HTTPHEADER, array('Content-Type: application/json', 'Accept: application/vnd.pagseguro.com.br.v3+xml;charset=ISO-8859-1'));
+          curl_setopt($cur, CURLOPT_POST, true);
+          if ($_SESSION['wrkopcpro']  == 1) {
+               curl_setopt($cur, CURLOPT_SSL_VERIFYPEER, true);
+          } else {
+               curl_setopt($cur, CURLOPT_SSL_VERIFYPEER, false);
+          }
+          curl_setopt($cur, CURLOPT_RETURNTRANSFER, true);
+          curl_setopt($cur, CURLOPT_POSTFIELDS, $env);
+          
+          $ret = curl_exec($cur);
+
+          curl_close($cur);
+
+          if ($ret == 'Unauthorized') { 
+               $tab['men'] .= "E-Mail e Token do PagSeguro não foi autorizado o acesso.";
+          } else {     
+               $xml = simplexml_load_string($ret);
+               $qtd = count($xml->error);
+               if ($qtd > 0) {
+                    foreach ($xml as $key => $value){  // Pega cada elemento de um objeto vindo do xml
+                         $tab['men'] .= (string) $value->code . "-";
+                         $tab['men'] .= (string) $value->message . "\n";
+                    }
+               } else {
+                    $tab['suc'] = $xml->code;
+               }
+               $inf = json_decode(json_encode((array) $xml), 1); // Transforma XMl em uma array (tabela)
+               $inf = array($xml->getName() => $inf);
+          }
+
+          return $ret;
+     }
 ?>

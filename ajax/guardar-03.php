@@ -12,6 +12,7 @@
           $_SESSION['wrkdadven']['des_v'] = retorna_dad('pladescricao', 'tb_plano', 'idplano', $_REQUEST['plano']); 
           $_SESSION['wrkdadven']['val_v'] = retorna_dad('plavalor', 'tb_plano', 'idplano', $_REQUEST['plano']); 
           $_SESSION['wrkdadven']['qtd_v'] = retorna_dad('planumerotit', 'tb_plano', 'idplano', $_REQUEST['plano']); 
+          $_SESSION['wrkdadven']['tok_v'] = retorna_dad('platoken', 'tb_plano', 'idplano', $_REQUEST['plano']); 
      }
      if ($pla == 0) {
           $tab['men'] = 'Não informado qual o plano desejado para o sistema !';

@@ -28,6 +28,7 @@
                $tab['bai'] = $_SESSION['wrkdadven']['bai_e'];
                $tab['cid'] = $_SESSION['wrkdadven']['cid_e'];
                $tab['est'] = $_SESSION['wrkdadven']['est_e'];
+               $tab['nas'] = $_SESSION['wrkdadven']['nas_c'];
           }
           if (isset($_SESSION['wrkdadven']['nom_v']) == false) {
                $tab['nom_v'] = $_SESSION['wrkdadven']['nom_c'];

@@ -101,7 +101,7 @@ $(document).ready(function() {
 </script>
 
 <?php
-     $ret = 00;
+     $ret = 0; $qtd_a = 0; $val_a = 0;
      $dad = array();
      include_once "dados.php";
      include_once "profsa.php";
@@ -182,126 +182,148 @@ $(document).ready(function() {
                               <br />
                          </form>
                          <br /><br />
-                         <div class="table-responsive">
-                              <table class="table table-sm table-striped">
-                                   <thead class="thead-dark">
-                                        <tr>
-                                             <th colspan="3">COMPRAS</th>
-                                             <th colspan="3">VENDAS</th>
-                                        </tr>
-                                   </thead>
-                                   <thead>
-                                        <tr>
-                                             <th width="20%">Mês</th>
-                                             <th width="10%">Milhas</th>
-                                             <th width="30%">Valor</th>
-                                             <th width="20%">Mês</th>
-                                             <th width="10%">Milhas</th>
-                                             <th width="30%">Valor</th>
-                                        </tr>
-                                   </thead>
-                                   <tbody>
-                                        <?php 
+                         <div class="form-row text-center">
+                              <div class="col-md-6">
+                                   <p class="lit-c"><strong>COMPRAS / ENTRADAS - MOVIMENTO <?php echo $ano; ?></strong>
+                                   </p>
+                              </div>
+                              <div class="col-md-6">
+                                   <p class="lit-g"><strong>VENDAS / SAÍDAS - MOVIMENTO <?php echo $ano; ?></strong></p>
+                              </div>
+                         </div>
+                         <div class="lit-i form-row">
+                              <div class="col-md-2">
+                                   <p>SALDO <?php echo $ano - 1; ?></p>
+                              </div>
+                              <div class="col-md-2">
+                                   <p><?php echo number_format($qtd_a, 0, ",", "."); ?></p>
+                              </div>
+                              <div class="col-md-2">
+                                   <p><?php echo 'R$ ' . number_format($val_a, 2, ",", "."); ?></p>
+                              </div>
+                              <div class="col-md-6"></div>
+                         </div>
+                         <br />
+                         <div class="form-row">
+                              <div class="col-md-6">
+                                   <div class="table-responsive">
+                                        <table class="table table-sm table-striped">
+                                             <thead class="lit-e">
+                                                  <tr>
+                                                       <th>Mês</th>
+                                                       <th>Milhas</th>
+                                                       <th>Valor</th>
+                                                  </tr>
+                                             </thead>
+                                             <tbody>
+                                                  <?php 
                                              for ($ind = 1; $ind <= 12 ; $ind++) {
                                                   $txt =  '<tr>';
                                                   $txt .= '<td>' . $dad['mes_c'][$ind] . '</td>';
                                                   $txt .= '<td class="text-right">' . number_format($dad['qtd_c'][$ind], 0, ",", ".") . '</td>';
                                                   $txt .= '<td class="text-right">' . number_format($dad['val_c'][$ind], 2, ",", ".") . '</td>';
-                                                  $txt .= '<td>' . $dad['mes_v'][$ind] . '</td>';
-                                                  $txt .= '<td class="text-right">' . number_format($dad['qtd_v'][$ind], 0, ",", ".") . '</td>';
-                                                  $txt .= '<td class="text-right">' . number_format($dad['val_v'][$ind], 2, ",", ".") . '</td>';
                                                   $txt .=  '</tr>';
                                                   echo $txt;
                                              }
-                                             $txt =  '<tr class="bg-primary text-white">';
-                                             $txt .= '<td>' . 'TOTAL: ' . '</td>';
+                                             $txt =  '<tr class="lit-i">';
+                                             $txt .= '<td class="text-right">' . 'TOTAL ENTRADAS ' . '</td>';
                                              $txt .= '<td class="text-right">' . number_format($dad['com_q'], 0, ",", ".") . '</td>';
                                              $txt .= '<td class="text-right">' . number_format($dad['com_v'], 2, ",", ".") . '</td>';
-                                             $txt .= '<td>' . 'TOTAL: ' . '</td>';
-                                             $txt .= '<td class="text-right">' . number_format($dad['ven_q'], 0, ",", ".") . '</td>';
-                                             $txt .= '<td class="text-right">' . number_format($dad['ven_v'], 2, ",", ".") . '</td>';
                                              $txt .=  '</tr>';
                                              echo $txt;
-                                             $txt =  '<tr class="bg-primary text-white">';
-                                             $txt .= '<td>' . 'Custo médio de aquisição: ' . '</td>';
-                                             $txt .= '<td class="text-right">' . '' . '</td>';
-                                             if ($dad['com_q'] == 0) {
-                                                  $txt .= '<td class="text-right">' . '0,00' . '</td>';
-                                             } else {
-                                                  $txt .= '<td class="text-right">' . number_format($dad['com_v'] / $dad['com_q'] * 1000, 2, ",", ".") . '</td>';
-                                             }
-                                             $txt .= '<td>' . 'Preço médio de venda: ' . '</td>';
-                                             $txt .= '<td class="text-right">' . '' . '</td>';
-                                             if ($dad['ven_q'] == 0) {
-                                                  $txt .= '<td class="text-right">' . '0,00' . '</td>';
-                                             } else {
-                                                  $txt .= '<td class="text-right">' . number_format($dad['ven_v'] / $dad['ven_q'] * 1000, 2, ",", ".") . '</td>';
-                                             }
+                                             $txt =  '<tr class="lit-e">';
+                                             $txt .= '<td class="text-right">' . 'TOTAL GERAL ' . '</td>';
+                                             $txt .= '<td class="text-right">' . number_format($dad['com_q'], 0, ",", ".") . '</td>';
+                                             $txt .= '<td class="text-right">' . number_format($dad['com_v'], 2, ",", ".") . '</td>';
                                              $txt .=  '</tr>';
                                              echo $txt;
-                                        ?>
-                                   </tbody>
-                              </table>
-                         </div>
-                         <br />
-                         <div class="row bg-warning text-dark">
-                              <div class="col-md-3">
-                                   <span>Quantidades adquiridas</span>
+                                             ?>
+                                             </tbody>
+                                        </table>
+                                   </div>
                               </div>
-                              <div class="col-md-2 text-right">
-                                   <?php echo number_format($dad['qua_a'], 0, ",", "."); ?>
-                              </div>
-                              <div class="col-md-2"></div>
-                              <div class="col-md-3">
-                                   <span>Valor das vendas</span>
-                              </div>
-                              <div class="col-md-2 text-right">
-                                   <?php echo number_format($dad['vlo_v'], 2, ",", "."); ?>
-                              </div>
-                         </div>
-                         <div class="row bg-warning text-dark">
-                              <div class="col-md-3">
-                                   <span>Quantidades Vendida</span>
-                              </div>
-                              <div class="col-md-2 text-right">
-                                   <?php echo number_format($dad['qua_v'], 0, ",", "."); ?>
-                              </div>
-                              <div class="col-md-2"></div>
-                              <div class="col-md-3">
-                                   <span>Custo médio vendido</span>
-                              </div>
-                              <div class="col-md-2 text-right">
-                                   <?php echo number_format($dad['cus_m'], 2, ",", "."); ?>
-                              </div>
-                         </div>
-                         <div class="row bg-warning text-dark">
-                              <div class="col-md-3">
-                                   <span>Saldo em quantidades</span>
-                              </div>
-                              <div class="col-md-2 text-right">
-                                   <?php echo number_format($dad['sdo_q'], 0, ",", "."); ?>
-                              </div>
-                              <div class="col-md-2"></div>
-                              <div class="col-md-3">
-                                   <span>Lucro bruto R$</span>
-                              </div>
-                              <div class="col-md-2 text-right">
-                                   <?php echo number_format($dad['luc_r'], 2, ",", "."); ?>
+                              <div class="col-md-6">
+                                   <div class="table-responsive">
+                                        <table class="table table-sm table-striped">
+                                             <thead class="lit-e">
+                                                  <tr>
+                                                       <th>Mês</th>
+                                                       <th>Milhas</th>
+                                                       <th>Valor</th>
+                                                  </tr>
+                                             </thead>
+                                             <tbody>
+                                                  <?php 
+                                                  for ($ind = 1; $ind <= 12 ; $ind++) {
+                                                       $txt =  '<tr>';
+                                                       $txt .= '<td>' . $dad['mes_v'][$ind] . '</td>';
+                                                       $txt .= '<td class="text-right">' . number_format($dad['qtd_v'][$ind], 0, ",", ".") . '</td>';
+                                                       $txt .= '<td class="text-right">' . number_format($dad['val_v'][$ind], 2, ",", ".") . '</td>';
+                                                       $txt .=  '</tr>';
+                                                       echo $txt;
+                                                  }
+                                                  $txt =  '<tr class="lit-e">';
+                                                  $txt .= '<td class="text-right">' . 'TOTAL SAÍDAS ' . '</td>';
+                                                  $txt .= '<td class="text-right">' . number_format($dad['ven_q'], 0, ",", ".") . '</td>';
+                                                  $txt .= '<td class="text-right">' . number_format($dad['ven_v'], 2, ",", ".") . '</td>';
+                                                  $txt .=  '</tr>';
+                                                  echo $txt;     
+                                                  ?>
+                                             </tbody>
+                                        </table>
+                                   </div>
+
                               </div>
                          </div>
-                         <div class="row bg-warning text-dark">
+
+                         <div class="row text-center">
                               <div class="col-md-3">
-                                   <span>Saldo em R$</span>
+                                   <div class="qua-c">
+                                        <p>Custo Médio de Aquisição</p>
+                                        <h3><?php echo number_format($dad['com_v'] / ($dad['com_q'] == 0 ? 1 : $dad['com_q']) * 1000, 2, ",", ".") ?>
+                                        </h3>
+                                   </div>
                               </div>
-                              <div class="col-md-2 text-right">
-                                   <?php echo number_format($dad['sdo_v'], 2, ",", "."); ?>
-                              </div>
-                              <div class="col-md-2"></div>
                               <div class="col-md-3">
-                                   <span>Lucro bruto %</span>
+                                   <div class="qua-c">
+                                        <p>Saldo Disponível</p>
+                                        <h3><?php echo number_format($dad['sdo_q'], 0,"," ,"."); ?></h3>
+                                   </div>
                               </div>
-                              <div class="col-md-2 text-right">
-                                   <?php echo number_format($dad['luc_p'], 2, ",", ".") . "%"; ?>
+                              <div class="col-md-3">
+                                   <div class="qua-g">
+                                        <p>Preço Médio de Venda</p>
+                                        <h3><?php echo number_format($dad['ven_v'] / ($dad['ven_q'] == 0 ? 1 : $dad['ven_q']) * 1000, 2, ",", "."); ?>
+                                        </h3>
+                                   </div>
+                              </div>
+                              <div class="col-md-3">
+                                   <div class="qua-g">
+                                        <p>Custo Total das Vendas</p>
+                                        <h3><?php echo 'R$ ' . number_format($dad['cus_m'], 2,"," ,"."); ?></h3>
+                                   </div>
+                              </div>
+                         </div>
+
+                         <div class="row text-center">
+                              <div class="col-md-3"></div>
+                              <div class="col-md-3">
+                                   <div class="qua-d">
+                                        <p>Capital em Saldo de Milhas</p>
+                                        <h3><?php echo number_format($dad['sdo_v'], 2,"," ,"."); ?></h3>
+                                   </div>
+                              </div>
+                              <div class="col-md-3">
+                                   <div class="qua-h">
+                                        <p>Lucro Bruto das Operações (R$)</p>
+                                        <h3><?php echo 'R$ ' . number_format($dad['luc_r'], 2, ",", "."); ?></h3>
+                                   </div>
+                              </div>
+                              <div class="col-md-3">
+                                   <div class="qua-h">
+                                        <p>Lucro Bruto das Operações (%)</p>
+                                        <h3><?php echo number_format($dad['luc_p'], 2, ",", ".") . "%"; ?></h3>
+                                   </div>
                               </div>
                          </div>
                          <br />

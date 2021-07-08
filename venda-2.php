@@ -43,6 +43,7 @@
 $(function() {
      $("#cep").mask("00000-000");
      $("#num").mask("000.000");
+     $("#nas").mask("00/00/0000");
 });
 
 $(document).ready(function() {
@@ -74,6 +75,7 @@ $(document).ready(function() {
                     $('#bai').val(data.bai);
                     $('#cid').val(data.cid);
                     $('#est').val(data.est);
+                    $('#nas').val(data.nas);
                }
           }).fail(function(data) {
                console.log('Erro: ' + JSON.stringify(data));
@@ -117,6 +119,7 @@ $(document).ready(function() {
           var bai = $('#bai').val();
           var cid = $('#cid').val();
           var est = $('#est').val();
+          var nas = $('#nas').val();
           $.getJSON("ajax/guardar-02.php", {
                     cep: cep,
                     end: end,
@@ -124,7 +127,8 @@ $(document).ready(function() {
                     com: com,
                     bai: bai,
                     cid: cid,
-                    est: est
+                    est: est,
+                    nas: nas
                })
                .done(function(data) {
                     if (data.men != "") {
@@ -220,7 +224,11 @@ $(document).ready(function() {
                               <input type="text" class="form-control" maxlength="9" id="cep" name="cep" value=""
                                    required />
                          </div>
-                         <div class="col-md-9"></div>
+                         <div class="col-md-5"></div>
+                         <div class="col-md-4">
+                              <label>Nascimento</label>
+                              <input type="text" class="form-control text-center" maxlength="10" id="nas" name="nas" value="" />
+                         </div>
                     </div>
                     <div class="row">
                          <div class="col-md-9">
