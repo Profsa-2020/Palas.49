@@ -195,6 +195,9 @@ $(document).ready(function() {
                               <option value="3" <?php echo ($sta != 3 ? '' : 'selected="selected"'); ?>>
                                    Cortesia
                               </option>
+                              <option value="4" <?php echo ($sta != 4 ? '' : 'selected="selected"'); ?>>
+                                   Suspenso
+                              </option>
                          </select>
                     </div>
                </div>

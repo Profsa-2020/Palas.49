@@ -13,29 +13,19 @@
     $tip = (isset($_REQUEST['notificationType']) == false ? '' : $_REQUEST['notificationType']);
 
     $ema = retorna_dad('empemail', 'tb_empresa', 'idempresa', 1); 
-    $_SESSION['wrkopcpro'] = retorna_dad('empproducao', 'tb_empresa', 'idempresa', 1); 
+    $_SESSION['wrkopcpro'] = retorna_dad('emptipo', 'tb_empresa', 'idempresa', 1); 
     if ($_SESSION['wrkopcpro']  == 0) {
-        $_SESSION['wrkdadven']['tok_e'] = retorna_dad('emptokenhom', 'tb_empresa', 'idempresa', 1); 
+        $_SESSION['wrkdadven']['tok_e'] = retorna_dad('emptokenhom', 'tb_empresa', 'idempresa', 1); $tok = $_SESSION['wrkdadven']['tok_e'];
     } else {
-        $_SESSION['wrkdadven']['tok_e'] = retorna_dad('emptokenpro', 'tb_empresa', 'idempresa', 1); 
+        $_SESSION['wrkdadven']['tok_e'] = retorna_dad('emptokenpro', 'tb_empresa', 'idempresa', 1); $tok = $_SESSION['wrkdadven']['tok_e'];
     }
     if ($_SESSION['wrkopcpro']  == 1) {
-        if (strpos($ema,"milha") > 0) {
-            $tok = '669a7edf-b932-49a2-bd9d-e8534729a680128017a443c095ca7cc829ee1077e9f71083-633d-460a-9ae4-79ac39ef5294';   // Afabb
-        } else  {
-            $tok = 'FF08EB437C2D4C22ABDF0E67822A0896';   // Produção - Profsa
-        }
         if ($tip == "preApproval") {
             $url = 'https://ws.pagseguro.uol.com.br/pre-approvals/notifications/' . $cha . '?' . 'email=' . $ema . '&token=' . $tok;
         } else {
             $url = 'https://ws.pagseguro.uol.com.br/v3/transactions/notifications/' . $cha . '?' . 'email=' . $ema . '&token=' . $tok;
         }
     } else {
-        if (strpos($ema,"milha") > 0) {
-            $tok = '7CF6857560E0430A88629E6EB5B2EC09';   // Afabb
-        } else {
-            $tok = '99B1499ABF574D0583BEA5B2374EA103';   // Homologação - Profsa
-        }
         if ($tip == "preApproval") {
             $url = 'https://ws.sandbox.pagseguro.uol.com.br/pre-approvals/notifications/' . $cha . '?' . 'email=' . $ema . '&token=' . $tok;
 
@@ -57,6 +47,14 @@
         curl_setopt($cur, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($cur, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_1);
         $xml = curl_exec($cur); $vol = $xml;
+
+        if (file_exists('ret') == false) { mkdir('ret'); }
+        $dir = __DIR__;
+        $cam =  'ret' . '/' . 'Ret-' .  date('d-m-y.H-i-s'). '.xml';
+        $fil = fopen($cam, 'w');
+        fwrite($fil, $xml);
+        fclose($fil);      
+
         curl_close($cur);
         
         if ($xml == 'Unauthorized' || $xml == false) { 
@@ -73,7 +71,7 @@
                 $cha = (string) $xml->error->code;
                 $men = (string) $xml->error->message;
                 $ret = gravar_log(54, substr("Erro: " . $cha . "-" . $men . " Xml: " . $vol, 0, 500));
-            } else if ($tip == "preApproval") {
+            } else if ($tip == "preApproval") { // Notificação enviada quando feita assinatura.
                 $sta = 5; $ret = 0;
                 $dad['tit']['cod'] = (string) $xml->code;
                 $dad['tit']['dat'] = (string) $xml->date;
@@ -94,7 +92,7 @@
                 } else {
                     $ret = gravar_log(56, substr("Assinatura: " . $cha . " Tip: " . $tip  . " Ref: " . $dad['tit']['tit'] . " Xml: " . $vol, 0, 500));
                 }
-            } else if ($tip == "transaction") {
+            } else if ($tip == "transaction") { // Notificação enviada quando muda o status
                 $sta = 6; $ret = 0;
                 $dad['tit']['cod'] = (string) $xml->code;
                 $dad['tit']['dat'] = (string) $xml->date;
@@ -142,45 +140,43 @@ function atualiza_tit($dad) {
     $cha = 0;
     $nom = '';
     include_once "dados.php";
-    $key = explode('_', $dad['tit']['tit']);
-    $sql = mysqli_query($conexao,"Select idassociado, assnome, asschave from tb_associado where idassociado = " . $key[2]);
-    if (mysqli_num_rows($sql) == 1) {
-        $lin = mysqli_fetch_array($sql);
-        $cod = $lin['idassociado'];
-        $nom = $lin['assnome'];
-    } else if (mysqli_num_rows($sql) > 1) {
-        $ret = gravar_log(58, substr("Erro: chave contém vários associados cadastrados: " . $dad['tit']['cod'] . " Data: " . $dad['tit']['dat'], 0, 500));
+    $key = explode('_', $dad['tit']['tit']); // 0-Ref 1-Plano 2-Cliente 3-Cpf 
+    $nro = acessa_reg("Select idsenha, usunome from tb_usuario where idsenha = " . $key[2], $reg);            
+    if ($nro == 1) {
+        $cod = $reg['idsenha'];
+        $nom = $reg['usunome'];
+    }
+    if ($nro > 1) {
+        $ret = gravar_log(58, substr("Erro: chave contém vários contratantes cadastrados: " . $dad['tit']['cod'] . " Data: " . $dad['tit']['dat'], 0, 500));
         return 6;
-
     }
     if ($cod == 0) {
-        $ret = gravar_log(59, substr("Erro: chave não encontrada nos associados: " . $dad['tit']['cod'] . " Data: " . $dad['tit']['dat'], 0, 500));
+        $ret = gravar_log(59, substr("Erro: chave não encontrada nos contratantes: " . $dad['tit']['cod'] . " Data: " . $dad['tit']['dat'], 0, 500));
         return 7;
     }
-    $sql = mysqli_query($conexao,"Select idreceber from tb_receber where idassociado = " . $cod . " order by idreceber Limit 1");
-    if (mysqli_num_rows($sql) == 1) {
-        $lin = mysqli_fetch_array($sql);
-        $cha = $lin['idreceber'];
-    } else {
-        $ret = gravar_log(60, substr("Erro: título não encontrada para associado: " . $dad['tit']['cod'] . " Data: " . $dad['tit']['dat'], 0, 500));
+    $nro = acessa_reg("Select idtitulo, titadministrador from tb_titulo where titadministrador = " . $key[2], $reg);            
+    if ($nro == 1) {
+        $cha = $lin['idtitulo'];
+    } else if ($nro == 0) {
+        $ret = gravar_log(60, substr("Erro: título não encontrada para contratante: " . $dad['tit']['cod'] . " Data: " . $dad['tit']['dat'], 0, 500));
         return 8;
     }
 
     if ($cha != 0) {
-        $sql  = "update tb_receber set ";
-        if ($dad['tit']['sta'] == 3) { $sql .= "recstatus = '". '1' . "', "; }
-        if ($dad['tit']['sta'] == 4) { $sql .= "recstatus = '". '1' . "', "; }
-        if ($dad['tit']['sta'] == 5) { $sql .= "recstatus = '". '3' . "', "; }
-        if ($dad['tit']['sta'] == 6) { $sql .= "recstatus = '". '5' . "', "; }
-        if ($dad['tit']['sta'] == 7) { $sql .= "recstatus = '". '5' . "', "; }
-        if ($dad['tit']['sta'] == 8) { $sql .= "recstatus = '". '4' . "', "; }
-        if ($dad['tit']['sta'] == 9) { $sql .= "recstatus = '". '3' . "', "; }
-        $sql .= "recdatapagto = '". substr($dad['tit']['dat'], 0, 19) . "', ";
-        $sql .= "recvalpagto = '". $dad['tit']['val'] . "', ";
+        $sql  = "update tb_titulo set ";    // 0-aberto 1-pago 2-cancelado 3-cortesia 4-suspenso
+        if ($dad['tit']['sta'] == 3) { $sql .= "titstatus = '". '1' . "', "; }
+        if ($dad['tit']['sta'] == 4) { $sql .= "titstatus = '". '1' . "', "; }
+        if ($dad['tit']['sta'] == 5) { $sql .= "titstatus = '". '4' . "', "; }
+        if ($dad['tit']['sta'] == 6) { $sql .= "titstatus = '". '2' . "', "; }
+        if ($dad['tit']['sta'] == 7) { $sql .= "titstatus = '". '2' . "', "; }
+        if ($dad['tit']['sta'] == 8) { $sql .= "titstatus = '". '4' . "', "; }
+        if ($dad['tit']['sta'] == 9) { $sql .= "titstatus = '". '4' . "', "; }
+        $sql .= "titdatabai = '". substr($dad['tit']['dat'], 0, 19) . "', ";
+        $sql .= "titpago = '". $dad['tit']['val'] . "', ";
         $sql .= "keyalt = '" . $_SESSION['wrkideusu'] . "', ";
         $sql .= "datalt = '" . date("Y/m/d H:i:s") . "' ";
-        $sql .= "where idreceber = " . $cha;
-        $ret = mysqli_query($conexao,$sql);
+        $sql .= "where idtitulo = " . $cha;
+        $ret = comando_tab($sql, $nro, $ult, $men);
         if ($ret == true) {
             $ret = gravar_log(61, substr("Atualização do título: " . $cha . " Nome: " . $dad['ass']['nom'] . " Status: " . $dad['tit']['sta'], 0, 500));
         } else {
@@ -198,18 +194,18 @@ function atualiza_can($dad) {
     $nom = '';
     include_once "dados.php";
     $key = explode('_', $dad['tit']['tit']);
-    $sql  = "update tb_receber set ";
-    $sql .= "recstatus = '". ($dad['tit']['sta'] == "CANCELLED_BY_RECEIVER" ? '4' : '5') . "', "; 
-    $sql .= "recdatapagto = '". substr($dad['tit']['dat'], 0, 19) . "', ";
+    $sql  = "update tb_titulo set ";
+    $sql .= "titstatus = '". ($dad['tit']['sta'] == "CANCELLED_BY_RECEIVER" ? '4' : '2') . "', "; 
+    $sql .= "titpago = '". substr($dad['tit']['dat'], 0, 19) . "', ";
     if ($dad['tit']['sta'] == "CANCELLED_BY_RECEIVER") {
-        $sql .= "recobservacao = '". 'CANCELAMENTO DE ASSINATURA PELA AFABB EM ' . date('d/m/Y H:i:s') . "', "; 
+        $sql .= "titobservacao = '". 'CANCELAMENTO DE ASSINATURA PELA ADMMILHAS EM ' . date('d/m/Y H:i:s') . "', "; 
     } else {
-        $sql .= "recobservacao = '". 'CANCELAMENTO DE ASSINATURA PELO ASSOCIADO EM ' . date('d/m/Y H:i:s') . "', "; 
+        $sql .= "titobservacao = '". 'CANCELAMENTO DE ASSINATURA PELO CONTRATANTE EM ' . date('d/m/Y H:i:s') . "', "; 
     }
     $sql .= "keyalt = '" . $_SESSION['wrkideusu'] . "', ";
     $sql .= "datalt = '" . date("Y/m/d H:i:s") . "' ";
-    $sql .= "where recstatus = 0 and idassociado = " . (int) $key[2];
-    $ret = mysqli_query($conexao,$sql);
+    $sql .= "where titstatus = 0 and titchave = '" . $dad['tit']['cod'] . "'";
+    $ret = comando_tab($sql, $nro, $ult, $men);
     if ($ret == true) {
         $ret = gravar_log(63, substr("Atualização do cancelamento: " . $cha . " Nome: " . $dad['ass']['nom'] . " Status: " . $dad['tit']['sta'], 0, 500));
     } else {

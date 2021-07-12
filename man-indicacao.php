@@ -346,7 +346,7 @@ function carrega_ind() {
      foreach ($reg as $lin) {
           $txt =  '<tr>';
           $txt .= '<td class="text-center"><a href="man-indicacao.php?ope=2&cod=' . $lin['idindicacao'] . '" title="Efetua alteração do registro informado na linha"><i class="large material-icons">healing</i></a></td>';
-          $txt .= '<td class="lit-d text-center"><a href="man-indicacao.php?ope=3&cod=' . $lin['idindicacao'] . '" title="Efetua exclusão do registro informado na linha"><i class="cor-1 large material-icons">delete_forever</i></a></td>';
+          $txt .= '<td class="text-center"><a href="man-indicacao.php?ope=3&cod=' . $lin['idindicacao'] . '" title="Efetua exclusão do registro informado na linha"><i class="cor-1 large material-icons">delete_forever</i></a></td>';
           $txt .= '<td class="text-center">' . $lin['idindicacao'] . '</td>';
           if ($lin['indstatus'] == 0) {$txt .= "<td>" . "Ativo" . "</td>";}
           if ($lin['indstatus'] == 1) {$txt .= "<td>" . "Bloqueado" . "</td>";}

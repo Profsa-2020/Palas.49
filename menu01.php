@@ -58,7 +58,7 @@ $(document).ready(function() {
      $('#usu').change(function() {
           $('#tab-0 tbody').empty();
           let usu = $('#usu').val();
-          $.get("ajax/carrega-pro.php", {
+          $.get("ajax/carrega-tud.php", {
                     usu: usu
                })
                .done(function(data) {
@@ -123,15 +123,15 @@ $(document).ready(function() {
      </div>
      <br />
      <div class="container">
-          <div class="row text-center">
+          <div class="row text-left">
                <div class="col-md-3">
                     <h3><span class="cor-b"><strong>DashBoard</strong></span></h3>
                </div>
-               <div class="col-md-6">
+               <div class="col-md-6 text-center">
                     <span class="qua-b"><span class="cor-1">AVISO: </span>Módulo Venda Direta de Passagens em breve
                          !</span>
                </div>
-               <div class="col-md-3">
+               <div class="col-md-3 text-center">
                     <span class="qua-b"><i class="cor-c fa fa-question-circle fa-1g" aria-hidden="true"></i> Ajuda /
                          Video Aulas</span>
                </div>
@@ -142,24 +142,28 @@ $(document).ready(function() {
                     <div class="qua-c">
                          <p>Milhas Negociadas (Mês Corrente)</p>
                          <h3><?php echo number_format($dad['qtd_m'], 0,"," ,"."); ?></h3>
+                         <br />
                     </div>
                </div>
                <div class="col-md-3">
                     <div class="qua-c">
                          <p>Total de Venda (Mês Corrente)</p>
                          <h3><?php echo 'R$ ' . number_format($dad['val_m'], 2,"," ,"."); ?></h3>
+                         <br />
                     </div>
                </div>
                <div class="col-md-3">
                     <div class="qua-d">
                          <p>Milhas Negociadas (Geral Ano)</p>
                          <h3><?php echo number_format($dad['qtd_a'], 0,"," ,"."); ?></h3>
+                         <br />
                     </div>
                </div>
                <div class="col-md-3">
                     <div class="qua-d">
                          <p>Total de Venda (Geral Ano)</p>
                          <h3><?php echo 'R$ ' . number_format($dad['val_a'], 2,"," ,"."); ?></h3>
+                         <br />
                     </div>
                </div>
           </div>
@@ -216,9 +220,9 @@ $(document).ready(function() {
                                                   echo '<tr>';
                                                   echo '<td><strong>' . retorna_dad('usunome', 'tb_usuario', 'idsenha', $dad['usu_l'][$ind]) . '</strong></td>';
                                                   echo '<td><strong>' . retorna_dad('prodescricao', 'tb_programa', 'idprograma', $dad['pro_l'][$ind]) . '</strong></td>';
-                                                  echo '<td class="text-right"><strong>' . number_format($dad['sal_l'][$ind], 0, ",", ".") . '</strong></td>';
-                                                  echo '<td class="text-right"><strong>' . number_format($dad['com_l'][$ind], 2, ",", ".")  . '</strong></td>';
-                                                  echo '<td class="text-right"><strong>' . number_format($dad['ven_l'][$ind], 2, ",", ".")  . '</strong></td>';
+                                                  echo '<td class="text-center"><strong>' . number_format($dad['sal_l'][$ind], 0, ",", ".") . '</strong></td>';
+                                                  echo '<td class="text-center"><strong>' . number_format($dad['com_l'][$ind], 2, ",", ".")  . '</strong></td>';
+                                                  echo '<td class="text-center"><strong>' . number_format($dad['ven_l'][$ind], 2, ",", ".")  . '</strong></td>';
                                                   echo '<td class="text-center"><strong>' . number_format($dad['cpf_l'][$ind], 0, ",", ".")  . '</strong></td>';
                                                   echo '</tr>';
                                              }                                             

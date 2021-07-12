@@ -122,7 +122,7 @@ $(document).ready(function() {
      if (isset($_SESSION['wrkdadven']) == false) { $_SESSION['wrkdadven'] = array(); }
      if (isset($_SESSION['wrkendser']) == false) { $_SESSION['wrkendser'] = getenv("REMOTE_ADDR"); }
 
-     $_SESSION['wrkdadven']['cod_i']  = 0; $_SESSION['wrkdadven']['nom_i']  = ""; $_SESSION['wrkdadven']['key_i']  = "";
+     $_SESSION['wrkdadven']['cod_i']  = 0; $_SESSION['wrkdadven']['nom_i']  = ""; $_SESSION['wrkdadven']['key_i']  = ""; $_SESSION['wrkdadven']['com_i']  = 0;
      $_SESSION['wrkdadven']['key_i'] = (isset($_REQUEST['chave']) == false ? '' : $_REQUEST['chave']);
      $_SESSION['wrkdadven']['cha_i'] = (isset($_REQUEST['indicado']) == false ? '' : $_REQUEST['indicado']);
      if ($_SESSION['wrkdadven']['cha_i'] != '') {
@@ -130,12 +130,15 @@ $(document).ready(function() {
           if ($_SESSION['wrkdadven']['cod_i'] == "") {
                $_SESSION['wrkdadven']['cod_i']  = retorna_dad('idindicacao', 'tb_indicacao', 'indapelido', $_SESSION['wrkdadven']['cha_i']);
                $_SESSION['wrkdadven']['nom_i']  = retorna_dad('indnome', 'tb_indicacao', 'indapelido', $_SESSION['wrkdadven']['cha_i']);
+               $_SESSION['wrkdadven']['com_i']  = retorna_dad('indcomissao', 'tb_indicacao', 'indapelido', $_SESSION['wrkdadven']['cha_i']);
           } else {
                $_SESSION['wrkdadven']['nom_i']  = retorna_dad('indnome', 'tb_indicacao', 'idindicacao', $_SESSION['wrkdadven']['cod_i']);
+               $_SESSION['wrkdadven']['com_i']  = retorna_dad('indcomissao', 'tb_indicacao', 'idindicacao', $_SESSION['wrkdadven']['cod_i']);
           }
           if ($_SESSION['wrkdadven']['nom_i'] == "") {
                $_SESSION['wrkdadven']['cod_i'] = "0";
                $_SESSION['wrkdadven']['cha_i'] = "0";
+               $_SESSION['wrkdadven']['com_i'] = "0";
                $_SESSION['wrkdadven']['nom_i'] = '##############################';
           }
      }

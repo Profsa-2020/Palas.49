@@ -311,7 +311,7 @@ function carrega_car() {
           if ($lin['carstatus'] == 2) {$txt .= "<td>" . "Suspenso" . "</td>";}
           if ($lin['carstatus'] == 3) {$txt .= "<td>" . "Cancelado" . "</td>";}
           $txt .= '<td class="text-center"><a href="man-cartao.php?ope=2&cod=' . $lin['idcartao'] . '" title="Efetua alteração do registro informado na linha"><i class="large material-icons">healing</i></a></td>';
-          $txt .= '<td class="lit-d text-center"><a href="man-cartao.php?ope=3&cod=' . $lin['idcartao'] . '" title="Efetua exclusão do registro informado na linha"><i class="cor-1 large material-icons">delete_forever</i></a></td>';
+          $txt .= '<td class="text-center"><a href="man-cartao.php?ope=3&cod=' . $lin['idcartao'] . '" title="Efetua exclusão do registro informado na linha"><i class="cor-1 large material-icons">delete_forever</i></a></td>';
           $txt .= "</tr>";
           echo $txt;
      }

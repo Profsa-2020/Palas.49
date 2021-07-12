@@ -106,7 +106,6 @@ $(document).ready(function() {
                     if ($('#est').val() == "") {
                          $('#est').val(data.uf);
                     }
-                    $('#num').focus();
                });
           }
      });

@@ -51,7 +51,7 @@
           if ($_REQUEST['opc'] == '1' && $_REQUEST['qtd'] != "" && $_REQUEST['val'] != "") {
                $ret = gravar_com($err);               
           }
-          if ($_REQUEST['opc'] == '2' && $_REQUEST['qtd_t'] != "" && $_REQUEST['val_t'] != "") {
+          if ($_REQUEST['opc'] == '2' && $_REQUEST['qtd_t'] != "" && $_REQUEST['vlo_t'] != "") {
                $ret = gravar_tra_1($err);               
                $tab['men'] = $err;
                $ret = gravar_tra_2($err);     
@@ -159,7 +159,7 @@
           $sql .= "'" . $usu . "',";
           $sql .= "'" . $pro . "',";
           $sql .= "'" . inverte_dat(1, $_REQUEST['dat_t']) . "',";
-          $sql .= "'" . str_replace(",", ".", str_replace(".", "", $_REQUEST['val_t'])) . "',";
+          $sql .= "'" . limpa_val($_REQUEST['vlo_t']) . "',";
           $sql .= "'" . str_replace(".", "", $_REQUEST['qtd_t']) . "',";
           $sql .= "'" . $_REQUEST['des_t'] . "',";
           $sql .= "'" . $_REQUEST['pro_t'] . "',";
@@ -221,7 +221,7 @@
           $sql .= "'" . $usu . "',";
           $sql .= "'" . $pro . "',";
           $sql .= "'" . inverte_dat(1, $_REQUEST['dat_t']) . "',";
-          $sql .= "'" . str_replace(",", ".", str_replace(".", "", $_REQUEST['val_t'])) . "',";
+          $sql .= "'" . str_replace(",", ".", str_replace(".", "", $_REQUEST['vlo_t'])) . "',";
           $sql .= "'" . str_replace(".", "", $_REQUEST['qtd_t']) . "',";
           $sql .= "'" . '0' . "',";     // $_REQUEST['cta_t']
           $sql .= "'" . $_REQUEST['pro_t'] . "',";

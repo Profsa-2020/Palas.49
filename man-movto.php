@@ -700,7 +700,8 @@ $(document).ready(function() {
           let pro = $('#pro_t').val();
           $('#boi_t').val('');
           $('#bov_t').val('');
-          $('#val_t').val('');
+          $('#val_t').val('');          
+          $('#vlo_t').val('');
           if (pro == 1) {
                $('#vai_t').val('');
                $('#vol_t').val('');
@@ -723,6 +724,7 @@ $(document).ready(function() {
           if (qtd == "") {
                $('#qtd_t').val($('#qtd_s').val());
                $('#val_t').val($('#tot_s').val());
+               $('#vlo_t').val($('#tot_s').val());
                $('#cus_c').val(pre * 1000);
                var cus = (pre * 1000).toLocaleString("pt-BR", {
                     style: "currency",
@@ -770,12 +772,12 @@ $(document).ready(function() {
                });
                cus = cus.replace('R$', '');
                $('#val_t').val(cus.trim());
-
+               $('#vlo_t').val(cus.trim());
                val = (qtd * med).toLocaleString("pt-BR", {
                     style: "currency",
                     currency: "BRL"
                });
-               val = val.replace('R$', '');
+               val = val.replace('R$', ''); 
           }
           if (qtd != "" && val != "") {
                qtd = qtd.replace('.', '');
@@ -1293,7 +1295,7 @@ $(document).ready(function() {
                                              <div class="col-md-6">
                                                   <label>Custo Total</label>
                                                   <input type="text" class="form-control text-right" maxlength="12"
-                                                       id="val_t" name="val_t" value="<?php echo $val_t; ?>" />
+                                                       id="val_t" name="val_t" value="<?php echo $val_t; ?>" disabled />
                                              </div>
                                              <div class="col-md-6">
                                                   <label>Data da Operação</label>
@@ -1686,6 +1688,7 @@ $(document).ready(function() {
                <input type="hidden" id="med_t" name="med_t" value="0" />
                <input type="hidden" id="cus_c" name="cus_c" value="0" />
                <input type="hidden" id="tot_s" name="tot_s" value="0" />
+               <input type="hidden" id="vlo_t" name="vlo_t" value="0" />
           </form>
      </div>
      <br />

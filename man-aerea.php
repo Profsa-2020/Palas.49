@@ -275,7 +275,7 @@ function carrega_aer() {
      foreach ($reg as $lin) {
           $txt =  '<tr>';
           $txt .= '<td class="text-center"><a href="man-aerea.php?ope=2&cod=' . $lin['idaerea'] . '" title="Efetua alteração do registro informado na linha"><i class="large material-icons">healing</i></a></td>';
-          $txt .= '<td class="lit-d text-center"><a href="man-aerea.php?ope=3&cod=' . $lin['idaerea'] . '" title="Efetua exclusão do registro informado na linha"><i class="cor-1 large material-icons">delete_forever</i></a></td>';
+          $txt .= '<td class="text-center"><a href="man-aerea.php?ope=3&cod=' . $lin['idaerea'] . '" title="Efetua exclusão do registro informado na linha"><i class="cor-1 large material-icons">delete_forever</i></a></td>';
           $txt .= '<td class="text-center">' . $lin['idaerea'] . '</td>';
           if ($lin['aerstatus'] == 0) {$txt .= "<td>" . "Ativo" . "</td>";}
           if ($lin['aerstatus'] == 1) {$txt .= "<td>" . "Bloqueado" . "</td>";}

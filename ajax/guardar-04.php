@@ -1,7 +1,7 @@
 <?php
      session_start();
      $tab = array();
-     $tab['men'] = '';
+     $tab['men'] = ''; $tab['cod'] = '';
      include_once "../dados.php";
      include_once "../profsa.php";
      date_default_timezone_set("America/Sao_Paulo");
@@ -28,10 +28,10 @@
           }
      }
      if ($tab['men'] == "") {
+          $ret = gravar_usu($tab);
           $ret = enviar_pgt($tab);
-          $ret = enviar_ema();
-          $ret = gravar_usu();
-          $ret = gravar_tit();
+          $ret = enviar_ema($tab);
+          $ret = gravar_tit($tab);
           $_SESSION['wrkdadven']['nom_v'] = $_REQUEST['nom'];
           $_SESSION['wrkdadven']['cpf_v'] = $_REQUEST['cpf'];
           $_SESSION['wrkdadven']['dat_v'] = $_REQUEST['dat'];
@@ -44,7 +44,7 @@
 
 
      
-     function enviar_ema() {
+     function enviar_ema($tab) {
           $sta = 0; $erro = "";
           $tex  = '<!DOCTYPE html>';
           $tex .= '<html lang="pt_br">';
@@ -87,7 +87,7 @@
           return $sta;
      }
 
-     function gravar_usu() {
+     function gravar_usu(&$tab) {
           $ret = 0; $erro = ""; $emp = 0;
           include_once "../dados.php";
           $sql  = "insert into tb_usuario (";
@@ -132,15 +132,15 @@
           if ($_SESSION['wrkdadven']['pla_v'] == "88") {    // Visitante
                $sql .= "'" . '0' . "',";
                $sql .= "'" . '100' . "',";
-               $sql .= "'" . date('Y-m-d', strtotime('+30 days')) . "',";     
+               $sql .= "'" . date('Y-m-d', strtotime('+15 days')) . "',";     
           } else if ($_SESSION['wrkdadven']['pla_v'] == "99") {  // a combinar
                $sql .= "'" . '0' . "',";
                $sql .= "'" . '100' . "',";
-               $sql .= "'" . date('Y-m-d', strtotime('+10 days')) . "',";     
+               $sql .= "'" . date('Y-m-d', strtotime('+15 days')) . "',";     
           } else {
                $sql .= "'" . '4' . "',";
                $sql .= "'" . '999999' . "',";
-               $sql .= "'" . '2031-12-31' . "',";     
+               $sql .= "'" . date('Y-m-d', strtotime('+30 days')) . "',";     
           }
           $sql .= "'" . limpa_nro($_SESSION['wrkdadven']['cep_e']) . "',";
           $sql .= "'" . $_SESSION['wrkdadven']['end_e'] . "',";
@@ -161,7 +161,7 @@
           $sql .= "'" . '0' . "',";
           $sql .= "'" . date("Y/m/d H:i:s") . "')";
           $ret = comando_tab($sql, $nro, $cha, $men);
-          $_SESSION['wrkcodreg'] = $cha;     // Chave do usuário criado
+          $_SESSION['wrkcodreg'] = $cha;  $tab['cli'] = $cha;    
           if ($ret == false) {
                $erro = $sql;
           } else {
@@ -178,7 +178,7 @@
           return $ret;
      }
 
-     function gravar_tit() {
+     function gravar_tit($tab) {
           $ret = 0; $erro = ""; 
           include_once "../dados.php";
           $sql  = "insert into tb_titulo (";
@@ -193,7 +193,7 @@
           $sql .= "titvalor, ";
           $sql .= "titpago, ";
           $sql .= "titcomissao, ";
-          $sql .= "titindicacao, ";
+          $sql .= "titchave, ";
           $sql .= "titobservacao, ";
           $sql .= "keyinc, ";
           $sql .= "datinc ";
@@ -208,8 +208,8 @@
           $sql .= "'" . date('Y-m-d', strtotime('+30 days')) . "',";     
           $sql .= "'" . $_SESSION['wrkdadven']['val_v'] . "',";
           $sql .= "'" . '0' . "',";
-          $sql .= "'" . '0' . "',";
-          $sql .= "'" . $_SESSION['wrkdadven']['cod_i'] . "',";
+          $sql .= "'" . $_SESSION['wrkdadven']['com_i'] . "',";
+          $sql .= "'" . $tab['cod'] . "',";
           $sql .= "'" . 'Adesão do cliente efetuada via página de venda em: ' . date('d/m/Y H:i:s') . "',";
           $sql .= "'" . '0' . "',";
           $sql .= "'" . date("Y/m/d H:i:s") . "')";
@@ -219,12 +219,13 @@
           }     
           return $ret;
      }
+
      function enviar_pgt(&$tab) {
-          $ret = 0; $tab = array();
+          $ret = 0; $tab['suc'] = ''; $tab['cod'] = '';
           include_once "../dados.php";
 
           $pag['plan'] = $_SESSION['wrkdadven']['tok_v'];
-          $pag['reference'] = 'Ref_' . str_pad($_SESSION['wrkdadven']['pla_v'], 3, "0", STR_PAD_LEFT) . "_" . str_pad(limpa_nro($_SESSION['wrkdadven']['cel_c']), 11, "0", STR_PAD_LEFT) . "_" . limpa_nro($_SESSION['wrkdadven']['cpf_c']);
+          $pag['reference'] = 'Ref_' . str_pad($_SESSION['wrkdadven']['pla_v'], 3, "0", STR_PAD_LEFT) . "_" . str_pad($tab['cli'], 6, "0", STR_PAD_LEFT) . "_" . limpa_nro($_SESSION['wrkdadven']['cpf_c']);
           $pag['sender']['name'] = limpa_cpo($_SESSION['wrkdadven']['nom_c']);
           if ($_SESSION['wrkopcpro']  == 1) {
                $pag['sender']['email'] = $_SESSION['wrkdadven']['ema_c'];
@@ -299,6 +300,7 @@
                     $tab['suc'] = $xml->code;
                }
                $inf = json_decode(json_encode((array) $xml), 1); // Transforma XMl em uma array (tabela)
+               $tab['cod'] = $inf['code'];
                $inf = array($xml->getName() => $inf);
           }
 

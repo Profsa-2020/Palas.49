@@ -200,7 +200,7 @@ function carrega_usu() {
                     if ($lin['usustatus'] == 2) {$txt .= "<td>" . "Suspenso" . "</td>";}
                     if ($lin['usustatus'] == 3) {$txt .= "<td>" . "Cancelado" . "</td>";}
                     $txt .= '<td class="text-center"><a href="man-usuario.php?ope=2&cod=' . $lin['idsenha'] . '" title="Efetua alteração do registro informado na linha"><i class="large material-icons">healing</i></a></td>';
-                    $txt .= '<td class="lit-d text-center"><a href="man-usuario.php?ope=3&cod=' . $lin['idsenha'] . '" title="Efetua exclusão do registro informado na linha"><i class="cor-1 large material-icons">delete_forever</i></a></td>';
+                    $txt .= '<td class="text-center"><a href="man-usuario.php?ope=3&cod=' . $lin['idsenha'] . '" title="Efetua exclusão do registro informado na linha"><i class="cor-1 large material-icons">delete_forever</i></a></td>';
                     $txt .= "</tr>";
                     echo $txt;
                }

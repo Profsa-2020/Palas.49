@@ -87,9 +87,9 @@ $(document).ready(function() {
           let ope = $(this).attr("ope");
           $("#sta_m").val(ope);
           if (ope == 1) {
-               $('#tel-mov').text("Baixa de Bônus Recebido (Transferência)");
+               $('#tel-mov').text("ValidarBônus Recebido (Transferência)");
           } else {
-               $('#tel-mov').text("Baixa de Valor Recebido (Venda)");
+               $('#tel-mov').text("ValidarValor Recebido (Venda)");
           }
           $.getJSON("ajax/carrega-mov.php", {
                     ope: ope, cod: cod })
@@ -257,7 +257,7 @@ $(document).ready(function() {
                                    <table id="tab-0" class="table table-sm table-striped">
                                         <thead>
                                              <tr>
-                                                  <th>Baixar</th>
+                                                  <th>Validar</th>
                                                   <th>Operação</th>
                                                   <th>Id</th>
                                                   <th>Usuário</th>
@@ -295,8 +295,8 @@ $(document).ready(function() {
                <!-- modal-sm modal-lg modal-xl -->
                <form id="frmMosMov" name="frmMosMov" action="con-movto.php" method="POST">
                     <div class="modal-content">
-                         <div class="modal-header bg-primary text-white">
-                              <h5 class="modal-title" id="tel-mov">Baixa de Movimento</h5>
+                         <div class="lit-d modal-header">
+                              <h5 class="modal-title" id="tel-mov">Validar Movimento</h5>
                               <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
                                    <span aria-hidden="true">&times;</span>
                               </button>
@@ -311,9 +311,9 @@ $(document).ready(function() {
                          </div>
                          <div class="modal-footer">
                               <button type="button" id="gra_m" name="salvar"
-                                   class="btn btn-outline-success">Baixar</button>
+                                   class="btn btn-outline-success">Validar</button>
                               <button type="button" id="fec_m" name="fec_m" class="btn btn-outline-danger"
-                                   data-dismiss="modal">Fechar</button>
+                                   data-dismiss="modal">Sair</button>
                          </div>
                     </div>
                     <input type="hidden" id="sta_m" name="sta_m" value="0" />

@@ -185,6 +185,9 @@ $(document).ready(function() {
                               <option value="3" <?php echo ($sta != 3 ? '' : 'selected="selected"'); ?>>
                                    Cortesia
                               </option>
+                              <option value="4" <?php echo ($sta != 4 ? '' : 'selected="selected"'); ?>>
+                                   Suspenso
+                              </option>
                          </select>
                     </div>
                     <div class="col-md-2">
@@ -254,7 +257,7 @@ function carrega_tit($sta, $dti, $dtf) {
      foreach ($lin as $reg) {               
           $txt =  '<tr>';
           $txt .= '<td class="text-center"><a href="man-titulo.php?ope=2&cod=' . $reg['idtitulo'] . '" title="Efetua alteração do registro informado na linha"><i class="large material-icons">healing</i></a></td>';
-          $txt .= '<td class="lit-d text-center"><a href="man-titulo.php?ope=3&cod=' . $reg['idtitulo'] . '" title="Efetua exclusão do registro informado na linha"><i class="cor-1 large material-icons">delete_forever</i></a></td>';
+          $txt .= '<td class="text-center"><a href="man-titulo.php?ope=3&cod=' . $reg['idtitulo'] . '" title="Efetua exclusão do registro informado na linha"><i class="cor-1 large material-icons">delete_forever</i></a></td>';
           $txt .= '<td class="text-center">' . $reg['idtitulo'] . '</td>';
           if ($reg['titstatus'] == 0) {$txt .= "<td>" . "" . "</td>";}
           if ($reg['titstatus'] == 1) {$txt .= "<td>" . "Pago" . "</td>";}

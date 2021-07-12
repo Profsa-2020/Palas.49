@@ -50,10 +50,6 @@
           } else {
                $tab['txt'] .= 'Valor: R$ ' . number_format($reg['movquantidade'] * $reg['movcusto'] / 1000, 2, ",", ".") . '<br />';
           }
-          if ($reg['movtipo'] >= 1 && $reg['movtipo'] <= 4) {
-               $tab['txt'] .= 'Bônus de Ida: ' . number_format($reg['movpercvai'], 0, ",", ".") . ' %'  . '<br />';
-               $tab['txt'] .= 'Bônus de Volta: ' . number_format($reg['movpercvolta'], 0, ",", ".") . ' % ' . '<br />';
-          }
           $tab['txt'] .= 'Observação: ' . $reg['movobservacao'] . '<br />';
           $tab['txt'] .= '</strong>';
      }

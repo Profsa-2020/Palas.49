@@ -305,7 +305,7 @@ function carrega_pro() {
           if ($lin['prostatus'] == 2) {$txt .= "<td>" . "Suspenso" . "</td>";}
           if ($lin['prostatus'] == 3) {$txt .= "<td>" . "Cancelado" . "</td>";}
           $txt .= '<td class="text-center"><a href="man-programa.php?ope=2&cod=' . $lin['idprograma'] . '" title="Efetua alteração do registro informado na linha"><i class="large material-icons">healing</i></a></td>';
-          $txt .= '<td class="lit-d text-center"><a href="man-programa.php?ope=3&cod=' . $lin['idprograma'] . '" title="Efetua exclusão do registro informado na linha"><i class="cor-1 large material-icons">delete_forever</i></a></td>';
+          $txt .= '<td class="text-center"><a href="man-programa.php?ope=3&cod=' . $lin['idprograma'] . '" title="Efetua exclusão do registro informado na linha"><i class="cor-1 large material-icons">delete_forever</i></a></td>';
           $txt .= "</tr>";
           echo $txt;
      }

@@ -134,6 +134,7 @@ function limpa_pro($nom)  {
 
  function limpa_val($val){ 
      $val = str_replace("R$", "", $val);
+     $val = str_replace(" ", "", $val);
      $val = str_replace(".", "", $val);
      $val = str_replace(",", ".", $val);
      return ($val == '' ? 0 : trim($val));
