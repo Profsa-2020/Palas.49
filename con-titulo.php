@@ -163,7 +163,7 @@ $(document).ready(function() {
           </div>
      </div>
      <div class="container">
-          <form class="qua-2" name="frmTelMan" action="man-plano.php" method="POST">
+          <form class="qua-2" name="frmTelMan" action="con-titulo.php" method="POST">
                <p class="lit-4">Consulta de Títulos a Receber &nbsp; &nbsp; &nbsp; </p>
                <div class="row">
                     <div class="col-md-2"></div>

@@ -322,13 +322,13 @@ function carrega_pla($pla) {
      if ($pla == 0) {
           echo '<option value="0" selected="selected">Selecione o plano ...</option>';
      }
-     $com = "Select idplano, pladescricao from tb_plano order by pladescricao, idplano";
+     $com = "Select idplano, pladescricao, plavalor from tb_plano order by pladescricao, idplano";
      $nro = leitura_reg($com, $reg);
      foreach ($reg as $lin) {
           if ($lin['idplano'] != $pla) {
-               echo  '<option value ="' . $lin['idplano'] . '">' . $lin['pladescricao'] . " - R$ " . number_format($reg['plavalor'], 2, ",", ".") . '</option>'; 
+               echo  '<option value ="' . $lin['idplano'] . '">' . $lin['pladescricao'] . " - R$ " . number_format($lin['plavalor'], 2, ",", ".") . '</option>'; 
           } else {
-               echo  '<option value ="' . $lin['idplano'] . '" selected="selected">' . $lin['pladescricao'] . " - R$ " . number_format($reg['plavalor'], 2, ",", ".") . '</option>';
+               echo  '<option value ="' . $lin['idplano'] . '" selected="selected">' . $lin['pladescricao'] . " - R$ " . number_format($lin['plavalor'], 2, ",", ".") . '</option>';
           }
      }
      return $sta;
@@ -340,13 +340,13 @@ function carrega_ind($ind) {
      if ($ind == 0) {
           echo '<option value="0" selected="selected">Selecione a indicação ...</option>';
      }
-     $com = "Select idindicacao, inddescricao from tb_indicacao order by inddescricao, idindicacao";
+     $com = "Select idindicacao, indnome from tb_indicacao order by indnome, idindicacao";
      $nro = leitura_reg($com, $reg);
      foreach ($reg as $lin) {
           if ($lin['idindicacao'] != $ind) {
-               echo  '<option value ="' . $lin['idindicacao'] . '">' . $lin['inddescricao'] . '</option>'; 
+               echo  '<option value ="' . $lin['idindicacao'] . '">' . $lin['indnome'] . '</option>'; 
           } else {
-               echo  '<option value ="' . $lin['idindicacao'] . '" selected="selected">' . $lin['inddescricao'] . '</option>';
+               echo  '<option value ="' . $lin['idindicacao'] . '" selected="selected">' . $lin['indnome'] . '</option>';
           }
      }
      return $sta;

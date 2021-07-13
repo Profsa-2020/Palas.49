@@ -417,7 +417,7 @@ function saldos_cta($cta, &$ent, &$sai, &$vai, &$vol, &$val, &$med, &$tot) {
           if ($lin['movtipo'] == 5) {   // Venda
                $sai = $sai + $lin['movquantidade'];
                $sal = $sal - $lin['movquantidade'];
-               $val = $val - $lin['movvalor'];
+               $val = $val - $lin['movquantidade'] * $lin['movcusto'] / 1000;
           }
           if ($lin['movtipo'] == 7) {   // Venda com cartão
                if ($lin['movliquidado'] == 1) {

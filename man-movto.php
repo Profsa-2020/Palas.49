@@ -480,6 +480,7 @@ $(document).ready(function() {
                               $('#tot_s').val(data.tot);
                               $('#val_s').val(data.val);
                               $('#qtd_m').val(data.qtd);
+                              $('#cus_c').val(data.cus);
                          }
                     }).fail(function(data) {
                          console.log('Erro: ' + JSON.stringify(data));
@@ -531,6 +532,7 @@ $(document).ready(function() {
                               $('#tot_s').val(data.tot);
                               $('#val_s').val(data.val);
                               $('#qtd_m').val(data.qtd);
+                              $('#cus_c').val(data.cus);
                          }
                     }).fail(function(data) {
                          console.log('Erro: ' + JSON.stringify(data));

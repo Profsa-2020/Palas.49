@@ -11,3 +11,17 @@
 		"confirm": true
 	}
 ]
+
+[
+	{
+		"name": "AdmMilhas",
+		"host": "ftp.admmilhas.com.br",
+		"port": 21,
+		"type": "ftp",
+		"username": "profsa@admmilhas.com.br",
+		"password": "profsa1993",
+		"path": "/public_html/pallas49/",
+		"autosave": false,
+		"confirm": true
+	}
+]

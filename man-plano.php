@@ -107,6 +107,7 @@ $(document).ready(function() {
      $ret = 0; 
      $per = "";
      $del = "";
+     $dad = array();
      $bot = "Salvar";
      include_once "dados.php";
      include_once "profsa.php";
@@ -126,7 +127,7 @@ $(document).ready(function() {
      }
      if (isset($_SESSION['wrkopereg']) == false) { $_SESSION['wrkopereg'] = 1; }
      if (isset($_SESSION['wrkcodreg']) == false) { $_SESSION['wrkcodreg'] = 0; }
-     if (isset($_SESSION['wrknumvol']) == false) { $_SESSION['wrknumvol'] = 1; }
+     if (isset($_SESSION['wrknumses']) == false) { $_SESSION['wrknumses'] = ''; }
      if (isset($_REQUEST['ope']) == true) { $_SESSION['wrkopereg'] = $_REQUEST['ope']; }
      if (isset($_REQUEST['cod']) == true) { $_SESSION['wrkcodreg'] = $_REQUEST['cod']; }
      $cod = (isset($_REQUEST['cod']) == false ? 0 : $_REQUEST['cod']);
@@ -135,6 +136,10 @@ $(document).ready(function() {
      $val = (isset($_REQUEST['val']) == false ? 0 : $_REQUEST['val']);
      $tok = (isset($_REQUEST['tok']) == false ? '' : $_REQUEST['tok']);
      $des = (isset($_REQUEST['des']) == false ? '' : str_replace("'", "´", $_REQUEST['des']));
+     if ($_SESSION['wrknumses'] == "") {
+          $ret = sessao_pag($dad);
+          $_SESSION['wrknumses'] = $dad['ses'];
+     }
      if ($_SESSION['wrkopereg'] == 1) { 
           $cod = ultimo_cod();
      }
@@ -165,6 +170,7 @@ $(document).ready(function() {
            if ($sta == 0) {
                 $ret = alterar_pla();
                 $cod = ultimo_cod(); 
+                $ret = criacao_pla($dad);    // Cria o plano no PagSeguro, só que está sometne localhost 
                 $ret = gravar_log(12,"Alteração de Plano cadastrado: " . $des); 
                 $des = ''; $num = 0; $sta = 0;  $del = ""; $val = 0; $tok = ''; $_SESSION['wrkopereg'] = 1; $_SESSION['wrkcodreg'] = 0;
            }
@@ -234,7 +240,7 @@ $(document).ready(function() {
                     <div class="col-md-2"></div>
                     <div class="col-md-8">
                          <label>Token</label>
-                         <input type="text" class="form-control" maxlength="50" id="tok" name="tok"
+                         <input type="text" class="form-control" maxlength="150" id="tok" name="tok"
                               value="<?php echo $tok; ?>" required />
                     </div>
                     <div class="col-md-2">
@@ -418,6 +424,133 @@ function ler_plano(&$cha, &$des, &$sta, &$num, &$val, &$tok) {
      }
      return $ret;
  }
+
+ function sessao_pag(&$dad) {
+     $sta = 0; $dad['err'] = ""; $dad['ses'] = "";
+     $dad['ema'] = retorna_dad('empemail', 'tb_empresa', 'idempresa', 1); 
+     if ($_SESSION['wrkopcpro']  == 1) {
+          $dad['tok'] =  retorna_dad('emptokenpro', 'tb_empresa', 'idempresa', 1); 
+          $url = "https://ws.pagseguro.uol.com.br/v2/sessions?" . 'email=' . $dad['ema'] . '&token=' . $dad['tok'];
+     } else {
+          $dad['tok'] =  retorna_dad('emptokenhom', 'tb_empresa', 'idempresa', 1); 
+          $url = "https://ws.sandbox.pagseguro.uol.com.br/v2/sessions?" . 'email=' . $dad['ema'] . '&token=' . $dad['tok'];
+     }
+     if ($dad['ema'] == "") {
+          echo '<script>alert("E-Mail informado na empresa para PagSeguro em branco !");</script>';
+          return 1;
+     }
+
+     $cur  = curl_init($url);
+     curl_setopt($cur, CURLOPT_HTTPHEADER, array("Content-Type: application/x-www-form-urlencode; charset=UTF-8"));
+     curl_setopt($cur, CURLOPT_POST, 1);
+     if ($_SESSION['wrkopcpro']  == 1) {
+          curl_setopt($cur, CURLOPT_SSL_VERIFYPEER, true);
+     } else {
+          curl_setopt($cur, CURLOPT_SSL_VERIFYPEER, false);
+     }
+     curl_setopt($cur, CURLOPT_RETURNTRANSFER, true);
+     
+     $ret = curl_exec($cur);
+     curl_close($cur);
+     if ($ret == false) { 
+          echo '<script>alert("Acesso a PagSeguro para identificação não foi autorizado");</script>';
+          return 2;
+     }
+     if ($ret == 'Unauthorized') { 
+          echo '<script>alert("Informações para logar no PagSeguro não estão corretas");</script>';
+          return 3;
+     }
+     $xml = simplexml_load_string($ret);
+     if (isset($xml->error) == true) {
+          $sta = 4;
+          $dad['err'] = (string) $xml->error->code;
+     }else{
+          $dad['ses'] = (string) $xml->id;
+     }
+     return $sta;
+}
+
+function criacao_pla(&$dad) {
+
+     if ($_SESSION['wrkendser'] != '127.0.0.1') { return 1; }    // Só cria o plano se estiver rodando localhost 
+
+     $sta = 0; $dad['cod'] = ''; $dad['dat'] = '';
+     $tax = retorna_dad('emptaxa', 'tb_empresa', 'idempresa', 1); 
+     $ema = retorna_dad('empemail', 'tb_empresa', 'idempresa', 1); 
+
+     if ($_SESSION['wrkopcpro']  == 1) {
+          $tok = retorna_dad('emptokenpro', 'tb_empresa', 'idempresa', 1); 
+     } else {
+          $tok = retorna_dad('emptokenhom', 'tb_empresa', 'idempresa', 1); 
+     }
+
+     $val = str_replace(".", "", $_REQUEST['val']); $val = str_replace(",", ".", $val);
+     $pla['reference'] = 'Ref_' . str_pad($_SESSION['wrkcodreg'], 3, "0", STR_PAD_LEFT);
+     $pla['preApproval']['name'] = limpa_cpo($_REQUEST['des']);
+     $pla['preApproval']['charge'] = 'AUTO';
+     $pla['preApproval']['period'] = 'MONTHLY';
+     $pla['preApproval']['amountPerPayment'] = $val;
+     $pla['preApproval']['membershipFee'] = $tax;
+     $pla['preApproval']['expiration'] =  array('value' => 12, 'unit' => 'MONTHS');
+     if ($_SESSION['wrkopcpro']  == 1) {
+          $pla['preApproval']['cancelURL'] = 'https://www.admilhas.com.br/pallas49/cancela-pla.php';
+     } else {
+          $pla['preApproval']['cancelURL'] = 'https://www.profsa.com.br/pallas49/cancela-pla.php';
+     }
+     $pla['maxUses'] = 999;
+
+     $env = json_encode($pla);
+          
+     if ($_SESSION['wrkopcpro']  == 1) {
+          $url = "https://ws.pagseguro.uol.com.br/pre-approvals/request?" . "email=" . $ema . '&token=' . $tok;
+     } else {
+          $url = "https://ws.sandbox.pagseguro.uol.com.br/pre-approvals/request?"  . "email=" . $ema . '&token=' . $tok;
+     }
+
+     $cur = curl_init($url);
+     curl_setopt($cur, CURLOPT_HTTPHEADER, array('Content-Type: application/json', 'Accept: application/vnd.pagseguro.com.br.v3+xml;charset=ISO-8859-1'));
+     curl_setopt($cur, CURLOPT_POST, true);
+     if ($_SESSION['wrkopcpro']  == 1) {
+          curl_setopt($cur, CURLOPT_SSL_VERIFYPEER, true);
+     } else {
+          curl_setopt($cur, CURLOPT_SSL_VERIFYPEER, false);
+     }
+     curl_setopt($cur, CURLOPT_RETURNTRANSFER, true);
+     curl_setopt($cur, CURLOPT_POSTFIELDS, $env);
+     
+     $ret = curl_exec($cur);
+     if ($ret == false) { 
+          echo '<script>alert("Acesso a PagSeguro para identificação não foi autorizado");</script>';
+          return 2;
+     }
+     if ($ret == 'Unauthorized') { 
+          echo '<script>alert("Informações para logar no PagSeguro não estão corretas");</script>';
+          return 3;
+     }
+
+     curl_close($cur);
+     $xml = simplexml_load_string($ret);
+     $qtd = count($xml->error);
+     if ($qtd == 0) {
+          $dad['cod'] = $xml->code;
+          $dad['dat'] = $xml->date;
+          include "lerinformacao.inc";
+          if ($_REQUEST['tok'] == "") {
+               $sql  = "update tb_plano set ";
+               $sql .= "platoken = '". $dad['cod'] . "', ";
+               $sql .= "keyalt = '" . $_SESSION['wrkideusu'] . "', ";
+               $sql .= "datalt = '" . date("Y/m/d H:i:s") . "' ";
+               $sql .= "where idplano = " . $_SESSION['wrkcodreg'];
+               $ret = comando_tab($sql, $nro, $ult, $men);
+               if ($ret == false) {
+                    print_r($sql);
+                    echo '<script>alert("Erro na regravação da chave do plano solicitado !");</script>';
+               }
+          }    
+          echo '<script>alert("Criação de Plano Recorrente efetuada com Sucesso !");</script>';
+     }
+     return $sta;
+}
 
 
 ?>

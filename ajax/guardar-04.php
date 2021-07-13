@@ -139,7 +139,7 @@
                $sql .= "'" . date('Y-m-d', strtotime('+15 days')) . "',";     
           } else {
                $sql .= "'" . '4' . "',";
-               $sql .= "'" . '999999' . "',";
+               $sql .= "'" . '999995' . "',";
                $sql .= "'" . date('Y-m-d', strtotime('+30 days')) . "',";     
           }
           $sql .= "'" . limpa_nro($_SESSION['wrkdadven']['cep_e']) . "',";
@@ -290,6 +290,14 @@
                $tab['men'] .= "E-Mail e Token do PagSeguro não foi autorizado o acesso.";
           } else {     
                $xml = simplexml_load_string($ret);
+
+               if (file_exists('ret') == false) { mkdir('ret'); }
+               $dir = __DIR__;
+               $cam =  'ret' . '/' . 'Reg-' .  date('d-m-Y.H-i-s'). '.xml';
+               $fil = fopen($cam, 'w');
+               fwrite($fil, $xml);
+               fclose($fil);      
+       
                $qtd = count($xml->error);
                if ($qtd > 0) {
                     foreach ($xml as $key => $value){  // Pega cada elemento de um objeto vindo do xml
@@ -300,7 +308,9 @@
                     $tab['suc'] = $xml->code;
                }
                $inf = json_decode(json_encode((array) $xml), 1); // Transforma XMl em uma array (tabela)
-               $tab['cod'] = $inf['code'];
+               if (isset($inf['code']) == true) {
+                    $tab['cod'] = $inf['code'];
+               }
                $inf = array($xml->getName() => $inf);
           }
 

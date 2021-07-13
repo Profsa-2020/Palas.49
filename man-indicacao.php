@@ -157,7 +157,7 @@ $(document).ready(function() {
      }
      if ($ape != "") {        
           $cam = retorna_dad('empsite', 'tb_empresa', 'idempresa', 1);   
-          $cam = '<a href="' . $cam . '/' . 'venda-1.php?indicado=' . $ape . '" target="_blank">' . $cam . '/' . 'venda-1.php?indicado=' . $ape . '</a>'; 
+          $cam = '<a href="' . $cam . 'venda-1.php?indicado=' . $ape . '" target="_blank">' . $cam . 'venda-1.php?indicado=' . $ape . '</a>'; 
      }
 
      if (isset($_REQUEST['salvar']) == true) {

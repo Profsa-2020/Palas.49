@@ -370,6 +370,7 @@
           $sql .= "movintermediario, ";
           $sql .= "movdata, ";
           $sql .= "movvecto, ";
+          $sql .= "movcusto, ";
           $sql .= "movvalor, ";
           $sql .= "movquantidade, ";
           $sql .= "movobservacao, ";
@@ -385,6 +386,7 @@
           $sql .= "'" . $_REQUEST['int_v'] . "',";
           $sql .= "'" . inverte_dat(1, $_REQUEST['dat_v']) . "',";
           $sql .= "'" . inverte_dat(1, $_REQUEST['rec_v']) . "',";
+          $sql .= "'" . limpa_val($_REQUEST['cus_c']) . "',";
           $sql .= "'" . str_replace(",", ".", str_replace(".", "", $_REQUEST['val_v'])) . "',";
           $sql .= "'" . str_replace(".", "", $_REQUEST['qtd_v']) . "',";
           $sql .= "'" . $_REQUEST['obs_v'] . "',";

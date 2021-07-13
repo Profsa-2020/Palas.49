@@ -29,7 +29,7 @@
      $tab['lib'] = number_format($vol, 0, ",", ".");
      $tab['tot'] = number_format($tot, 2, ",", ".");
      if ($sal != 0) {
-          $tab['cus'] = number_format($val / $sal * 1000, 2, ",", "."); 
+          $tab['cus'] = number_format($val / $sal * 1000, 2, ",", ".");
      }
 
      $usu = retorna_dad('conusuario', 'tb_conta', 'idconta', $cta); // Somente programa de milhas protipo = 0

@@ -1,4 +1,7 @@
 <?php
+
+     // header("access-control-allow-origin: https://sandbox.pagseguro.uol.com.br");
+
     $sta = 00;
     $dad = array();
     session_start();
@@ -11,6 +14,7 @@
 
     $cha = (isset($_REQUEST['notificationCode']) == false ? '' : $_REQUEST['notificationCode']);
     $tip = (isset($_REQUEST['notificationType']) == false ? '' : $_REQUEST['notificationType']);
+    $dad['tit']['key'] = (isset($_REQUEST['notificationCode']) == false ? '' : $_REQUEST['notificationCode']);
 
     $ema = retorna_dad('empemail', 'tb_empresa', 'idempresa', 1); 
     $_SESSION['wrkopcpro'] = retorna_dad('emptipo', 'tb_empresa', 'idempresa', 1); 
@@ -50,7 +54,7 @@
 
         if (file_exists('ret') == false) { mkdir('ret'); }
         $dir = __DIR__;
-        $cam =  'ret' . '/' . 'Ret-' .  date('d-m-y.H-i-s'). '.xml';
+        $cam =  'ret' . '/' . 'Ret-' .  date('d-m-Y.H-i-s'). '.xml';
         $fil = fopen($cam, 'w');
         fwrite($fil, $xml);
         fclose($fil);      
@@ -154,9 +158,9 @@ function atualiza_tit($dad) {
         $ret = gravar_log(59, substr("Erro: chave não encontrada nos contratantes: " . $dad['tit']['cod'] . " Data: " . $dad['tit']['dat'], 0, 500));
         return 7;
     }
-    $nro = acessa_reg("Select idtitulo, titadministrador from tb_titulo where titadministrador = " . $key[2], $reg);            
+    $nro = acessa_reg("Select idtitulo, titadministrador from tb_titulo where titchave = '" . $dad['tit']['key'] . "'", $reg);            
     if ($nro == 1) {
-        $cha = $lin['idtitulo'];
+        $cha = $reg['idtitulo'];
     } else if ($nro == 0) {
         $ret = gravar_log(60, substr("Erro: título não encontrada para contratante: " . $dad['tit']['cod'] . " Data: " . $dad['tit']['dat'], 0, 500));
         return 8;
